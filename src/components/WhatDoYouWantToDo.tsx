@@ -11,7 +11,7 @@ export const WhatDoYouWantToDo = () => {
 
       <div className="flex gap-4 w-full justify-center">
         <Link
-          to={"/"}
+          to={"/requestCertificate"}
           className="text-center flex flex-col items-center bg-[#0000001A] text-xs font-bold gap-2 w-35 h-30 justify-center rounded-lg active:scale-90 duration-300 transition  hover:shadow-2xl"
         >
           <span className="max-w-28">Solicitar emissão de Certificado</span>
