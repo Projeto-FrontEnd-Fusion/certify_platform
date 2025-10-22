@@ -1,6 +1,6 @@
 import { Images } from "@/config/RequestCertificadeImages";
 import { useFormValidation } from "@/hooks/useForm";
-import { RequestCertificadeLoginSchema } from "@/schemas/requestCertificade";
+import { RequestCertificadeLoginSchema } from "@/schemas/requestCertificadeLogin";
 import { Link } from "react-router-dom";
 
 export const RequestCertificateLogin = () => {
