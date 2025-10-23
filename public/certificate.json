@@ -1,0 +1,15 @@
+[
+{
+  "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+  "eventId": "evt_1234567890",
+  "participantId": "g510f1ee-6b54-4b01-90e6-d701748f0851",
+  "participantName": "João da Silva",
+  "description": "Certificado emitido por participação no workshop de React.js",
+  "issuedAt": "2025-10-20T10:30:00Z",
+  "availableAt": "2025-10-21T08:00:00Z",
+  "validUntil": "2026-10-21T23:59:59Z",
+  "status": "available",
+  "downloadLink": "https://certificados.exemplo.com/joao_silva_reactjs.pdf"
+}
+
+]
