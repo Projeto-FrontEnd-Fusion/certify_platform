@@ -79,7 +79,7 @@ export const RequestCertificateLogin = () => {
       </form>
       <div className="font-inter text-xs w-fit mx-auto text-center">
         <p>Ainda não tem uma conta?</p>
-        <Link to={"/register"} className="underline">
+        <Link to={"/signup"} className="underline">
           Crie a sua agora!
         </Link>
       </div>

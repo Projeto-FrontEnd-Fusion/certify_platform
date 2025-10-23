@@ -92,7 +92,7 @@ export const RequestCertificateRegister = () => {
       </form>
       <div className="font-inter text-xs w-fit mx-auto text-center">
         <p>Já tem uma conta?</p>
-        <Link to={"/"} className="underline">
+        <Link to={"/login"} className="underline">
           Faça login
         </Link>
       </div>
