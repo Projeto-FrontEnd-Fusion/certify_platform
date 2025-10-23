@@ -8,15 +8,17 @@ import { menuItems } from "@/config/Menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { smoothSlideDownVariant } from "@/config/Variants";
 import { Scroll } from "@/utils/Scroll";
+import { useLocation } from "react-router-dom";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Icon = isOpen ? IoCloseOutline : SlMenu;
-  const Scrolled = Scroll();
-
+  const { pathname } = useLocation();
   useEffect(() => {
-    if (Scrolled) setIsOpen(false);
-  }, [Scrolled]);
+    setIsOpen(false);
+  }, [pathname]);
+
+  Scroll(setIsOpen);
 
   return (
     <header className="flex justify-between sticky top-0 px-4 py-5 items-center z-99 bg-white">
