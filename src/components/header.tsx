@@ -19,7 +19,6 @@ export const Header = () => {
   }, [pathname]);
 
   Scroll(setIsOpen);
-
   return (
     <header className="flex justify-between sticky top-0 px-4 py-5 items-center z-99 bg-white">
       <div className="flex gap-1 cursor-default">
@@ -35,18 +34,20 @@ export const Header = () => {
         </h1>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
-        className="active:scale-90 transition duration-100"
-      >
-        <Icon
-          className={`${
-            Icon === IoCloseOutline ? "text-3xl -mr-1" : "text-xl"
-          } cursor-pointer text-[#3925DD]`}
-        />
-      </button>
+      {(pathname !== "/login" && pathname !== "/signup") && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+          className="active:scale-90 transition duration-100"
+        >
+          <Icon
+            className={`${
+              Icon === IoCloseOutline ? "text-3xl -mr-1" : "text-xl"
+            } cursor-pointer text-[#3925DD]`}
+          />
+        </button>
+      )}
 
       <AnimatePresence>
         {isOpen && (
