@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 
 export const AcessKey = () => {
-  console.log("componente renderizou");
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const valuesRef = useRef<string[]>(["", "", "", "", ""]);
 
@@ -10,7 +9,7 @@ export const AcessKey = () => {
   }, []);
 
   const handleInputChange = (index: number, inputValue: string) => {
-    const sanitizedValue = inputValue.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const sanitizedValue = inputValue.replace(/[^A-Za-z0-9]/g, "");
 
     valuesRef.current[index] = sanitizedValue;
     inputRefs.current[index]!.value = sanitizedValue;
