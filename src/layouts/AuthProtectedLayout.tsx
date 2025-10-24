@@ -1,10 +1,10 @@
-import { ProtectedUserRouter } from "@/components/ProtectedUserRouters"
+import { ProtectedAuthRouter } from "@/components/ProtectedUserRouters"
 import { Outlet } from "react-router-dom"
 
 export const AuthProtectedLayout = () =>{
   return(
-    <ProtectedUserRouter>
+    <ProtectedAuthRouter>
       <Outlet />
-    </ProtectedUserRouter>
+    </ProtectedAuthRouter>
   )
 }
