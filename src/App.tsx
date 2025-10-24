@@ -6,15 +6,15 @@ import { AuthProtectedLayout } from "./layouts/AuthProtectedLayout";
 import { NotFound } from "./pages/Notfound";
 import { AuthLayout } from "./layouts/AuthLayout";
 
-const RequestCertificateLogin = lazy(() =>
-  import("./components/RequestCertificateLogin").then((m) => ({
-    default: m.RequestCertificateLogin,
+const Login = lazy(() =>
+  import("./components/Login").then((m) => ({
+    default: m.FormLogin,
   }))
 );
 
-const RequestCertificateRegister = lazy(() =>
-  import("./components/RequestCertificateRegister").then((m) => ({
-    default: m.RequestCertificateRegister,
+const SignUp = lazy(() =>
+  import("./components/SignUp").then((m) => ({
+    default: m.SignUpForm,
   }))
 );
 
@@ -28,8 +28,8 @@ function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
       <Routes>
-        <Route path="/login" element={<RequestCertificateLogin />} />
-        <Route path="/signup" element={<RequestCertificateRegister />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
