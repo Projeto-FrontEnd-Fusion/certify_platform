@@ -1,37 +1,34 @@
 import { Images } from "@/config/RequestCertificadeImages";
 import { useFormValidation } from "@/hooks/useForm";
-import { RequestCertificadeLoginSchema, type RequestCertificadeLoginSchemaType } from "@/schemas/requestCertificadeLogin";
+import {
+  LoginSchema,
+  type LoginSchemaType,
+} from "@/schemas/Login";
 import { useFakeStore, type FakeStorePayload } from "@/stores/mockAuthStore";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export const RequestCertificateLogin = () => {
-  const { errors, handleSubmit, register } = useFormValidation(
-    RequestCertificadeLoginSchema
-  );
-  
-  const {setFakeLogin: setLoginFake, auth} = useFakeStore()
-  const navigation = useNavigate()
+export const FormLogin = () => {
+  const { errors, handleSubmit, register } = useFormValidation(LoginSchema);
 
+  const { setFakeLogin: setLoginFake, auth } = useFakeStore();
+  const navigation = useNavigate();
 
-  useEffect(() =>{
-    if(!auth?._id) return 
-    navigation("/meus-certificados")
+  useEffect(() => {
+    if (!auth?._id) return;
+    navigation("/meus-certificados");
+  }, [auth?._id!]);
 
-  }, [auth?._id])
+  const onSubmit = handleSubmit((dataForm: LoginSchemaType) => {
+    const auth: FakeStorePayload = {
+      _id: crypto.randomUUID(),
+      email: dataForm.email,
+      fullname: "João Paulo",
+      role: "user",
+    };
 
-  const onSubmit = handleSubmit((dataForm : RequestCertificadeLoginSchemaType) => {
-    // console.log(data);
-    const auth : FakeStorePayload = {
-      _id : crypto.randomUUID(),
-      email : dataForm.email,
-      fullname : "João Paulo",
-      role : "user"
-    } 
-
-    setLoginFake(auth)
-    console.log(auth)
-
+    setLoginFake(auth);
+    console.log(auth);
   });
   return (
     <section className="px-2 py-8 space-y-8  max-w-[30rem] mx-auto bg-[#F2F2F9]">

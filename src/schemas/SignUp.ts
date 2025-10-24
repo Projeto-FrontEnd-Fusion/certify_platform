@@ -1,6 +1,6 @@
 import z from "zod/v3";
 
-export const RequestCertificadeRegisterSchema = z.object({
+export const SignUpSchema = z.object({
   name: z
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres" })
@@ -14,3 +14,5 @@ export const RequestCertificadeRegisterSchema = z.object({
     .min(6, { message: "A senha deve ter pelo menos 6 caracteres" })
     .max(100, { message: "A senha deve ter no máximo 100 caracteres" }),
 });
+
+export type SignUpSchemaType = z.infer<typeof SignUpSchema>

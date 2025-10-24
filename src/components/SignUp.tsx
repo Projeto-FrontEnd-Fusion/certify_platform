@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { Images } from "@/config/RequestCertificadeImages";
 import { useFormValidation } from "@/hooks/useForm";
-import { RequestCertificadeRegisterSchema } from "@/schemas/requestCertificadeRegister";
+import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
 
-export const RequestCertificateRegister = () => {
+export const SignUpForm = () => {
       const { errors, handleSubmit, register } = useFormValidation(
-    RequestCertificadeRegisterSchema
+    SignUpSchema
   );
 
-   const onSubmit = handleSubmit((data) => {
+   const onSubmit = handleSubmit((data: SignUpSchemaType) => {
     console.log(data);
   });
   return (
