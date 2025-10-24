@@ -10,4 +10,4 @@ interface ErrorMessage {
   messageError: keyof typeof errors;
 }
 
-export type MessageI = SuccessMessage | ErrorMessage;
+export type IMessage = SuccessMessage | ErrorMessage;

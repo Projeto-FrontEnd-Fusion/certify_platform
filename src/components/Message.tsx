@@ -1,10 +1,10 @@
 import { useState } from "react";
 import SucessImage from "@/assets/SucessImage.svg";
 import ErrorImage from "@/assets/ErrorImage.svg";
-import { type MessageI } from "@/types/Message";
+import { type IMessage } from "@/types/Message";
 import { errors } from "@/config/ErrorsMessages";
 
-export const Message = ({ messageError, status }: MessageI) => {
+export const Message = ({ messageError, status }: IMessage) => {
   const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
