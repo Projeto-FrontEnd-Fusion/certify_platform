@@ -1,23 +1,50 @@
 import "./App.css";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
-import { RequestCertificateLogin } from "./components/RequestCertificateLogin";
+import { Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { LoadingPage } from "./pages/Loading";
 
-import { Routes, Route, Navigate } from "react-router-dom";
-import { RequestCertificateRegister } from "./components/RequestCertificateRegister";
-import { MyCertificates } from "./components/MyCertificates";
+const RequestCertificateLogin = lazy(() =>
+  import("./components/RequestCertificateLogin").then((m) => ({
+    default: m.RequestCertificateLogin,
+  }))
+);
+
+const RequestCertificateRegister = lazy(() =>
+  import("./components/RequestCertificateRegister").then((m) => ({
+    default: m.RequestCertificateRegister,
+  }))
+);
+
+const MyCertificates = lazy(() =>
+  import("./components/MyCertificates").then((m) => ({
+    default: m.MyCertificates,
+  }))
+);
+
+const NotFound = lazy(() =>
+  import("./pages/Notfound").then((m) => ({ default: m.NotFound }))
+);
 
 function App() {
   return (
     <>
       <Header />
       <main className="flex-1">
-        <Routes>
-          <Route path="*" element={<Navigate to="/login" replace />} />
-          <Route Component={RequestCertificateLogin} path="/login" />
-          <Route Component={RequestCertificateRegister} path="/signup" />
-          <Route Component={MyCertificates} path="/meus-certificados" />
-        </Routes>
+        <Suspense
+          fallback={
+            <LoadingPage />
+          }
+        >
+          <Routes>
+            <Route path="/queijo" element={<LoadingPage />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<RequestCertificateLogin />} />
+            <Route path="/signup" element={<RequestCertificateRegister />} />
+            <Route path="/meus-certificados" element={<MyCertificates />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
     </>
