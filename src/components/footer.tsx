@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="font-inter text-[0.625rem] self-center text-center flex flex-col gap-1.5 py-5  sm:text-xs">
+    <footer className="font-inter text-[0.625rem] text-center flex flex-col gap-1.5 py-5 w-full sm:text-xs bg-[#F2F2F9]">
       <p className="font-bold">CertiFy — Todos os direitos reservados © 2025</p>
 
       <p>

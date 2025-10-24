@@ -12,7 +12,7 @@ export const RequestCertificateRegister = () => {
     console.log(data);
   });
   return (
-    <section className="px-2 py-8 space-y-8  max-w-[30rem] mx-auto">
+    <section className="px-2 py-8 space-y-8  max-w-[30rem] mx-auto bg-[#F2F2F9]">
       <figure>
         <div className="flex gap-1 justify-center">
           {Images.map(({ alt, src, id }) => (
