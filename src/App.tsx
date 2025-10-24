@@ -5,6 +5,7 @@ import { RequestCertificateLogin } from "./components/RequestCertificateLogin";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RequestCertificateRegister } from "./components/RequestCertificateRegister";
+import { MyCertificates } from "./components/MyCertificates";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
           <Route Component={RequestCertificateLogin} path="/login" />
           <Route Component={RequestCertificateRegister} path="/signup" />
+          <Route Component={MyCertificates} path="/meus-certificados" />
         </Routes>
       </main>
       <Footer />
