@@ -2,9 +2,9 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { LoadingPage } from "./pages/Loading";
-import { UserAuthLayout } from "./layouts/UserAuthLayout";
+import { AuthProtectedLayout } from "./layouts/AuthProtectedLayout";
 import { NotFound } from "./pages/Notfound";
-import { UserLayout } from "./layouts/UserLayout";
+import { AuthLayout } from "./layouts/AuthLayout";
 
 const RequestCertificateLogin = lazy(() =>
   import("./components/RequestCertificateLogin").then((m) => ({
@@ -31,8 +31,8 @@ function App() {
         <Route path="/login" element={<RequestCertificateLogin />} />
         <Route path="/signup" element={<RequestCertificateRegister />} />
 
-        <Route path="/" element={<UserAuthLayout />}>
-          <Route element={<UserLayout />}>
+        <Route path="/" element={<AuthProtectedLayout />}>
+          <Route element={<AuthLayout />}>
             <Route path="meus-certificados" element={<MyCertificates />} />
           </Route>
         </Route>
