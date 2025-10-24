@@ -1,9 +1,10 @@
 import "./App.css";
-import { Footer } from "./components/footer";
-import { Header } from "./components/header";
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { LoadingPage } from "./pages/Loading";
+import { UserAuthLayout } from "./layouts/UserAuthLayout";
+import { NotFound } from "./pages/Notfound";
+import { UserLayout } from "./layouts/UserLayout";
 
 const RequestCertificateLogin = lazy(() =>
   import("./components/RequestCertificateLogin").then((m) => ({
@@ -23,31 +24,22 @@ const MyCertificates = lazy(() =>
   }))
 );
 
-const NotFound = lazy(() =>
-  import("./pages/Notfound").then((m) => ({ default: m.NotFound }))
-);
-
 function App() {
   return (
-    <>
-      <Header />
-      <main className="flex-1">
-        <Suspense
-          fallback={
-            <LoadingPage />
-          }
-        >
-          <Routes>
-            <Route path="/queijo" element={<LoadingPage />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/login" element={<RequestCertificateLogin />} />
-            <Route path="/signup" element={<RequestCertificateRegister />} />
-            <Route path="/meus-certificados" element={<MyCertificates />} />
-          </Routes>
-        </Suspense>
-      </main>
-      <Footer />
-    </>
+    <Suspense fallback={<LoadingPage />}>
+      <Routes>
+        <Route path="/login" element={<RequestCertificateLogin />} />
+        <Route path="/signup" element={<RequestCertificateRegister />} />
+
+        <Route path="/" element={<UserAuthLayout />}>
+          <Route element={<UserLayout />}>
+            <Route path="meus-certificados" element={<MyCertificates />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
 
