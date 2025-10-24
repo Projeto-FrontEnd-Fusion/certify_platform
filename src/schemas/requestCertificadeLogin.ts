@@ -10,3 +10,6 @@ export const RequestCertificadeLoginSchema = z.object({
     .min(6, { message: "A senha deve ter pelo menos 6 caracteres" })
     .max(100, { message: "A senha deve ter no máximo 100 caracteres" }),
 });
+
+
+export type RequestCertificadeLoginSchemaType = z.infer<typeof RequestCertificadeLoginSchema>
