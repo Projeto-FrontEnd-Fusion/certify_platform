@@ -9,8 +9,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { smoothSlideDownVariant } from "@/config/Variants";
 import { Scroll } from "@/utils/Scroll";
 import { useLocation } from "react-router-dom";
+import { useFakeStore } from "@/stores/mockAuthStore";
 
 export const Header = () => {
+  const {fakeLogout: logoutFake} = useFakeStore()
   const [isOpen, setIsOpen] = useState(false);
   const Icon = isOpen ? IoCloseOutline : SlMenu;
   const { pathname } = useLocation();
@@ -71,9 +73,14 @@ export const Header = () => {
                       size={24}
                       className="group-active:scale-95 duration-100"
                     />
-                    <span className="group-active:scale-95 duration-100">
+                    {
+                      label !== "Sair" ? <span className="group-active:scale-95 duration-100">
+                      {label}
+                    </span> : <span onClick={()=>logoutFake()} className="group-active:scale-95 duration-100">
                       {label}
                     </span>
+                    }
+                   
                   </Link>
                 </li>
               ))}
