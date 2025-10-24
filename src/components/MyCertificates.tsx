@@ -17,7 +17,7 @@ export const MyCertificates = () => {
             <th className=" flex items-start">Ações</th>
           </tr>
         </thead>
-        <tbody className="space-y-4 min-[900px]:w-full">
+        <tbody className="space-y-4 min-[900px]:w-full min-[900px]:space-y-0">
           <tr className="flex flex-col gap-4  bg-[#1E84F214] px-6 py-6 rounded-lg min-[900px]:bg-white min-[900px]:rounded-t-none min-[900px]:flex-row  min-[900px]:w-full min-[900px]:pl-14 min-[900px]:pr-0">
             <td className="font-inter text-[#8A38F5] flex py-1.5 px-3.5 bg-[#8a38f529] rounded-full gap-1 items-center select-none w-fit font-bold text-xs min-[900px]:hidden">
               <img src={CheckedIcon} alt="Segurança verificada" />
