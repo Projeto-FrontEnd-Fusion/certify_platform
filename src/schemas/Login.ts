@@ -1,6 +1,6 @@
 import z from "zod/v3";
 
-export const RequestCertificadeLoginSchema = z.object({
+export const LoginSchema = z.object({
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")
@@ -12,4 +12,4 @@ export const RequestCertificadeLoginSchema = z.object({
 });
 
 
-export type RequestCertificadeLoginSchemaType = z.infer<typeof RequestCertificadeLoginSchema>
+export type LoginSchemaType = z.infer<typeof LoginSchema>
