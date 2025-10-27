@@ -31,8 +31,8 @@ export const FormLogin = () => {
     console.log(auth);
   });
   return (
-    <section className="px-2 py-8 space-y-8  max-w-[30rem] mx-auto bg-[#F2F2F9]">
-      <figure>
+    <section className="px-2 py-8 space-y-8 w-full h-full bg-[#F2F2F9]">
+      <figure className="max-w-[30rem] mx-auto">
         <div className="flex gap-1 justify-center">
           {Images.map(({ alt, src, id }) => (
             <img
@@ -47,7 +47,7 @@ export const FormLogin = () => {
           Pessoas recebendo certificados
         </figcaption>
       </figure>
-      <div className="space-y-4 font-inter">
+      <div className="space-y-4 font-inter max-w-[30rem] mx-auto">
         <h2 className="text-xl font-semibold text-center text-[#1A1551]">
           Acesse sua conta na CertiFy e confira todos os certificados
           disponíveis para você.
@@ -58,7 +58,7 @@ export const FormLogin = () => {
         </p>
       </div>
 
-      <form className="font-inter space-y-4" onSubmit={onSubmit}>
+      <form className="font-inter space-y-4 max-w-[30rem] mx-auto" onSubmit={onSubmit}>
         <fieldset className="space-y-4">
           <div>
             <input
