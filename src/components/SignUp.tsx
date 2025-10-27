@@ -4,16 +4,14 @@ import { useFormValidation } from "@/hooks/useForm";
 import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
 
 export const SignUpForm = () => {
-      const { errors, handleSubmit, register } = useFormValidation(
-    SignUpSchema
-  );
+  const { errors, handleSubmit, register } = useFormValidation(SignUpSchema);
 
-   const onSubmit = handleSubmit((data: SignUpSchemaType) => {
+  const onSubmit = handleSubmit((data: SignUpSchemaType) => {
     console.log(data);
   });
   return (
-    <section className="px-2 py-8 space-y-8  max-w-[30rem] mx-auto bg-[#F2F2F9]">
-      <figure>
+    <section className="px-2 py-8 space-y-8  w-full h-full bg-[#F2F2F9]">
+      <figure className="max-w-[30rem] mx-auto">
         <div className="flex gap-1 justify-center">
           {Images.map(({ alt, src, id }) => (
             <img
@@ -28,7 +26,7 @@ export const SignUpForm = () => {
           Pessoas recebendo certificados
         </figcaption>
       </figure>
-      <div className="space-y-4 font-inter">
+      <div className="space-y-4 font-inter  max-w-[30rem] mx-auto">
         <h2 className="text-xl font-semibold text-center text-[#1A1551]">
           Crie sua conta na CertiFy e tenha acesso a todos os seus certificados
           em um só lugar.
@@ -39,9 +37,12 @@ export const SignUpForm = () => {
         </p>
       </div>
 
-      <form className="font-inter space-y-4" onSubmit={onSubmit}>
+      <form
+        className="font-inter space-y-4  max-w-[30rem] mx-auto"
+        onSubmit={onSubmit}
+      >
         <fieldset className="space-y-4">
-             <div>
+          <div>
             <input
               {...register("name")}
               type="text"
