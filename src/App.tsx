@@ -5,22 +5,22 @@ import { LoadingPage } from "./pages/Loading";
 import { AuthProtectedLayout } from "./layouts/AuthProtectedLayout";
 import { NotFound } from "./pages/Notfound";
 import { AuthLayout } from "./layouts/AuthLayout";
-import { DownloadCertificate } from "./components/DownloadCertificate";
+import { DownloadCertificate } from "./pages/DownloadCertificate";
 
 const Login = lazy(() =>
-  import("./components/Login").then((m) => ({
+  import("./pages/Login").then((m) => ({
     default: m.FormLogin,
   }))
 );
 
 const SignUp = lazy(() =>
-  import("./components/SignUp").then((m) => ({
+  import("./pages/SignUp").then((m) => ({
     default: m.SignUpForm,
   }))
 );
 
 const MyCertificates = lazy(() =>
-  import("./components/MyCertificates").then((m) => ({
+  import("./pages/MyCertificates").then((m) => ({
     default: m.MyCertificates,
   }))
 );

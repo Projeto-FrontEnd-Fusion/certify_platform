@@ -2,7 +2,7 @@ import { BiError } from "react-icons/bi";
 
 export const NotFound = () => {
   return (
- <main className="w-full h-screen flex flex-col justify-center items-center text-center">
+ <section className="w-full h-screen flex flex-col justify-center items-center text-center">
       <div className="flex items-center gap-2">
         <BiError className="text-[4rem] text-zinc-700" />
       </div>
@@ -18,7 +18,7 @@ export const NotFound = () => {
       <a href="/login" className="m-4 px-6 bg-blue-800 text-white py-4 rounded-2xl">
         Voltar para a página inicial
       </a>
-    </main>
+    </section>
       
   );
 };
