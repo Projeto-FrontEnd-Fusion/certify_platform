@@ -1,6 +1,6 @@
-
 import { useRef } from "react";
 import { DownloadButton } from "@/components/DownloadButton";
+import { Certificade } from "@/components/Certificate";
 
 export const DownloadCertificate = () => {
   const printRef = useRef<HTMLDivElement | null>(null);
@@ -17,13 +17,7 @@ export const DownloadCertificate = () => {
         </p>
       </div>
 
-      <div
-        ref={printRef}
-        className="p-4 border border-gray-300 bg-white text-[#1A1551]"
-      >
-        <h1 className="text-xl font-bold mb-2">Certificado DevInsights</h1>
-        <p>Aqui vai a descrição do certificado</p>
-      </div>
+      <Certificade printRef={printRef} />
 
       <div className="flex gap-2">
         <DownloadButton Reference={printRef} fileName="DevInsigths" />
