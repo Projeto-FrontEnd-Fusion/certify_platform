@@ -1,12 +1,9 @@
-import { LuDownload } from "react-icons/lu";
+
 import { useRef } from "react";
-import { useDownload } from "@/hooks/useDownload";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { DownloadButton } from "@/components/DownloadButton";
 
 export const DownloadCertificate = () => {
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const { loadingMethod, handleDownload } = useDownload();
+  const printRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <section className="bg-[#F2F2F9] h-full font-inter flex flex-col items-center pt-13 gap-4">
@@ -29,29 +26,7 @@ export const DownloadCertificate = () => {
       </div>
 
       <div className="flex gap-2">
-        {(["PDF", "PNG"] as const).map((methods) => (
-          <button
-            key={methods}
-            type="button"
-            disabled={loadingMethod === methods}
-            onClick={() =>
-              handleDownload({
-                element: printRef.current,
-                fileName: "DevInsigths",
-                method: methods,
-              })
-            }
-            className="flex items-center gap-2 py-2 bg-[#3925DD] w-26 justify-center text-white text-xl rounded cursor-pointer duration-300 transition-transform hover:scale-105"
-          >
-            {loadingMethod === methods ? (
-              <AiOutlineLoading3Quarters size={20} className="animate-spin" />
-            ) : (
-              <>
-                {`${methods}`} <LuDownload size={20} />
-              </>
-            )}
-          </button>
-        ))}
+        <DownloadButton Reference={printRef} fileName="DevInsigths" />
       </div>
     </section>
   );
