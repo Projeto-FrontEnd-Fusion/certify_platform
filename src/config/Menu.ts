@@ -12,7 +12,7 @@ export const menuItems = [
   {
     Icon: PiCreditCard,
     label: "Meus Certificados",
-    path: "/",
+    path: "/meus-certificados",
   },
   {
     Icon: LuQrCode,
