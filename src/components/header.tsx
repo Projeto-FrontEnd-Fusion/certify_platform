@@ -12,7 +12,7 @@ import { useLocation } from "react-router-dom";
 import { useFakeStore } from "@/stores/mockAuthStore";
 
 export const Header = () => {
-  const {fakeLogout: logoutFake} = useFakeStore()
+  const { fakeLogout: logoutFake } = useFakeStore();
   const [isOpen, setIsOpen] = useState(false);
   const Icon = isOpen ? IoCloseOutline : SlMenu;
   const { pathname } = useLocation();
@@ -22,21 +22,19 @@ export const Header = () => {
 
   Scroll(setIsOpen);
   return (
-    <header className="flex justify-between sticky top-0 px-4 py-5 items-center z-99 bg-white">
-      <div className="flex gap-1 cursor-default">
+    <header className="flex justify-between sticky top-0 px-4 py-5 items-center z-99 bg-white 2xl:max-w-[1440px] mx-auto w-full xl:xl:max-w-[78rem] min-[900px]:max-w-4xl min-[1120px]:max-w-[68rem]">
+      <div className="flex gap-1 cursor-default items-center">
         <Logo
-          width={32}
-          height={32}
           role="img"
           aria-label="Logo Certify"
-          className="text-[#3925DD]"
+          className="text-[#3925DD] w-8 h-8 lg:w-10 lg:h-10"
         />
-        <h1 className="font-lato text-[1.25rem] font-black text-[#3925DD]">
+        <h1 className="font-lato text-xl  font-black text-[#3925DD] lg:text-2xl">
           Certi<span className="font-light">fy</span>
         </h1>
       </div>
 
-      {(pathname !== "/login" && pathname !== "/signup") && (
+      {pathname !== "/login" && pathname !== "/signup" && (
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
@@ -46,7 +44,7 @@ export const Header = () => {
           <Icon
             className={`${
               Icon === IoCloseOutline ? "text-3xl -mr-1" : "text-xl"
-            } cursor-pointer text-[#3925DD]`}
+            } cursor-pointer text-[#3925DD] min-[900px]:hidden`}
           />
         </button>
       )}
@@ -59,7 +57,7 @@ export const Header = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="absolute top-18  w-full left-0  bg-white "
+            className="absolute top-18  w-full left-0  bg-white min-[900px]:hidden"
           >
             <ul className="font-inter text-[#1A1551] space-y-2 px-4 py-4 ">
               {menuItems.map(({ Icon, label, path }) => (
@@ -67,20 +65,19 @@ export const Header = () => {
                   <Link
                     to={path}
                     className="flex items-center gap-2 text-lg hover:text-[#3925DD] transition group py-3 "
-                    onClick={() => setIsOpen(false)}
+                    onClick={
+                      label !== "Sair"
+                        ? () => setIsOpen(false)
+                        : () => logoutFake()
+                    }
                   >
                     <Icon
                       size={24}
                       className="group-active:scale-95 duration-100"
                     />
-                    {
-                      label !== "Sair" ? <span className="group-active:scale-95 duration-100">
-                      {label}
-                    </span> : <span onClick={()=>logoutFake()} className="group-active:scale-95 duration-100">
+                    <span className="group-active:scale-95 duration-100">
                       {label}
                     </span>
-                    }
-                   
                   </Link>
                 </li>
               ))}
@@ -88,6 +85,32 @@ export const Header = () => {
           </motion.nav>
         )}
       </AnimatePresence>
+
+      <nav className="max-[900px]:hidden">
+        <ul className="flex font-inter space-x-3 ">
+          {menuItems.map(({ label, path }) => (
+            <li key={label}>
+              <Link
+                to={path}
+                className={`relative py-2 px-2 font-semibold rounded transition-transform duration-150 active:scale-95 text-[#1A1551]  
+                ${pathname === path && "bg-[#1a15511c]"}
+                ${pathname !== path && "group"} xl:text-lg`}
+              >
+                <span
+                  onClick={
+                    label !== "Sair"
+                      ? () => setIsOpen(false)
+                      : () => logoutFake()
+                  }
+                  className={`relative after:absolute after:left-0 after:-bottom-0.5 after:h-[1px] after:bg-[#1A1551] after:w-full after:origin-left after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:rounded-full will-change-transform`}
+                >
+                  {label}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </header>
   );
 };
