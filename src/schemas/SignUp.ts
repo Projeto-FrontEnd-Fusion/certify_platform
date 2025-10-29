@@ -1,7 +1,7 @@
 import z from "zod/v3";
 
 export const SignUpSchema = z.object({
-  name: z
+  fullname: z
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres" })
     .max(60, { message: "O nome deve ter no máximo 60 caracteres" }),
