@@ -7,7 +7,7 @@ export const menuItems = [
   {
     Icon: LiaUserEditSolid,
     label: "Meus Dados",
-    path: "/",
+    path: "/meus-dados",
   },
   {
     Icon: PiCreditCard,
@@ -17,7 +17,7 @@ export const menuItems = [
   {
     Icon: LuQrCode,
     label: "Validação",
-    path: "/",
+    path: "/validar-certificados",
   },
   {
     Icon: RxExit,
