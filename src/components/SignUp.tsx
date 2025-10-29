@@ -2,15 +2,28 @@ import { Link } from "react-router-dom";
 import { Images } from "@/config/RequestCertificadeImages";
 import { useFormValidation } from "@/hooks/useForm";
 import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
+import { useAuthSignUp } from "@/hooks/Auth/useAuthSignUp";
 
 export const SignUpForm = () => {
   const { errors, handleSubmit, register } = useFormValidation(SignUpSchema);
+  const {mutate, isPending, isSuccess, isError} = useAuthSignUp()
 
-  const onSubmit = handleSubmit((data: SignUpSchemaType) => {
-    console.log(data);
-  });
+  const onSubmit = (formData: SignUpSchemaType) => {
+    console.log("Formulário submetido", formData);
+    const authRequest = {
+      ...formData,
+      role : "user"
+
+    }
+    mutate(authRequest)
+    
+  };
   return (
     <section className="px-2 py-8 space-y-8  w-full h-full bg-[#F2F2F9]">
+      {isPending && "Caregando"}
+      {isSuccess && "Dados Registrados"}
+      {isError && "Falha ao Cadastrar dados"}
+
       <figure className="max-w-[30rem] mx-auto">
         <div className="flex gap-1 justify-center">
           {Images.map(({ alt, src, id }) => (
@@ -39,12 +52,12 @@ export const SignUpForm = () => {
 
       <form
         className="font-inter space-y-4  max-w-[30rem] mx-auto"
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className="space-y-4">
           <div>
             <input
-              {...register("name")}
+              {...register("fullname")}
               type="text"
               placeholder="Nome completo"
               className="px-2.5 py-4 border w-full rounded-xl font-semibold border-[#1A1551]"

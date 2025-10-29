@@ -1,17 +1,18 @@
 import { Images } from "@/config/RequestCertificadeImages";
+import { useLoginAuth } from "@/hooks/Auth/useLoginAuth";
 import { useFormValidation } from "@/hooks/useForm";
 import {
   LoginSchema,
   type LoginSchemaType,
 } from "@/schemas/Login";
-import { useFakeStore, type FakeStorePayload } from "@/stores/mockAuthStore";
+import { authStoreData } from "@/stores/useAuthStore";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const FormLogin = () => {
   const { errors, handleSubmit, register } = useFormValidation(LoginSchema);
-
-  const { setFakeLogin: setLoginFake, auth } = useFakeStore();
+  const {mutate, isPending, isSuccess, isError} = useLoginAuth()
+  const {auth} = authStoreData()
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -19,19 +20,19 @@ export const FormLogin = () => {
     navigation("/meus-certificados");
   }, [auth?._id!]);
 
-  const onSubmit = handleSubmit((dataForm: LoginSchemaType) => {
-    const auth: FakeStorePayload = {
-      _id: crypto.randomUUID(),
-      email: dataForm.email,
-      fullname: "João Paulo",
-      role: "user",
-    };
-
-    setLoginFake(auth);
+  const onSubmit = handleSubmit((formData: LoginSchemaType) => {
+    const auth = {
+      ...formData,
+      role : "user"
+    }
     console.log(auth);
+    mutate(auth)
   });
   return (
     <section className="px-2 py-8 space-y-8 w-full h-full bg-[#F2F2F9]">
+         {isPending && "Caregando"}
+      {isSuccess && "Dados Registrados"}
+      {isError && "Falha ao Cadastrar dados"}
       <figure className="max-w-[30rem] mx-auto">
         <div className="flex gap-1 justify-center">
           {Images.map(({ alt, src, id }) => (
