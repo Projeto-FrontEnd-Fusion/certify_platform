@@ -36,6 +36,8 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="meus-certificados" element={<MyCertificates />} />
             <Route path="download-certificado" element={<DownloadCertificate />} />
+            <Route path="meus-dados" element={<NotFound />} />
+             <Route path="validar-certificados" element={<NotFound />} />
           </Route>
         </Route>
 
