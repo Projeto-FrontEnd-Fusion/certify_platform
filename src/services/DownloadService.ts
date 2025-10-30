@@ -15,17 +15,22 @@ export class DownloadService {
     pdf.save(`${fileName}.pdf`);
   }
 
+  /* canvas.toBlob uses a callback and is asynchronous,
+     so we wrap it in a Promise to use await and handle errors properly */
   async generatePNG({ element, fileName }: IDownload) {
     if (!element) return;
     const canvas = await html2canvas(element, { scale: 4 });
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${fileName}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }, "image/png");
+    await new Promise<void>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) return reject(new Error());
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${fileName}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+        resolve();
+      }, "image/png");
+    });
   }
 }
