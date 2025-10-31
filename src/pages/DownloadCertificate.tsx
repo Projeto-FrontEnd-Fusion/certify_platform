@@ -1,6 +1,6 @@
 
+import { Certificate } from "@/components/Certificate";
 import { DownloadButton } from "@/components/DownloadButton";
-import { Certificade } from "@/components/Certificate";
 
 export const DownloadCertificate = () => {
 
@@ -16,7 +16,7 @@ export const DownloadCertificate = () => {
           reconhecimento.
         </p>
       </div>
-      <Certificade />
+      <Certificate />
 
       <div className="flex gap-20">
         <DownloadButton />
