@@ -1,28 +1,31 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { IDownload } from "@/types/Download";
 import { DownloadService } from "@/services/DownloadService";
 
 export const useDownload = () => {
-  const [loadingMethod, setLoadingMethod] = useState<"PNG" | "PDF" | null>();
-  const service = new DownloadService();
+  const [loadingMethods, setLoadingMethods] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const { current } = useRef(new DownloadService());
 
-  const handleDownload = async ({ element, fileName, method }: IDownload) => {
-    if (!element) return alert("Certificado não encontrado");
-    setLoadingMethod(method);
-
-    try {
-      if (method === "PDF") {
-        await service.generatePDF({ element, fileName, method });
-      } else {
-        await service.generatePNG({ element, fileName, method });
+  const handleDownload = useCallback(
+    async ({ element, fileName, method }: IDownload) => {
+      setLoadingMethods((prev) => ({ ...prev, [method]: true }));
+      try {
+        if (method === "PDF") {
+          await current.generatePDF({ element, fileName, method });
+        } else {
+          await current.generatePNG({ element, fileName, method });
+        }
+      } catch (error) {
+        console.error(`Erro ao gerar o arquivo ${method}`, error);
+        alert(`Falha ao gerar o arquivo ${method}`);
+      } finally {
+        setLoadingMethods((prev) => ({ ...prev, [method]: false }));
       }
-    } catch (error) {
-      console.error(`Erro ao gerar o arquivo ${method}`, error);
-      alert(`Falha ao gerar o arquivo ${method}`);
-    } finally {
-      setLoadingMethod(null);
-    }
-  };
+    },
+    [current]
+  );
 
-  return { handleDownload, loadingMethod };
+  return { handleDownload, loadingMethods };
 };
