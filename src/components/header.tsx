@@ -7,10 +7,10 @@ import { menuItems } from "@/config/Menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { smoothSlideDownVariant } from "@/config/Variants";
 import { Scroll } from "@/utils/Scroll";
-import { authStoreData } from "@/stores/useAuthStore";
+import { useAuthStoreData } from "@/stores/useAuthStore";
 
 export const Header = () => {
-  const { authLogout } = authStoreData();
+  const { authLogout } = useAuthStoreData();
   const [isOpen, setIsOpen] = useState(false);
   const Icon = isOpen ? IoCloseOutline : SlMenu;
   const { pathname } = useLocation();

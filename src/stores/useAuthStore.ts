@@ -16,7 +16,7 @@ interface authStoreProps {
   authLogout: () => void;
 }
 
-export const authStoreData = create<authStoreProps>()(
+export const useAuthStoreData = create<authStoreProps>()(
   persist(
     (set) => ({
       auth: null,

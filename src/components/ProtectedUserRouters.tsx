@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { authStoreData } from "@/stores/useAuthStore";
+import { useAuthStoreData } from "@/stores/useAuthStore";
 
 export interface ProtectedUserRouterProps {
   children: React.ReactNode;
 }
 
 export const ProtectedAuthRouter = ({ children }: ProtectedUserRouterProps) => {
-  const { auth } = authStoreData();
+  const { auth } = useAuthStoreData();
   const navigate = useNavigate();
 
   const authUser = auth?._id;

@@ -5,14 +5,14 @@ import {
   LoginSchema,
   type LoginSchemaType,
 } from "@/schemas/Login";
-import { authStoreData } from "@/stores/useAuthStore";
+import { useAuthStoreData } from "@/stores/useAuthStore";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const FormLogin = () => {
   const { errors, handleSubmit, register } = useFormValidation(LoginSchema);
   const {mutate, isPending, isSuccess, isError} = useLoginAuth()
-  const {auth} = authStoreData()
+  const {auth} = useAuthStoreData()
   const navigation = useNavigate();
 
   useEffect(() => {

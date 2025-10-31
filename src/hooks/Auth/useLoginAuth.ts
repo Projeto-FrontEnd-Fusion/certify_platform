@@ -2,10 +2,10 @@ import { type ApiAuthResponse, type AuthUserReponse, type SucessResponse } from 
 import { useMutation } from "@tanstack/react-query"
 import { authServiceInstance } from "@/api/implements"
 import type { LoginSchemaType } from "@/schemas/Login"
-import { authStoreData } from "@/stores/useAuthStore"
+import { useAuthStoreData } from "@/stores/useAuthStore"
 
 export const useLoginAuth = () => {
-  const { setAuthLogin } = authStoreData()
+  const { setAuthLogin } = useAuthStoreData()
   const signUpMutation = authServiceInstance 
 
   const { data, isSuccess, isPending, mutate, isError, error } = useMutation<ApiAuthResponse, Error, LoginSchemaType>({
