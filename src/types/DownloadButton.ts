@@ -1,6 +1,5 @@
-import type { ComponentProps, RefObject } from "react";
+import type { ComponentProps } from "react";
 
 export interface IDownloadButton extends ComponentProps<"button"> {
-  Reference: RefObject<HTMLDivElement | null>;
   fileName: string;
 }

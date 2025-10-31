@@ -1,9 +1,9 @@
-import { useRef } from "react";
+
 import { DownloadButton } from "@/components/DownloadButton";
 import { Certificade } from "@/components/Certificate";
 
 export const DownloadCertificate = () => {
-  const printRef = useRef<HTMLDivElement | null>(null);
+
 
   return (
     <section className="bg-[#F2F2F9] h-full font-inter flex flex-col items-center pt-13 gap-4">
@@ -16,11 +16,10 @@ export const DownloadCertificate = () => {
           reconhecimento.
         </p>
       </div>
+      <Certificade />
 
-      <Certificade printRef={printRef} />
-
-      <div className="flex gap-2">
-        <DownloadButton Reference={printRef} fileName="DevInsigths" />
+      <div className="flex gap-20">
+        <DownloadButton />
       </div>
     </section>
   );

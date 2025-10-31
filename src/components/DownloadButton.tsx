@@ -1,36 +1,30 @@
-import { useDownload } from "@/hooks/useDownload";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { LuDownload } from "react-icons/lu";
-import type { IDownloadButton } from "@/types/DownloadButton";
+import { DummyCertificade } from "./DummyCertificate";
+import { Download } from "@/utils/Download";
 
-export const DownloadButton = ({
-  Reference,
-  fileName,
-  ...props
-}: IDownloadButton) => {
-  const { loadingMethod, handleDownload } = useDownload();
+export const DownloadButton = () => {
+  const { activeMethod, loadingMethods, printRef, setActiveMethod } = Download({
+    fileName: "certificado_dev_insights",
+  });
+
   return (
     <>
-      {(["PDF", "PNG"] as const).map((methods) => (
+      {activeMethod && <DummyCertificade printRef={printRef} />}
+      {(["PDF", "PNG"] as const).map((method) => (
         <button
-          {...props}
-          key={methods}
+          key={method}
           type="button"
-          disabled={loadingMethod === methods}
-          onClick={() =>
-            handleDownload({
-              element: Reference.current,
-              fileName: fileName,
-              method: methods,
-            })
-          }
-          className="flex items-center gap-2 py-2 bg-[#3925DD] w-26 justify-center text-white text-xl rounded cursor-pointer duration-300 transition-transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
+          title={`Fazer download do certificado em ${method}`}
+          disabled={loadingMethods[method]}
+          onClick={() => setActiveMethod(method)}
+          className="flex items-center gap-2 py-2 bg-[#3925DD] w-26 justify-center text-white text-xl rounded cursor-pointer duration-300 transition-transform disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105"
         >
-          {loadingMethod === methods ? (
+          {loadingMethods[method] ? (
             <AiOutlineLoading3Quarters size={20} className="animate-spin" />
           ) : (
             <>
-              {methods} <LuDownload size={20} />
+              {method} <LuDownload size={20} />
             </>
           )}
         </button>
