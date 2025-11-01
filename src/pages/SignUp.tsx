@@ -6,29 +6,28 @@ import { useAuthSignUp } from "@/hooks/Auth/useAuthSignUp";
 
 export const SignUpForm = () => {
   const { errors, handleSubmit, register } = useFormValidation(SignUpSchema);
-  const {mutate, isPending, isSuccess, isError} = useAuthSignUp()
+  const { mutate, isPending, isSuccess, isError } = useAuthSignUp();
 
   const onSubmit = (formData: SignUpSchemaType) => {
     console.log("Formulário submetido", formData);
     const authRequest = {
       ...formData,
-      role : "user"
-
-    }
-    mutate(authRequest)
-    
+      role: "user",
+    };
+    mutate(authRequest);
   };
   return (
-    <section className="px-2 py-8 space-y-8  w-full h-full bg-[#F2F2F9]">
+    <section className="px-2 py-16 space-y-8  w-full h-full bg-[#F2F2F9] lg:flex lg:items-center">
       {isPending && "Caregando"}
       {isSuccess && "Dados Registrados"}
       {isError && "Falha ao Cadastrar dados"}
 
-      <figure className="max-w-[30rem] mx-auto">
-        <div className="flex gap-1 justify-center">
+
+      <figure className="max-w-[32rem] lg:w-full mx-auto lg:order-2  lg:mx-0 lg:max-w-[50%] xl:flex-1">
+        <div className="flex gap-2 justify-center w-full">
           {Images.map(({ alt, src, id }) => (
             <img
-              className="w-[32%] aspect-square rounded-2xl object-cover "
+              className="w-full max-w-[32%] aspect-square rounded-2xl object-cover lg:h-[28.75rem] lg:aspect-auto 2xl:h-[32rem]"
               key={id}
               src={src}
               alt={alt}
@@ -39,19 +38,21 @@ export const SignUpForm = () => {
           Pessoas recebendo certificados
         </figcaption>
       </figure>
-      <div className="space-y-4 font-inter  max-w-[30rem] mx-auto">
-        <h2 className="text-xl font-semibold text-center text-[#1A1551]">
+
+      <div className="space-y-8 lg:flex lg:flex-col   lg:px-10 xl:flex-1 ">
+      <div className="space-y-4 font-inter  max-w-[32rem] mx-auto">
+        <h2 className="text-xl font-semibold text-justify sm:text-justify sm:text-2xl text-[#1A1551] lg:text-start lg:text-3xl">
           Crie sua conta na CertiFy e tenha acesso a todos os seus certificados
           em um só lugar.
         </h2>
-        <p className="text-center text-[#1A1551]">
+        <p className="text-justify sm:text-justify sm:text-lg text-[#1A1551] lg:text-start lg:text-xl">
           É rápido, gratuito e garante acesso fácil aos seus certificados
           digitais.
         </p>
       </div>
 
       <form
-        className="font-inter space-y-4  max-w-[30rem] mx-auto"
+        className="font-inter space-y-4 max-w-[32rem] mx-auto w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className="space-y-4">
@@ -104,11 +105,15 @@ export const SignUpForm = () => {
           Criar conta
         </button>
       </form>
-      <div className="font-inter text-xs w-fit mx-auto text-center">
+      <div className="font-inter text-xs w-fit mx-auto text-center flex flex-col lg:text-sm">
         <p>Já tem uma conta?</p>
-        <Link to={"/login"} className="underline">
+        <Link
+          to={"/login"}
+          className="underline duration-300 will-change-transform transition hover:scale-[1.02] active:scale-95"
+        >
           Faça login
         </Link>
+      </div>
       </div>
     </section>
   );
