@@ -6,8 +6,9 @@ export const useFormValidation = (schema: ZodTypeAny) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
-  return { register, handleSubmit, errors };
+  return { register, handleSubmit, errors, reset };
 };

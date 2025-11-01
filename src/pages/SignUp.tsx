@@ -1,12 +1,43 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Images } from "@/config/RequestCertificadeImages";
 import { useFormValidation } from "@/hooks/useForm";
 import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
 import { useAuthSignUp } from "@/hooks/Auth/useAuthSignUp";
+import { TOAST_STYLES } from "./ToastStyleContainer";
+import { useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import { BiLoader } from "react-icons/bi";
+
 
 export const SignUpForm = () => {
-  const { errors, handleSubmit, register } = useFormValidation(SignUpSchema);
+  const { errors, handleSubmit, register, reset } = useFormValidation(SignUpSchema);
   const { mutate, isPending, isSuccess, isError } = useAuthSignUp();
+  const nagitaion = useNavigate();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Falha ao Cadastrar, tente novamente mais tarde', {
+        position: "top-center",
+        autoClose: 5000,
+        ...TOAST_STYLES.error
+      });
+    }
+  
+    if (isSuccess) {
+      toast.success('Cadastro realizado com sucesso!', {
+        position: "top-center",
+        autoClose: 3000,
+        ...TOAST_STYLES.success
+      });
+     
+      reset();
+
+      setTimeout(() => {
+        nagitaion("/login");
+      }, 2000);
+
+    }
+  }, [isError, isSuccess]);
 
   const onSubmit = (formData: SignUpSchemaType) => {
     console.log("Formulário submetido", formData);
@@ -18,11 +49,7 @@ export const SignUpForm = () => {
   };
   return (
     <section className="px-2 py-16 space-y-8  w-full h-full bg-[#F2F2F9] lg:flex lg:items-center">
-      {isPending && "Caregando"}
-      {isSuccess && "Dados Registrados"}
-      {isError && "Falha ao Cadastrar dados"}
-
-
+      <ToastContainer />
       <figure className="max-w-[32rem] lg:w-full mx-auto lg:order-2  lg:mx-0 lg:max-w-[50%] xl:flex-1">
         <div className="flex gap-2 justify-center w-full">
           {Images.map(({ alt, src, id }) => (
@@ -102,7 +129,8 @@ export const SignUpForm = () => {
                 duration-300 transition active:scale-90"
           type="submit"
         >
-          Criar conta
+                   {isPending ? <span className="flex justify-center"><BiLoader size={32} className="animate-spin" /></span> :  "Criar Conta" }
+         
         </button>
       </form>
       <div className="font-inter text-xs w-fit mx-auto text-center flex flex-col lg:text-sm">

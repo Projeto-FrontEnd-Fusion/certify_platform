@@ -7,7 +7,11 @@ import {
 } from "@/schemas/Login";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { useEffect } from "react";
+import { BiLoader } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import { TOAST_STYLES } from "./ToastStyleContainer";
+
 
 export const FormLogin = () => {
   const { errors, handleSubmit, register } = useFormValidation(LoginSchema);
@@ -20,6 +24,25 @@ export const FormLogin = () => {
     navigation("/meus-certificados");
   }, [auth?._id!]);
 
+
+useEffect(() => {
+  if (isError) {
+    toast.error('Credenciais Inválidas', {
+      position: "top-center",
+      autoClose: 5000,
+      ...TOAST_STYLES.error
+    });
+  }
+
+  if (isSuccess) {
+    toast.success('Login realizado com sucesso!', {
+      position: "top-center",
+      autoClose: 3000,
+      ...TOAST_STYLES.success
+    });
+  }
+}, [isError, isSuccess]);
+
   const onSubmit = handleSubmit((formData: LoginSchemaType) => {
     const auth = {
       ...formData,
@@ -30,9 +53,9 @@ export const FormLogin = () => {
   });
   return (
     <section className="px-2 py-16 w-full max-lg:space-y-8 h-full bg-[#F2F2F9] lg:flex lg:items-center lg:py-0 lg:px-0">
-         {isPending && "Caregando"}
-      {isSuccess && "Dados Registrados"}
-      {isError && "Falha ao Cadastrar dados"}
+      
+      <ToastContainer />
+
       <figure className="max-w-[32rem] mx-auto lg:order-2 lg:max-w-full lg:mx-0 lg:h-full lg:flex-1">
         <div className="flex max-lg:gap-2 max-lg:justify-center lg:h-full">
           {Images.map(({ alt, src, id }) => (
@@ -92,10 +115,11 @@ export const FormLogin = () => {
         <button
           className="py-4 bg-[#3925DD] text-white font-semibold cursor-pointer w-full rounded-xl
         hover:shadow-lg hover:shadow-[#3a25dd79]
-        duration-300 transition active:scale-90 sm:text-lg lg:text-xl"
+        duration-300 transition active:scale-90 sm:text-lg lg:text-xl flex-justify-center"
           type="submit"
         >
-          Login
+          {isPending ? <span className="flex justify-center"><BiLoader size={32} className="animate-spin" /></span> :  "Login" }
+         
         </button>
       </form>
       <div className="font-inter text-xs w-fit mx-auto text-center flex flex-col lg:text-sm">
