@@ -2,23 +2,35 @@ import CheckedIcon from "@/assets/Checked.svg";
 import { LuCalendarDays, LuDownload } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import NotFound from "@/assets/NotFound.svg";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { AcessKey } from "@/components/AcessKey";
+import { ToastContainer } from "react-toastify";
 
 export const MyCertificates = () => {
   const SimulateCertify = 2;
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
   return (
     <section className="font-inter flex items-center pt-20 flex-col h-full bg-[#F2F2F9] gap-8 px-4">
+      <ToastContainer />
       {SimulateCertify >= 1 ? (
         <>
+          {isVisible && <AcessKey onClose={() => setIsVisible(!isVisible)} />}
           <h2 className="text-xl text-[#1A1551] flex flex-col max-w-40  text-center font-semibold  sm:max-w-fit gap-2">
             <span>🎉</span> Certificados encontrados!
           </h2>
           <table className="w-full max-w-2xl min-[900px]:max-w-4xl min-[1120px]:max-w-[68rem] xl:max-w-[78rem] 2xl:max-w-[90rem]">
             <thead className="hidden min-[900px]:flex bg-[#3925DD] rounded-t-lg">
               <tr className="flex  w-full py-4 px-14  items-center text-[#FFFFFF] text-lg ">
-                <th className="w-58 flex items-start min-[1120px]:w-74 xl:w-74 xl:pl-18 2xl:w-100">Emissor</th>
-                <th className="w-58 flex items-start min-[1120px]:w-74 xl:w-74 xl:pl-18 2xl:w-100">Evento</th>
-                <th className="w-58 flex items-start min-[1120px]:w-70 xl:w-100 xl:pl-18 2xl:w-100">Data</th>
+                <th className="w-58 flex items-start min-[1120px]:w-74 xl:w-74 xl:pl-18 2xl:w-100">
+                  Emissor
+                </th>
+                <th className="w-58 flex items-start min-[1120px]:w-74 xl:w-74 xl:pl-18 2xl:w-100">
+                  Evento
+                </th>
+                <th className="w-58 flex items-start min-[1120px]:w-70 xl:w-100 xl:pl-18 2xl:w-100">
+                  Data
+                </th>
                 <th className="flex items-start">Ações</th>
               </tr>
             </thead>
@@ -43,10 +55,13 @@ export const MyCertificates = () => {
                 </td>
 
                 <td className="flex gap-2 w-full flex-wrap sm:gap-4 min-[900px]:w-fit min-[900px]:gap-6">
-                  <Link to={'/download-certificado'} className="flex flex-1 justify-center items-center text-[#3925DD] text-sm  w-full py-2 border-2 border-[#3925DD] rounded-lg gap-2 cursor-pointer font-semibold duration-300 transtion  hover:shadow-[0_0_20px_0.5px_rgba(57,37,221,0.5)]  active:scale-95 min-[900px]:text-xs min-[900px]:py-1  min-[900px]:flex-0 min-[900px]:border-0 min-[900px]:hover:text-[#190e66] min-[900px]:hover:shadow-none xl:text-base xl:items-center">
+                  <button
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="flex flex-1 justify-center items-center text-[#3925DD] text-sm  w-full py-2 border-2 border-[#3925DD] rounded-lg gap-2 cursor-pointer font-semibold duration-300 transtion  hover:shadow-[0_0_20px_0.5px_rgba(57,37,221,0.5)]  active:scale-95 min-[900px]:text-xs min-[900px]:py-1  min-[900px]:flex-0 min-[900px]:border-0 min-[900px]:hover:text-[#190e66] min-[900px]:hover:shadow-none xl:text-base xl:items-center"
+                  >
                     <LuDownload className="text-xl min-[900px]:text-lg" />
                     Baixar
-                  </Link>
+                  </button>
                   <button className="flex flex-1 justify-center items-center text-[#3925DD] text-sm w-full py-2 border-2 border-[#3925DD] rounded-lg gap-1 cursor-pointer font-semibold duration-300 hover:shadow-[0_0_20px_0.5px_rgba(57,37,221,0.5)] active:scale-95 min-[900px]:text-xs min-[900px]:py-1  min-[900px]:flex-0 min-[900px]:border-0 min-[900px]:hover:text-[#190e66] min-[900px]:hover:shadow-none xl:text-base xl:items-center">
                     <LuEye className="text-xl min-[900px]:text-lg" />
                     Visualizar
