@@ -1,6 +1,9 @@
+import { useFakeStore } from "@/stores/mockAuthStore";
 import { useRef, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { IoClose } from "react-icons/io5";
 
-export const AcessKey = () => {
+export const AcessKey = ({ onClose }: { onClose: () => void }) => {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const valuesRef = useRef<string[]>(["", "", "", "", ""]);
 
@@ -27,11 +30,26 @@ export const AcessKey = () => {
       const prevIndex = index - 1;
       inputRefs.current[prevIndex]?.focus();
     }
+
+    if (event.key === "Enter" || event.key === "NumpadEnter") {
+      event.preventDefault();
+      handleConfirm();
+    }
   };
+
+  const handleConfirm = () => {
+    setFakeAccess({
+      acessKey: valuesRef.current.join(""),
+    });
+  };
+
+  const { fakeAccess, setFakeAccess } = useFakeStore();
+  if (fakeAccess.status === "authorized")
+    return <Navigate replace to="/download-certificado" />;
 
   return (
     <div className="absolute bg-[#00000099] h-full flex w-full left-0 z-99 top-0 backdrop-blur-xs items-center justify-center px-4 font-inter">
-      <div className="bg-white px-7 py-10.5 flex flex-col gap-6 rounded-2xl w-full max-w-88 sm:max-w-[30rem]">
+      <div className="bg-white px-7 py-10.5 flex flex-col gap-6 rounded-2xl w-full max-w-88 sm:max-w-[30rem] relative">
         <p className="max-w-62 font-semibold text-center mx-auto text-black/60 text-xl sm:max-w-80">
           Insira a palavra-passe que foi fornecida durante o evento
         </p>
@@ -53,11 +71,16 @@ export const AcessKey = () => {
           ))}
         </div>
         <button
-          onClick={() => console.log(valuesRef.current.join(""))}
-          className="w-full text-center py-2.5 sm:py-4 bg-[#3925DD] rounded-lg text-[#D9D9D9] font-semibold sm:text-xl cursor-pointer"
+          onClick={handleConfirm}
+          className="w-full text-center py-2.5 sm:py-4 bg-[#3925DD] rounded-lg text-[#D9D9D9] font-semibold sm:text-xl cursor-pointer active:scale-95 duration-300 transition"
         >
           Confirmar
         </button>
+        <IoClose
+          size={30}
+          className="absolute top-4 right-5 text-red-600 cursor-pointer"
+          onClick={onClose}
+        />
       </div>
     </div>
   );
