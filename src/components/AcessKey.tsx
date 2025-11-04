@@ -1,50 +1,25 @@
-import { useFakeStore } from "@/stores/mockAuthStore";
-import { useRef, useEffect } from "react";
+import { useCertificateStoreData } from "@/stores/useCertificateStore";
+import { useRef, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
+import { useAuthStoreData } from "@/stores/useAuthStore";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AccessKeyHandler } from "@/utils/AcessKey";
 
 export const AcessKey = ({ onClose }: { onClose: () => void }) => {
+  const { Access, setAccess } = useCertificateStoreData();
+  const [IsLoading, setIsLoading] = useState<boolean>(false);
+  const { auth } = useAuthStoreData();
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const valuesRef = useRef<string[]>(["", "", "", "", ""]);
-
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
 
-  const handleInputChange = (index: number, inputValue: string) => {
-    const sanitizedValue = inputValue.replace(/[^A-Za-z0-9]/g, "");
+  const { handleConfirm, handleInputChange, handleKeyDown } =
+    new AccessKeyHandler();
 
-    valuesRef.current[index] = sanitizedValue;
-    inputRefs.current[index]!.value = sanitizedValue;
-
-    if (sanitizedValue && index < inputRefs.current.length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    index: number,
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Backspace" && !valuesRef.current[index] && index > 0) {
-      const prevIndex = index - 1;
-      inputRefs.current[prevIndex]?.focus();
-    }
-
-    if (event.key === "Enter" || event.key === "NumpadEnter") {
-      event.preventDefault();
-      handleConfirm();
-    }
-  };
-
-  const handleConfirm = () => {
-    setFakeAccess({
-      acessKey: valuesRef.current.join(""),
-    });
-  };
-
-  const { fakeAccess, setFakeAccess } = useFakeStore();
-  if (fakeAccess.status === "authorized")
+  if (Access.status === "available")
     return <Navigate replace to="/download-certificado" />;
 
   return (
@@ -64,17 +39,36 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
                 inputRefs.current[index] = elementIndex;
               }}
               defaultValue={valuesRef.current[index]}
-              onChange={(e) => handleInputChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
+              onChange={(e) =>
+                handleInputChange(index, e.target.value, inputRefs, valuesRef)
+              }
+              onKeyDown={(e) => handleKeyDown(index, e, valuesRef, inputRefs)}
               className="border w-12.5 h-14.5 border-[#3925DD] rounded-lg text-semibold text-[#3925DD] text-center sm:w-17.5 sm:h-20 sm:text-lg  max-[370px]:w-9.5 max-[370px]:h-11.5 max-[370px]:text-sm "
             />
           ))}
         </div>
         <button
-          onClick={handleConfirm}
-          className="w-full text-center py-2.5 sm:py-4 bg-[#3925DD] rounded-lg text-[#D9D9D9] font-semibold sm:text-xl cursor-pointer active:scale-95 duration-300 transition"
+          disabled={IsLoading}
+          onClick={() =>
+            handleConfirm({
+              auth: {
+                _id: auth?._id,
+                email: auth?.email,
+                fullname: auth?.fullname,
+              },
+              inputRefs: inputRefs,
+              setAccess: setAccess,
+              setIsLoading: setIsLoading,
+              valuesRef: valuesRef,
+            })
+          }
+          className="w-full text-center py-2.5 sm:py-4 bg-[#3925DD] rounded-lg text-[#D9D9D9] font-semibold sm:text-xl cursor-pointer active:scale-95 duration-300 transition flex items-center justify-center disabled:active:scale-100"
         >
-          Confirmar
+          {IsLoading ? (
+            <AiOutlineLoading3Quarters size={28} className="animate-spin" />
+          ) : (
+            "Confirmar"
+          )}
         </button>
         <IoClose
           size={30}
