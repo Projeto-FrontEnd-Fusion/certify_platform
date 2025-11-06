@@ -2,7 +2,7 @@ import { BiError } from "react-icons/bi";
 
 export const NotFound = () => {
   return (
- <section className="w-full h-screen flex flex-col justify-center items-center text-center">
+ <section className="w-full h-full flex flex-col justify-center items-center text-center">
       <div className="flex items-center gap-2">
         <BiError className="text-[4rem] text-zinc-700" />
       </div>
