@@ -1,18 +1,16 @@
-import type { KeyboardEvent, RefObject, Dispatch, SetStateAction } from "react";
-import type { CertificateResponse, ApiResponse } from "@/schemas/CertificateResponse";
-import { acessServiceInstance } from "@/api/implements";
+import type { KeyboardEvent, RefObject } from "react";
 
-interface HandleParams {
-  inputRefs: RefObject<(HTMLInputElement | null)[]>;
-  valuesRef: RefObject<string[]>;
-  auth: {
-    fullname?: string | null;
-    email?: string | null;
-    _id?: string;
-  };
-  setAccess: (data: CertificateResponse) => void;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-}
+// interface HandleParams {
+//   inputRefs: RefObject<(HTMLInputElement | null)[]>;
+//   valuesRef: RefObject<string[]>;
+//   auth: {
+//     fullname?: string | null;
+//     email?: string | null;
+//     _id?: string;
+//   };
+//   setAccess: (data: CertificateInDb) => void;
+//   setIsLoading: Dispatch<SetStateAction<boolean>>;
+// }
 
 export class AccessKeyHandler {
   handleInputChange = (
@@ -43,36 +41,38 @@ export class AccessKeyHandler {
     }
   };
 
-  handleConfirm = async ({
-    auth,
-    setAccess,
-    setIsLoading,
-    valuesRef,
-  }: HandleParams): Promise<void> => {
-    if (!auth?.fullname || !auth?.email || !auth?._id) {
-      console.warn("Dados do usuário incompletos!");
-      return;
-    }
+  // handleConfirm = async ({
+  //   auth,
+  //   setAccess,
+  //   setIsLoading,
+  //   valuesRef,
+  // }: HandleParams): Promise<void> => {
+  //   if (!auth?.fullname || !auth?.email || !auth?._id) {
+  //     console.warn("Dados do usuário incompletos!");
+  //     return;
+  //   }
 
-    setIsLoading(true);
-    try {
-      const response: ApiResponse = await acessServiceInstance.Acess(
-        {
-          access_key: valuesRef.current?.join(""),
-          email: auth.email,
-          event_id: "evt_987654321",
-          fullname: auth.fullname,
-          status: "pending",
-        },
-        auth._id
-      );
-      console.log(response.data.certificate);
-      setAccess(response.data.certificate);
-    } catch (error) {
-      console.error(error);
-      alert("Ocorreu um erro ao validar a chave.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   setIsLoading(true);
+  //   try {
+  //     const response: ApiAuthResponse = await certificateServiceInstance.Acess(
+  //       {
+  //         access_key: valuesRef.current?.join(""),
+  //         email: auth.email,
+  //         event_id: "evt_987654321",
+  //         fullname: auth.fullname,
+  //         status: "pending",
+  //       },
+  //       auth._id
+  //     );
+  //     console.log(response.data.certificate);
+  //     setAccess(response.data.certificate);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Ocorreu um erro ao validar a chave.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
 }
