@@ -1,4 +1,5 @@
 import type { LoginSchemaType } from "@/schemas/Login"
+import type { CertificateInDb } from "./Certificate/@types"
 
 
 export interface AuthUserReponse extends Omit<LoginSchemaType, "password">{
@@ -25,4 +26,11 @@ export interface ErrorResponse extends BaseResponse {
 }
 
 
-export type ApiAuthResponse = SucessResponse | ErrorResponse
+export interface CertificateResponse extends BaseResponse{
+  data : {
+    certificate : CertificateInDb
+  }
+}
+
+
+export type ApiAuthResponse = SucessResponse | ErrorResponse | CertificateResponse
