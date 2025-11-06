@@ -18,7 +18,7 @@ export const DownloadButton = () => {
           title={`Fazer download do certificado em ${method}`}
           disabled={loadingMethods[method]}
           onClick={() => setActiveMethod(method)}
-          className="flex items-center gap-2 py-2 bg-[#3925DD] w-26 justify-center text-white text-xl rounded cursor-pointer duration-300 transition-transform disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105"
+          className="flex items-center gap-2 py-2 bg-[#3925DD] w-26 justify-center text-white text-xl rounded cursor-pointer duration-300 transition-transform md:w-48 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105"
         >
           {loadingMethods[method] ? (
             <AiOutlineLoading3Quarters size={20} className="animate-spin" />
