@@ -2,20 +2,17 @@ import CheckedIcon from "@/assets/Checked.svg";
 import { LuCalendarDays, LuDownload } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import NotFound from "@/assets/NotFound.svg";
-import { useState } from "react";
-import { AcessKey } from "@/components/AcessKey";
 import { ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 
 export const MyCertificates = () => {
   const SimulateCertify = 2;
-  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   return (
     <section className="font-inter flex items-center pt-20 flex-col h-full bg-[#F2F2F9] gap-8 px-4">
       <ToastContainer />
       {SimulateCertify >= 1 ? (
         <>
-          {isVisible && <AcessKey onClose={() => setIsVisible(!isVisible)} />}
           <h2 className="text-xl text-[#1A1551] flex flex-col max-w-40  text-center font-semibold  sm:max-w-fit gap-2">
             <span>🎉</span> Certificados encontrados!
           </h2>
@@ -55,13 +52,13 @@ export const MyCertificates = () => {
                 </td>
 
                 <td className="flex gap-2 w-full flex-wrap sm:gap-4 min-[900px]:w-fit min-[900px]:gap-6">
-                  <button
-                    onClick={() => setIsVisible(!isVisible)}
+                  <Link
+                    to={"/download-certificado"}
                     className="flex flex-1 justify-center items-center text-[#3925DD] text-sm  w-full py-2 border-2 border-[#3925DD] rounded-lg gap-2 cursor-pointer font-semibold duration-300 transtion  hover:shadow-[0_0_20px_0.5px_rgba(57,37,221,0.5)]  active:scale-95 min-[900px]:text-xs min-[900px]:py-1  min-[900px]:flex-0 min-[900px]:border-0 min-[900px]:hover:text-[#190e66] min-[900px]:hover:shadow-none xl:text-base xl:items-center"
                   >
                     <LuDownload className="text-xl min-[900px]:text-lg" />
                     Baixar
-                  </button>
+                  </Link>
                   <button className="flex flex-1 justify-center items-center text-[#3925DD] text-sm w-full py-2 border-2 border-[#3925DD] rounded-lg gap-1 cursor-pointer font-semibold duration-300 hover:shadow-[0_0_20px_0.5px_rgba(57,37,221,0.5)] active:scale-95 min-[900px]:text-xs min-[900px]:py-1  min-[900px]:flex-0 min-[900px]:border-0 min-[900px]:hover:text-[#190e66] min-[900px]:hover:shadow-none xl:text-base xl:items-center">
                     <LuEye className="text-xl min-[900px]:text-lg" />
                     Visualizar

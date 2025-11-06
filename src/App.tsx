@@ -6,6 +6,7 @@ import { AuthProtectedLayout } from "./layouts/AuthProtectedLayout";
 import { NotFound } from "./pages/Notfound";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { DownloadCertificate } from "./pages/DownloadCertificate";
+import { ProtecteCertificateRouter } from "./components/ProtectedCertificate";
 
 const Login = lazy(() =>
   import("./pages/Login").then((m) => ({
@@ -35,11 +36,17 @@ function App() {
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
             <Route path="meus-certificados" element={<MyCertificates />} />
-            <Route path="download-certificado" element={<DownloadCertificate />} />
+            <Route path="download-certificado" element={
+              <ProtecteCertificateRouter>
+                <DownloadCertificate />
+              </ProtecteCertificateRouter>
+              
+              } />
             <Route path="meus-dados" element={<NotFound />} />
              <Route path="validar-certificados" element={<NotFound />} />
           </Route>
         </Route>
+        
 
         <Route path="*" element={<NotFound />} />
       </Routes>

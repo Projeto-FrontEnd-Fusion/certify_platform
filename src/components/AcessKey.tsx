@@ -1,14 +1,14 @@
-import { useCertificateStoreData } from "@/stores/useCertificateStore";
-import { useRef, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { AccessKeyHandler } from "@/utils/AcessKey";
+import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
+import type { CertificateRequest } from "@/api/Certificate/CertificateService";
+import { useNavigate } from "react-router-dom";
+
 
 export const AcessKey = ({ onClose }: { onClose: () => void }) => {
-  const { Access, setAccess } = useCertificateStoreData();
-  const [IsLoading, setIsLoading] = useState<boolean>(false);
   const { auth } = useAuthStoreData();
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const valuesRef = useRef<string[]>(["", "", "", "", ""]);
@@ -16,11 +16,32 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
     inputRefs.current[0]?.focus();
   }, []);
 
-  const { handleConfirm, handleInputChange, handleKeyDown } =
+
+  const navigation = useNavigate()
+
+  
+
+  const { handleInputChange, handleKeyDown } =
     new AccessKeyHandler();
 
-  if (Access.status === "available")
-    return <Navigate replace to="/download-certificado" />;
+  const {mutate, isPending} = useCreateCertificate()
+
+  const handlerSetCertificate = () => {
+
+    const user_id = auth?._id
+
+    const newCertificate: CertificateRequest = {
+  fullname: auth?.fullname as string,
+  access_key: valuesRef.current.join(""),
+  event_id: "1",
+  status: "available",
+  email: auth?.email as string,
+    } 
+
+     mutate({userId : user_id as string, certificate_data : newCertificate}, {
+      onSuccess : () => navigation("/download-certificado")
+     })
+  } 
 
   return (
     <div className="absolute bg-[#00000099] h-full flex w-full left-0 z-99 top-0 backdrop-blur-xs items-center justify-center px-4 font-inter">
@@ -48,23 +69,12 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
           ))}
         </div>
         <button
-          disabled={IsLoading}
-          onClick={() =>
-            handleConfirm({
-              auth: {
-                _id: auth?._id,
-                email: auth?.email,
-                fullname: auth?.fullname,
-              },
-              inputRefs: inputRefs,
-              setAccess: setAccess,
-              setIsLoading: setIsLoading,
-              valuesRef: valuesRef,
-            })
+          disabled={isPending}
+          onClick={() =>handlerSetCertificate()
           }
           className="w-full text-center py-2.5 sm:py-4 bg-[#3925DD] rounded-lg text-[#D9D9D9] font-semibold sm:text-xl cursor-pointer active:scale-95 duration-300 transition flex items-center justify-center disabled:active:scale-100"
         >
-          {IsLoading ? (
+          {isPending ? (
             <AiOutlineLoading3Quarters size={28} className="animate-spin" />
           ) : (
             "Confirmar"

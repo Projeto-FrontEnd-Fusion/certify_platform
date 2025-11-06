@@ -1,13 +1,8 @@
 import { Certificate } from "@/components/Certificate";
 import { DownloadButton } from "@/components/DownloadButton";
-import { useCertificateStoreData } from "@/stores/useCertificateStore";
-import { Navigate } from "react-router-dom";
+
 
 export const DownloadCertificate = () => {
-  const { Access } = useCertificateStoreData();
-
-  if (Access.status === "pending")
-    return <Navigate replace to={"/meus-certificados"} />;
   return (
     <section className="bg-[#F2F2F9] h-full font-inter flex flex-col items-center pt-13 gap-4">
       <div className="space-y-2 text-center">
