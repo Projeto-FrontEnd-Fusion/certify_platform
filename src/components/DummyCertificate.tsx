@@ -12,9 +12,11 @@ export const DummyCertificade = ({
   printRef: RefObject<HTMLDivElement | null>;
 }) => {
   const { auth } = useAuthStoreData();
-  const { Access } = useCertificateStoreData();
-  const decriptionSplit =
-    Access.description?.split(Access.event_name || "") || [];
+  const { certificate } = useCertificateStoreData();
+
+   const decriptionSplit =
+     certificate?.description.split(certificate?.event_name ?? "") || [];
+
   return (
     <>
       <div
@@ -34,16 +36,16 @@ export const DummyCertificade = ({
         </h2>
         {/* Limite de 40 caracteres */}
         <p className="text-[26px] text-white z-10 uppercase">
-          a {Access.institution_name} que:
+          a {certificate?.institution_name} certifica que:
         </p>
         {/* Limite de 40 caracteres */}
         <h3 className="text-6xl text-[#32E399] mt-3.5 mb-8 z-10">
-          {Access.participant_name || auth?.fullname}
+          {certificate?.participant_name || auth?.fullname}
         </h3>
         {/* Limite de 500 caracteres */}
         <p className="font-extralight text-white text-[26px] -tracking-wider mb-4 z-10">
           {decriptionSplit[0]}
-          <strong className="font-bold">{Access.event_name}</strong>
+          <strong className="font-bold">{certificate?.event_name}</strong>
           {decriptionSplit[1]}
         </p>
 
@@ -52,7 +54,7 @@ export const DummyCertificade = ({
             <LuHourglass color="#32E399" strokeWidth={1} size={56} />
             <div className="flex flex-col">
               <span className="font-light">Carga Horária</span>
-              <span className="font-bold">{Access.workload || 0} Horas</span>
+              <span className="font-bold">{certificate?.workload || 0} Horas</span>
             </div>
           </li>
           <li className="flex text-2xl text-white gap-2">
@@ -60,7 +62,7 @@ export const DummyCertificade = ({
             <div className="flex flex-col">
               <span className="font-light">Início</span>
               <span className="font-bold">
-                {formatDate(Access.event_start)}
+                {formatDate(certificate?.event_start)}
               </span>
             </div>
           </li>
@@ -68,7 +70,7 @@ export const DummyCertificade = ({
             <LuCalendarCheck2 color="#32E399" strokeWidth={1} size={56} />
             <div className="flex flex-col">
               <span className="font-light">Conclusão</span>
-              <span className="font-bold">{formatDate(Access.event_end)}</span>
+              <span className="font-bold">{formatDate(certificate?.event_end)}</span>
             </div>
           </li>
         </ul>
