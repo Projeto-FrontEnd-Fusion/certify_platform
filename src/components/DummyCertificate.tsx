@@ -32,15 +32,12 @@ export const DummyCertificade = ({
         <h2 className="text-8xl text-[#F79021] font-judson mb-12 z-10">
           Certificado
         </h2>
-        {/* Limite de 40 caracteres */}
         <p className="text-[26px] text-white z-10 uppercase">
           a {Access.institution_name} que:
         </p>
-        {/* Limite de 40 caracteres */}
         <h3 className="text-6xl text-[#32E399] mt-3.5 mb-8 z-10">
           {Access.participant_name || auth?.fullname}
         </h3>
-        {/* Limite de 500 caracteres */}
         <p className="font-extralight text-white text-[26px] -tracking-wider mb-4 z-10">
           {decriptionSplit[0]}
           <strong className="font-bold">{Access.event_name}</strong>
