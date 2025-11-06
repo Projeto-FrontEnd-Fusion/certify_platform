@@ -105,7 +105,7 @@ export const Header = () => {
                 ${pathname !== path && "group"} xl:text-lg`}
                   onClick={() => handleClick(label)}
                 >
-                  <span className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-[1px] after:bg-[#1A1551] after:w-full after:origin-left after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:rounded-full will-change-transform">
+                  <span className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:bg-[#1A1551] after:w-full after:origin-left after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:rounded-full will-change-transform">
                     {label}
                   </span>
                 </Link>
