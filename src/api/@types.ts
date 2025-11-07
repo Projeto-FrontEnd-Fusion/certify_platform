@@ -1,12 +1,14 @@
 import type { LoginSchemaType } from "@/schemas/Login"
 import type { CertificateInDb } from "./Certificate/@types"
 
+export type status = "pending" | "available" | "expired";
 
 export interface AuthUserReponse extends Omit<LoginSchemaType, "password">{
 _id : string,
 role : "user" | "admin",
 created_at : Date,
-updated_at : Date
+updated_at : Date,
+status : status
 }
 
 export interface BaseResponse {
