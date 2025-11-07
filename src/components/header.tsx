@@ -8,9 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { smoothSlideDownVariant } from "@/config/Variants";
 import { Scroll } from "@/utils/Scroll";
 import { useAuthStoreData } from "@/stores/useAuthStore";
+import {useCertificateStoreData} from "@/stores/useCertificateStore"
 
 export const Header = () => {
-  const { authLogout } = useAuthStoreData();
+  const { authLogout, auth } = useAuthStoreData();
+  const {deleteCertificate} = useCertificateStoreData() 
   const [isOpen, setIsOpen] = useState(false);
   const Icon = isOpen ? IoCloseOutline : SlMenu;
   const { pathname } = useLocation();
@@ -25,8 +27,10 @@ export const Header = () => {
   const handleClick = (label: string) => {
     setIsOpen(false);
     if (label === "Sair") {
+
       authLogout();
       navigate("/login");
+      deleteCertificate()
     }
   };
 
@@ -70,6 +74,18 @@ export const Header = () => {
             exit="exit"
             className="absolute top-18 w-full left-0 bg-white min-[900px]:hidden"
           >
+
+                      <li className=" flex justify-end ">
+              <span
+                className={`ml-auto relative py-2 px-2 font-semibold rounded transition-transform duration-150 active:scale-95 text-[#1A1551]`}
+              >
+                <span
+                  className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-[1px] after:bg-[#1A1551] after:w-full after:origin-left after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:rounded-full will-change-transform"
+                >
+                  {auth?.email}
+                </span>
+              </span>
+            </li>
             <ul className="font-inter text-[#1A1551] space-y-2 px-4 py-4">
               {menuItems.map(({ Icon, label, path }) => (
                 <li key={label}>
