@@ -1,7 +1,6 @@
-import type { ApiAuthResponse, CertificateResponse } from "@/api/@types"
+import type { CertificateResponse } from "@/api/@types"
 import type { CertificateInDb } from "@/api/Certificate/@types"
 import { certificateServiceInstance } from "@/api/implements"
-import { useAuthStoreData } from "@/stores/useAuthStore"
 import { useCertificateStoreData } from "@/stores/useCertificateStore"
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
