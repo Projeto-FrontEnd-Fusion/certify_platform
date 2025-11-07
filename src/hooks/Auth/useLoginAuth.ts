@@ -3,6 +3,8 @@ import { useMutation } from "@tanstack/react-query"
 import { authServiceInstance } from "@/api/implements"
 import type { LoginSchemaType } from "@/schemas/Login"
 import { useAuthStoreData } from "@/stores/useAuthStore"
+import { toast } from "react-toastify"
+import { TOAST_STYLES } from "@/pages/ToastStyleContainer"
 
 export const useLoginAuth = () => {
   const { setAuthLogin } = useAuthStoreData()
@@ -19,6 +21,7 @@ export const useLoginAuth = () => {
         }
         
         const formattedData = formatteData(data)
+        console.log(formatteData)
         
         if (formattedData && isValidAuthResponse(formattedData)) {
           setAuthLogin(formattedData)
@@ -30,7 +33,12 @@ export const useLoginAuth = () => {
       }
     },
     onError: (err: Error) => {
-      console.error("Falha ao autenticar usuário:", err.message)
+         toast.error('Falha ao autenticar usuário', {
+            position: "top-center",
+            autoClose: 5000,
+            ...TOAST_STYLES.error
+          });
+      console.error(err)
     }
   })
 
