@@ -5,11 +5,13 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { AccessKeyHandler } from "@/utils/AcessKey";
 import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
 import type { CertificateRequest } from "@/api/Certificate/CertificateService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
-export const AcessKey = ({ onClose }: { onClose: () => void }) => {
+export const AcessKey = () => {
   const { auth } = useAuthStoreData();
+  
+
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const valuesRef = useRef<string[]>(["", "", "", "", ""]);
   useEffect(() => {
@@ -18,8 +20,6 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
 
 
   const navigation = useNavigate()
-
-  
 
   const { handleInputChange, handleKeyDown } =
     new AccessKeyHandler();
@@ -38,10 +38,12 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
   email: auth?.email as string,
     } 
 
+
      mutate({userId : user_id as string, certificate_data : newCertificate}, {
-      onSuccess : () => navigation("/download-certificado")
+     onSuccess : () => navigation("/download-certificado")
      })
   } 
+
 
   return (
     <div className="absolute bg-[#00000099] h-full flex w-full left-0 z-99 top-0 backdrop-blur-xs items-center justify-center px-4 font-inter">
@@ -80,11 +82,14 @@ export const AcessKey = ({ onClose }: { onClose: () => void }) => {
             "Confirmar"
           )}
         </button>
-        <IoClose
+        <Link to={"/meus-certificados"} className="w-full text-center text-blue-600 underline">
+        voltar
+        </Link>
+        {/* <IoClose
           size={30}
           className="absolute top-4 right-5 text-red-600 cursor-pointer"
           onClick={onClose}
-        />
+        /> */}
       </div>
     </div>
   );
