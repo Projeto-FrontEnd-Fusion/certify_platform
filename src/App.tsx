@@ -26,15 +26,30 @@ const MyCertificates = lazy(() =>
   }))
 );
 
+const PrivacyPolicy = lazy(() =>
+import("./pages/PrivacyPolicy").then((m) =>({
+  default : m.PrivacyPolicy,
+}))
+)
+
+const ContactPage = lazy(() =>
+import('./pages/ContactPage').then((m) =>({
+  default : m.ContactPage,
+}))
+)
+
 function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
+            <Route path="pagina-de-contato" element={<ContactPage />} />
+            <Route path="politica-de-privacidade" element={<PrivacyPolicy />} />
             <Route path="meus-certificados" element={<MyCertificates />} />
             <Route path="download-certificado/:eventnane" element={
               <ProtecteCertificateRouter>
@@ -42,6 +57,7 @@ function App() {
               </ProtecteCertificateRouter>
               
               } />
+              
             <Route path="meus-dados" element={<NotFound />} />
              <Route path="validar-certificados" element={<NotFound />} />
           </Route>
