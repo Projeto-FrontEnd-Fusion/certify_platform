@@ -5,12 +5,10 @@ import { AccessKeyHandler } from "@/utils/AcessKey";
 import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
 import type { CertificateRequest } from "@/api/Certificate/CertificateService";
 import { Link, useNavigate } from "react-router-dom";
-import { useCertificateStoreData } from "@/stores/useCertificateStore";
 
 
 export const AcessKey = () => {
   const { auth } = useAuthStoreData();
-  const {certificate} = useCertificateStoreData()
   
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);

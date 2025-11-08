@@ -11,7 +11,6 @@ import { formatDate } from "@/utils/FormatDate";
 export const MyCertificates = () => {
 
 
-  const SimulateCertify = 2;
 
   const navigator = useNavigate()
 
