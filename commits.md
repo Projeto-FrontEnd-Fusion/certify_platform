@@ -1,142 +1,195 @@
-# ��� Histórico de Commits\n
-- **9cf9c7f** — *dinho* — 2025-11-01 — feat : added-changes-and-repositioning-to-the-page-style.
-- **21c984a** — *Davi Santanna* — 2025-10-31 — style: style: add new styles for desktop design
-- **6f3582f** — *Davi Santanna* — 2025-10-31 — style: add new styles for desktop design
-- **46f6341** — *dinho* — 2025-10-31 — refactor: rename-component
-- **a6a60a8** — *dinho* — 2025-10-31 — refactor: make-component-mobile-responsive
-- **ea302e7** — *dinho* — 2025-10-31 — refactor: update-store-name
-- **5888a1e** — *Davi Santanna* — 2025-10-31 — Merge pull request #14 from Projeto-FrontEnd-Fusion/feat/final-certificate
-- **30b900a** — *Davi Santanna* — 2025-10-31 — feat: create final Certificado ( just desktop )
-- **c7876b7** — *Davi Santanna* — 2025-10-31 — feat: create  Download function
-- **8c2c399** — *Davi Santanna* — 2025-10-31 — delete: remove  Reference
-- **2da3987** — *Davi Santanna* — 2025-10-31 — feat: show alert when element not found and use JPEG for smaller certificate size
-- **ef10585** — *Davi Santanna* — 2025-10-31 — delete: remove useRef, printRef, and filename props from DownloadPage
-- **4105c0b** — *Davi Santanna* — 2025-10-31 — refactor: optimize useDownload with object state, service ref, and useCallback
-- **6dbcc9d** — *Davi Santanna* — 2025-10-31 — feat: create DummyCertificate ( without dinamic props)
-- **582fbd0** — *Davi Santanna* — 2025-10-31 — feat: add new Download function and add DummyCertificate
-- **1619345** — *Davi Santanna* — 2025-10-31 — feat: add new images for final certificate
-- **acc1bb9** — *Davi Santanna* — 2025-10-31 — style: create new class font-judson
-- **87b2072** — *Davi Santanna* — 2025-10-31 — chore: add new font Judson
-- **3733d31** — *Davi Santanna* — 2025-10-30 — feat: change orientation to landscape
-- **16b9d7e** — *Davi Santanna* — 2025-10-30 — fix: handle PNG generation errors by wrapping toBlob in a Promise
-- **7355d6b** — *dinho* — 2025-10-29 — refactor: simplify-menu-logout-function
-- **aeffe8b** — *dinho* — 2025-10-29 — feat(routing): add-not-found-routes-for-uncreated-pages
-- **faae927** — *dinho* — 2025-10-29 — chore: add-pending-dependencies
-- **d410f47** — *dinho* — 2025-10-29 — Merge branch 'feat/final-certificate'
-- **43eac49** — *dinho* — 2025-10-29 — feat(build): implement-build-optimization-and-performance-enhancements
-- **95fa081** — *dinho* — 2025-10-29 — feat(ui): merge-desktop-styles-branch-and-enhance-component-styling
-- **53f5ef5** — *dinho* — 2025-10-29 — Merge branch 'main' of https://github.com/Projeto-FrontEnd-Fusion/DevInsights
-- **df77581** — *dinho* — 2025-10-29 — docs: add-certificate-data-according-to-documentation
-- **2e1c167** — *dinho* — 2025-10-29 — feat: create-typescript-response-data-models
-- **ca3d476** — *dinho* — 2025-10-29 — chore: add-tanstack-query-provider
-- **222f2ac** — *dinho* — 2025-10-29 — refactor(auth): update-protected-route-to-use-zustand-auth-store-conditionally
-- **69367c2** — *dinho* — 2025-10-29 — feat(auth): implement-authentication-service-infrastructure
-- **726d4f6** — *dinho* — 2025-10-29 — feat: create-login-and-signup-mutation-hooks
-- **9f3322d** — *dinho* — 2025-10-29 — feat: add-mutation-logic-to-form
-- **6bcede3** — *dinho* — 2025-10-29 — refactor: update-schema-to-accept-fullname-instead-of-name
-- **4f2be0a** — *dinho* — 2025-10-29 — chore: add-axios-tanstack-query-and-framer-motion-dependencies
-- **32d9b40** — *dinho* — 2025-10-29 — feat: create-zustand-store-for-user-auth-data
-- **ba1d46f** — *Davi Santanna* — 2025-10-28 — Merge pull request #13 from Projeto-FrontEnd-Fusion/feat/improve-componentization
-- **9dbac1a** — *Davi Santanna* — 2025-10-28 — Merge pull request #12 from Projeto-FrontEnd-Fusion/feat/download-certificate
-- **dc83e43** — *Davi Santanna* — 2025-10-28 — feat: update path (meus-certificados)
-- **c37d6db** — *Davi Santanna* — 2025-10-28 — styles: adjust some styles and add new styles for better responsiveness
-- **2d1b897** — *Davi Santanna* — 2025-10-28 — styles: create desktop UI
-- **8b1a9a5** — *Davi Santanna* — 2025-10-28 — refactor: improve  HTML semantic
-- **1bd7b9d** — *Davi Santanna* — 2025-10-28 — refactor: extract certificate to a component
-- **f88ad9f** — *Davi Santanna* — 2025-10-28 — feat: create Certificate component
-- **2c0faca** — *Davi Santanna* — 2025-10-28 — feat: create DownloadButton type
-- **e854f4a** — *Davi Santanna* — 2025-10-28 — refactor: extract DownloadButton to a new component and add null validation on printRef
-- **d708ed5** — *Davi Santanna* — 2025-10-28 — feat: create DownloadButton component
-- **3818bb7** — *Davi Santanna* — 2025-10-28 — refactor: update path
-- **c65cc55** — *Davi Santanna* — 2025-10-28 — refactor: move components to pages directory for better structure
-- **4ad53eb** — *Davi Santanna* — 2025-10-28 — feat: create useDownload hook with loading, error handling, and validation
-- **516a4d9** — *Davi Santanna* — 2025-10-28 — feat: create type for downloads
-- **4f65252** — *Davi Santanna* — 2025-10-28 — feat: create new class DownloadService with PDF and PNG services
-- **7e8a7bb** — *Davi Santanna* — 2025-10-28 — refactor: extract component logic, add loading state and disabled buttons for better UX
-- **4dcb6d6** — *Davi Santanna* — 2025-10-27 — feat: add new route download-certificado
-- **4df6811** — *Davi Santanna* — 2025-10-27 — chore: add html2canvas-pro and jspdf
-- **1ca4516** — *Davi Santanna* — 2025-10-27 — feat: create first idea of DownloadCertificade component
-- **ccb4866** — *Davi Santanna* — 2025-10-27 — Merge pull request #11 from Projeto-FrontEnd-Fusion/styles/improve-auth-pages
-- **d384e52** — *Davi Santanna* — 2025-10-27 — Merge pull request #10 from Projeto-FrontEnd-Fusion/feat/not_found
-- **6bb2270** — *Davi Santanna* — 2025-10-27 — styles: improve styles with max width and mx-auto for better responsiveness
-- **7387198** — *Davi Santanna* — 2025-10-27 — refactor: update AuthLayout for better responsiveness
-- **083c6ed** — *Davi Santanna* — 2025-10-27 — feat: add conditional rendering (temporary test without back-end)
-- **0a36f21** — *Davi Santanna* — 2025-10-27 — feat: add new icon NotFound
-- **85fed26** — *dinho* — 2025-10-26 — Merge branch 'feat/AcessKey'
-- **7c1b7c1** — *Davi Santanna* — 2025-10-24 — Merge pull request #1 from Projeto-FrontEnd-Fusion/refactor/rename-schemas-types-and-forms
-- **8827254** — *Davi Santanna* — 2025-10-24 — refactor: update names form better legibility
-- **a1a0479** — *Davi Santanna* — 2025-10-24 — refactor: update names and imports, add SignUpSchemaType
-- **dfee29f** — *Davi Santanna* — 2025-10-24 — refactor: update component name, imports and add non-null assertion operator
-- **98a6368** — *Davi Santanna* — 2025-10-24 — refactor: update names and imports for better legibility
-- **56ca152** — *Davi Santanna* — 2025-10-24 — feat: update regex to accept lowercase input and remove debug log
-- **9797005** — *Davi Santanna* — 2025-10-24 — feat: create AcessKey component (console log value)
-- **acefd0d** — *dinho* — 2025-10-24 — chore: add-root-rewrite-rule
-- **7a944d6** — *dinho* — 2025-10-24 — refactor: rename-protected-routes-component
-- **641fa37** — *dinho* — 2025-10-24 — feat: add-conditional-rendering-for-logout-function
-- **61a01d1** — *dinho* — 2025-10-24 — fix :update-layout-name
-- **75f9941** — *dinho* — 2025-10-24 — feat: create-route-protection-component
-- **79873dc** — *dinho* — 2025-10-24 — feat: create-populate-authfake-functionality
-- **917a2e3** — *dinho* — 2025-10-24 — feat: create-authentication-protected-layout
-- **a093578** — *dinho* — 2025-10-24 — feat: create-default-user-session-layout
-- **d242cc3** — *dinho* — 2025-10-24 — feat: create-login-schema-typing-for-form-dataforms
-- **17aaa43** — *dinho* — 2025-10-24 — feat: create-fake-auth-data-store-with-zustand
-- **158e5b5** — *dinho* — 2025-10-24 — refactor: app-to-access-public-and-private-routes
-- **14aaf74** — *dinho* — 2025-10-24 — perf: add-lazy-loading-to-route
-- **e9208d9** — *dinho* — 2025-10-24 — feat: create-not-found-route-page
-- **05fe077** — *dinho* — 2025-10-24 — feat: create-suspense-page-component
-- **8152ddd** — *Davi Santanna* — 2025-10-23 — styles: improve style with space-y-0 on 900 pixels for better responsiveness
-- **f1f423c** — *Davi Santanna* — 2025-10-23 — feat: create MyCertificates component ( just static content )
-- **c2dfece** — *Davi Santanna* — 2025-10-23 — styles: add new background color
-- **dcd5f7e** — *Davi Santanna* — 2025-10-23 — feat: update name of type
-- **23deac8** — *Davi Santanna* — 2025-10-23 — feat: add new icon for my certificates table
-- **b4bdcf4** — *Davi Santanna* — 2025-10-23 — feat: add new route (just static content)
-- **fb09acf** — *Davi Santanna* — 2025-10-23 — Merge branch 'main' of https://github.com/Projeto-FrontEnd-Fusion/DevInsights
-- **0a85a20** — *Davi Santanna* — 2025-10-23 — feat: update link path name
-- **7bcf6fc** — *Davi Santanna* — 2025-10-23 — feat: add button conditional to render
-- **ad0ec63** — *Davi Santanna* — 2025-10-23 — feat: update on route name and add a replace route
-- **ed3328c** — *dinho* — 2025-10-23 — feat: add-certificate-data-mocking-json
-- **1862290** — *Davi Santanna* — 2025-10-23 — feat: create utility function to detect when is scrolled
-- **9a06773** — *Davi Santanna* — 2025-10-23 — feat: create config file for framer motion variants
-- **259a840** — *Davi Santanna* — 2025-10-23 — feat: create config file for menu
-- **6d0e140** — *Davi Santanna* — 2025-10-23 — refactor: change function to close menu when scroll and add close when change routes
-- **c3192af** — *Davi Santanna* — 2025-10-23 — feat: add menu mobile
-- **81dfdd0** — *Davi Santanna* — 2025-10-23 — chore: add framer motion
-- **4a87168** — *Davi Santanna* — 2025-10-22 — feat: create new schema for RequestCertificadeRegister component validation
-- **e47019d** — *Davi Santanna* — 2025-10-22 — feat: create RequestCertificateRegister componen ( just mobile )
-- **5264e3d** — *Davi Santanna* — 2025-10-22 — styles: improve the text size
-- **dedea02** — *Davi Santanna* — 2025-10-22 — feat: add new route register
-- **79e501b** — *Davi Santanna* — 2025-10-22 — feat: update name and validation
-- **9158c17** — *Davi Santanna* — 2025-10-22 — feat: update import path name
-- **cfde7b4** — *Davi Santanna* — 2025-10-22 — feat: create new component RequestCertificadeLogin
-- **28c1d92** — *Davi Santanna* — 2025-10-22 — styles: add new colors for fonts and logo
-- **9092f1e** — *Davi Santanna* — 2025-10-22 — feat: update logo for favicon
-- **28022c4** — *Davi Santanna* — 2025-10-22 — refactor: change the home path / and delete WhatDoYouWantToDo
-- **1aa3501** — *Davi Santanna* — 2025-10-22 — delete: old files
-- **0add0f3** — *Davi Santanna* — 2025-10-21 — feat: create schema for hook form
-- **d0a401d** — *Davi Santanna* — 2025-10-21 — feat: create hook useFormValidation
-- **6f95adc** — *Davi Santanna* — 2025-10-21 — feat: create config for images used in section RequestCertificade
-- **9cbfb90** — *Davi Santanna* — 2025-10-21 — feat: update navigation link to /requestCertificate
-- **37d16de** — *Davi Santanna* — 2025-10-21 — feat: create section Request Certificate and form validation (data  just on console)
-- **23f53b9** — *Davi Santanna* — 2025-10-21 — feat: create Route requestCertificate
-- **175ba12** — *Davi Santanna* — 2025-10-21 — feat: add images for requestCertificade page
-- **7592af1** — *Davi Santanna* — 2025-10-21 — feat: create config for errors messages
-- **549a2df** — *Davi Santanna* — 2025-10-21 — feat: create type for Message component
-- **b0645c6** — *Davi Santanna* — 2025-10-21 — chore: add hook form resolvers
-- **ad940ee** — *Davi Santanna* — 2025-10-21 — feat: create Message component for request feedback
-- **cbe1884** — *Davi Santanna* — 2025-10-21 — feat: add succes and error images for feedbacks messages
-- **2122267** — *Davi Santanna* — 2025-10-21 — feat: add Certificade image
-- **45b4f9b** — *Davi Santanna* — 2025-10-20 — feat: use React Router Dom to create Routes
-- **4efc3f2** — *Davi Santanna* — 2025-10-20 — feat: add browserRouter with React Router Dom
-- **ff8ff1c** — *Davi Santanna* — 2025-10-20 — feat: create WhatDoYouWantToDo component (just mobile)
-- **e0d510c** — *dinho* — 2025-10-20 — docs: diagram
-- **106e0f5** — *dinho* — 2025-10-20 — doc : create-visual-diagram-for-layers
-- **4382522** — *Davi Santanna* — 2025-10-20 — feat: add first layout
-- **41ec1e8** — *Davi Santanna* — 2025-10-20 — styles: add new styles for html,body,#root
-- **93e09a0** — *Davi Santanna* — 2025-10-20 — feat: create footer component (just mobile)
-- **ccbafe8** — *Davi Santanna* — 2025-10-20 — feat: create Logo component as SVG React component
-- **7a7d75d** — *Davi Santanna* — 2025-10-20 — feat: create static menu ( just mobile )
-- **d3045e6** — *Davi Santanna* — 2025-10-20 — chore: add react-icons library
-- **396c1e0** — *Davi Santanna* — 2025-10-20 — style: create classes for Lato and Inter fonts
-- **f808817** — *Davi Santanna* — 2025-10-20 — chore: add Inter and Lato fonts
-- **4f8f841** — *Davi Santanna* — 2025-10-17 — chore: add initial setup
-- **c20c86b** — *Davi Santanna* — 2025-10-17 — Initial commit
+- **79e26b6** - dinho, _2025-11-08_ — refactor : update-dinamyc-dowload-router
+- **01e45b0** - dinho, _2025-11-08_ — refactor: clean-up-access-key-component
+- **22f44be** - dinho, _2025-11-08_ — refactor: simplify-certificate-component-with-store-data
+- **dc2e12c** - dinho, _2025-11-08_ — refactor: simplify-certificate-protection-logic
+- **a0a7126** - dinho, _2025-11-08_ — refactor: remove-query-control-configuration
+- **c010c91** - dinho, _2025-11-08_ — feat: implement-dynamic-certificates-list-with-loading-states
+- **696a3c4** - dinho, _2025-11-08_ — chore: add-host-config-to-vite-and-clean-logs
+- **3f8feed** - dinho, _2025-11-07_ — fix : resolve-merge-conflict
+- **b524853** - dinho, _2025-11-07_ — Merge branch 'styles/improve-UI'
+- **b127c88** - dinho, _2025-11-07_ — chore: remove-unused-imports
+- **ed121cd** - dinho, _2025-11-07_ — feat: add-status-to-default-api-response
+- **bb8b309** - dinho, _2025-11-07_ — feat: add-user-email-and-certificate-cleanup-on-logout
+- **ee482d0** - dinho, _2025-11-07_ — feat: add-visual-feedback-for-login-error
+- **d1faa62** - dinho, _2025-11-07_ — feat: implement-certificate-verification-with-react-query
+- **61e231c** - dinho, _2025-11-07_ — feat: add-certificate-search-by-id-hook
+- **9d9fa5c** - dinho, _2025-11-07_ — refactor: replace-link-with-programmatic-navigation
+- **70d16e6** - dinho, _2025-11-07_ — refactor: transform-access-key-component-to-internal-page
+- **b3600bd** - Davi Santanna, _2025-11-07_ — styles: add uppercase
+- **328c278** - Davi Santanna, _2025-11-07_ — styles: add new size for loading spinner
+- **aaf14e0** - Davi Santanna, _2025-11-07_ — styles: add new breakpoints for better responsiveness and uppercase
+- **078fb4d** - Davi Santanna, _2025-11-07_ — styles: add new styles for better responsiveness
+- **e8ff69c** - Davi Santanna, _2025-11-06_ — delete: remove comments
+- **72ee2e6** - Davi Santanna, _2025-11-06_ — styles: change max width and text size for better responsiveness a
+- **b8b1e83** - Davi Santanna, _2025-11-06_ — styles: add new breakpoint for better responsiveness
+- **0d35689** - Davi Santanna, _2025-11-06_ — styles: add overflow-x hidden on html
+- **14d21c0** - Davi Santanna, _2025-11-06_ — styles: change the size for better responsiveness
+- **cf8e569** - Davi Santanna, _2025-11-06_ — styles: add h-full instead h-screen
+- **b15504f** - Davi Santanna, _2025-11-06_ — styles: add h-0.5 on after span
+- **720735d** - dinho, _2025-11-06_ — refactor: overhaul-certificate-request-management-service
+- **4109c87** - dinho, _2025-11-06_ — feat: add-conditional-rendering-for-certificate-download-page
+- **ed3ae20** - dinho, _2025-11-06_ — feat: dynamically-populate-component-with-backend-data
+- **ee3f7d8** - dinho, _2025-11-06_ — refactor: enhance-auth-store-with-status-and-partial-updates
+- **bab5e5c** - dinho, _2025-11-06_ — refactor: complete-certificate-store-overhaul
+- **efd2c5d** - dinho, _2025-11-06_ — refactor: simplify-access-key-handler-and-remove-api-logic
+- **a596398** - dinho, _2025-11-06_ — refactor: enhance-date-formatting-function
+- **606678d** - Davi Santanna, _2025-11-05_ — styles: add styles for new div to improve responsiveness
+- **cf27cbe** - Davi Santanna, _2025-11-04_ — feat: create date formatter
+- **c643585** - Davi Santanna, _2025-11-04_ — feat: create AccessKeyHandler for input management and certificate validation
+- **9bb6e72** - Davi Santanna, _2025-11-04_ — feat: create new certificate store and delete mock
+- **93083f4** - Davi Santanna, _2025-11-04_ — feat: create certificate Response
+- **0821024** - Davi Santanna, _2025-11-04_ — feat: create CertificateSchema
+- **3f7a159** - Davi Santanna, _2025-11-04_ — refactor: integrate real api store
+- **9a16d4d** - Davi Santanna, _2025-11-04_ — refactor: integrate CertificateStore and dynamic access data
+- **c2f0cfc** - Davi Santanna, _2025-11-04_ — refactor: extract handlers and integrate real store/API
+- **e3bbbad** - Davi Santanna, _2025-11-04_ — feat: create CertificateApiInstance with baseURL for CertificateService
+- **096dd87** - Davi Santanna, _2025-11-04_ — feat: create CertificateApiInstance to manage Axios instance
+- **ff0c9be** - Davi Santanna, _2025-11-04_ — feat: create certificate service
+- **15c334b** - Davi Santanna, _2025-11-02_ — refactor: change the fake auth login to fake auth acess
+- **9e7851a** - Davi Santanna, _2025-11-02_ — feat: add logic to open and close acess key component
+- **ccd3b2b** - Davi Santanna, _2025-11-02_ — feat: add logic to block users without access
+- **d2b625b** - Davi Santanna, _2025-11-02_ — feat: add onClose parameter, submit access key logic, and handle unauthorized users
+- **4b7913d** - dinho, _2025-11-01_ — feat: add-notification-toast-on-login-and-register
+- **64a5fca** - dinho, _2025-11-01_ — chore: add-toastify-as-dependency
+- **81f4fc0** - dinho, _2025-11-01_ —  ⚡ Key Achievements and Features
+- **9cf9c7f** - dinho, _2025-11-01_ — feat : added-changes-and-repositioning-to-the-page-style.
+- **21c984a** - Davi Santanna, _2025-10-31_ — style: style: add new styles for desktop design
+- **6f3582f** - Davi Santanna, _2025-10-31_ — style: add new styles for desktop design
+- **46f6341** - dinho, _2025-10-31_ — refactor: rename-component
+- **a6a60a8** - dinho, _2025-10-31_ — refactor: make-component-mobile-responsive
+- **ea302e7** - dinho, _2025-10-31_ — refactor: update-store-name
+- **5888a1e** - Davi Santanna, _2025-10-31_ — Merge pull request #14 from Projeto-FrontEnd-Fusion/feat/final-certificate
+- **30b900a** - Davi Santanna, _2025-10-31_ — feat: create final Certificado ( just desktop )
+- **c7876b7** - Davi Santanna, _2025-10-31_ — feat: create  Download function
+- **8c2c399** - Davi Santanna, _2025-10-31_ — delete: remove  Reference
+- **2da3987** - Davi Santanna, _2025-10-31_ — feat: show alert when element not found and use JPEG for smaller certificate size
+- **ef10585** - Davi Santanna, _2025-10-31_ — delete: remove useRef, printRef, and filename props from DownloadPage
+- **4105c0b** - Davi Santanna, _2025-10-31_ — refactor: optimize useDownload with object state, service ref, and useCallback
+- **6dbcc9d** - Davi Santanna, _2025-10-31_ — feat: create DummyCertificate ( without dinamic props)
+- **582fbd0** - Davi Santanna, _2025-10-31_ — feat: add new Download function and add DummyCertificate
+- **1619345** - Davi Santanna, _2025-10-31_ — feat: add new images for final certificate
+- **acc1bb9** - Davi Santanna, _2025-10-31_ — style: create new class font-judson
+- **87b2072** - Davi Santanna, _2025-10-31_ — chore: add new font Judson
+- **3733d31** - Davi Santanna, _2025-10-30_ — feat: change orientation to landscape
+- **16b9d7e** - Davi Santanna, _2025-10-30_ — fix: handle PNG generation errors by wrapping toBlob in a Promise
+- **7355d6b** - dinho, _2025-10-29_ — refactor: simplify-menu-logout-function
+- **aeffe8b** - dinho, _2025-10-29_ — feat(routing): add-not-found-routes-for-uncreated-pages
+- **faae927** - dinho, _2025-10-29_ — chore: add-pending-dependencies
+- **d410f47** - dinho, _2025-10-29_ — Merge branch 'feat/final-certificate'
+- **43eac49** - dinho, _2025-10-29_ — feat(build): implement-build-optimization-and-performance-enhancements
+- **95fa081** - dinho, _2025-10-29_ — feat(ui): merge-desktop-styles-branch-and-enhance-component-styling
+- **53f5ef5** - dinho, _2025-10-29_ — Merge branch 'main' of https://github.com/Projeto-FrontEnd-Fusion/DevInsights
+- **df77581** - dinho, _2025-10-29_ — docs: add-certificate-data-according-to-documentation
+- **2e1c167** - dinho, _2025-10-29_ — feat: create-typescript-response-data-models
+- **ca3d476** - dinho, _2025-10-29_ — chore: add-tanstack-query-provider
+- **222f2ac** - dinho, _2025-10-29_ — refactor(auth): update-protected-route-to-use-zustand-auth-store-conditionally
+- **69367c2** - dinho, _2025-10-29_ — feat(auth): implement-authentication-service-infrastructure
+- **726d4f6** - dinho, _2025-10-29_ — feat: create-login-and-signup-mutation-hooks
+- **9f3322d** - dinho, _2025-10-29_ — feat: add-mutation-logic-to-form
+- **6bcede3** - dinho, _2025-10-29_ — refactor: update-schema-to-accept-fullname-instead-of-name
+- **4f2be0a** - dinho, _2025-10-29_ — chore: add-axios-tanstack-query-and-framer-motion-dependencies
+- **32d9b40** - dinho, _2025-10-29_ — feat: create-zustand-store-for-user-auth-data
+- **ba1d46f** - Davi Santanna, _2025-10-28_ — Merge pull request #13 from Projeto-FrontEnd-Fusion/feat/improve-componentization
+- **9dbac1a** - Davi Santanna, _2025-10-28_ — Merge pull request #12 from Projeto-FrontEnd-Fusion/feat/download-certificate
+- **dc83e43** - Davi Santanna, _2025-10-28_ — feat: update path (meus-certificados)
+- **c37d6db** - Davi Santanna, _2025-10-28_ — styles: adjust some styles and add new styles for better responsiveness
+- **2d1b897** - Davi Santanna, _2025-10-28_ — styles: create desktop UI
+- **8b1a9a5** - Davi Santanna, _2025-10-28_ — refactor: improve  HTML semantic
+- **1bd7b9d** - Davi Santanna, _2025-10-28_ — refactor: extract certificate to a component
+- **f88ad9f** - Davi Santanna, _2025-10-28_ — feat: create Certificate component
+- **2c0faca** - Davi Santanna, _2025-10-28_ — feat: create DownloadButton type
+- **e854f4a** - Davi Santanna, _2025-10-28_ — refactor: extract DownloadButton to a new component and add null validation on printRef
+- **d708ed5** - Davi Santanna, _2025-10-28_ — feat: create DownloadButton component
+- **3818bb7** - Davi Santanna, _2025-10-28_ — refactor: update path
+- **c65cc55** - Davi Santanna, _2025-10-28_ — refactor: move components to pages directory for better structure
+- **4ad53eb** - Davi Santanna, _2025-10-28_ — feat: create useDownload hook with loading, error handling, and validation
+- **516a4d9** - Davi Santanna, _2025-10-28_ — feat: create type for downloads
+- **4f65252** - Davi Santanna, _2025-10-28_ — feat: create new class DownloadService with PDF and PNG services
+- **7e8a7bb** - Davi Santanna, _2025-10-28_ — refactor: extract component logic, add loading state and disabled buttons for better UX
+- **4dcb6d6** - Davi Santanna, _2025-10-27_ — feat: add new route download-certificado
+- **4df6811** - Davi Santanna, _2025-10-27_ — chore: add html2canvas-pro and jspdf
+- **1ca4516** - Davi Santanna, _2025-10-27_ — feat: create first idea of DownloadCertificade component
+- **ccb4866** - Davi Santanna, _2025-10-27_ — Merge pull request #11 from Projeto-FrontEnd-Fusion/styles/improve-auth-pages
+- **d384e52** - Davi Santanna, _2025-10-27_ — Merge pull request #10 from Projeto-FrontEnd-Fusion/feat/not_found
+- **6bb2270** - Davi Santanna, _2025-10-27_ — styles: improve styles with max width and mx-auto for better responsiveness
+- **7387198** - Davi Santanna, _2025-10-27_ — refactor: update AuthLayout for better responsiveness
+- **083c6ed** - Davi Santanna, _2025-10-27_ — feat: add conditional rendering (temporary test without back-end)
+- **0a36f21** - Davi Santanna, _2025-10-27_ — feat: add new icon NotFound
+- **85fed26** - dinho, _2025-10-26_ — Merge branch 'feat/AcessKey'
+- **7c1b7c1** - Davi Santanna, _2025-10-24_ — Merge pull request #1 from Projeto-FrontEnd-Fusion/refactor/rename-schemas-types-and-forms
+- **8827254** - Davi Santanna, _2025-10-24_ — refactor: update names form better legibility
+- **a1a0479** - Davi Santanna, _2025-10-24_ — refactor: update names and imports, add SignUpSchemaType
+- **dfee29f** - Davi Santanna, _2025-10-24_ — refactor: update component name, imports and add non-null assertion operator
+- **98a6368** - Davi Santanna, _2025-10-24_ — refactor: update names and imports for better legibility
+- **56ca152** - Davi Santanna, _2025-10-24_ — feat: update regex to accept lowercase input and remove debug log
+- **9797005** - Davi Santanna, _2025-10-24_ — feat: create AcessKey component (console log value)
+- **acefd0d** - dinho, _2025-10-24_ — chore: add-root-rewrite-rule
+- **7a944d6** - dinho, _2025-10-24_ — refactor: rename-protected-routes-component
+- **641fa37** - dinho, _2025-10-24_ — feat: add-conditional-rendering-for-logout-function
+- **61a01d1** - dinho, _2025-10-24_ — fix :update-layout-name
+- **75f9941** - dinho, _2025-10-24_ — feat: create-route-protection-component
+- **79873dc** - dinho, _2025-10-24_ — feat: create-populate-authfake-functionality
+- **917a2e3** - dinho, _2025-10-24_ — feat: create-authentication-protected-layout
+- **a093578** - dinho, _2025-10-24_ — feat: create-default-user-session-layout
+- **d242cc3** - dinho, _2025-10-24_ — feat: create-login-schema-typing-for-form-dataforms
+- **17aaa43** - dinho, _2025-10-24_ — feat: create-fake-auth-data-store-with-zustand
+- **158e5b5** - dinho, _2025-10-24_ — refactor: app-to-access-public-and-private-routes
+- **14aaf74** - dinho, _2025-10-24_ — perf: add-lazy-loading-to-route
+- **e9208d9** - dinho, _2025-10-24_ — feat: create-not-found-route-page
+- **05fe077** - dinho, _2025-10-24_ — feat: create-suspense-page-component
+- **8152ddd** - Davi Santanna, _2025-10-23_ — styles: improve style with space-y-0 on 900 pixels for better responsiveness
+- **f1f423c** - Davi Santanna, _2025-10-23_ — feat: create MyCertificates component ( just static content )
+- **c2dfece** - Davi Santanna, _2025-10-23_ — styles: add new background color
+- **dcd5f7e** - Davi Santanna, _2025-10-23_ — feat: update name of type
+- **23deac8** - Davi Santanna, _2025-10-23_ — feat: add new icon for my certificates table
+- **b4bdcf4** - Davi Santanna, _2025-10-23_ — feat: add new route (just static content)
+- **fb09acf** - Davi Santanna, _2025-10-23_ — Merge branch 'main' of https://github.com/Projeto-FrontEnd-Fusion/DevInsights
+- **0a85a20** - Davi Santanna, _2025-10-23_ — feat: update link path name
+- **7bcf6fc** - Davi Santanna, _2025-10-23_ — feat: add button conditional to render
+- **ad0ec63** - Davi Santanna, _2025-10-23_ — feat: update on route name and add a replace route
+- **ed3328c** - dinho, _2025-10-23_ — feat: add-certificate-data-mocking-json
+- **1862290** - Davi Santanna, _2025-10-23_ — feat: create utility function to detect when is scrolled
+- **9a06773** - Davi Santanna, _2025-10-23_ — feat: create config file for framer motion variants
+- **259a840** - Davi Santanna, _2025-10-23_ — feat: create config file for menu
+- **6d0e140** - Davi Santanna, _2025-10-23_ — refactor: change function to close menu when scroll and add close when change routes
+- **c3192af** - Davi Santanna, _2025-10-23_ — feat: add menu mobile
+- **81dfdd0** - Davi Santanna, _2025-10-23_ — chore: add framer motion
+- **4a87168** - Davi Santanna, _2025-10-22_ — feat: create new schema for RequestCertificadeRegister component validation
+- **e47019d** - Davi Santanna, _2025-10-22_ — feat: create RequestCertificateRegister componen ( just mobile )
+- **5264e3d** - Davi Santanna, _2025-10-22_ — styles: improve the text size
+- **dedea02** - Davi Santanna, _2025-10-22_ — feat: add new route register
+- **79e501b** - Davi Santanna, _2025-10-22_ — feat: update name and validation
+- **9158c17** - Davi Santanna, _2025-10-22_ — feat: update import path name
+- **cfde7b4** - Davi Santanna, _2025-10-22_ — feat: create new component RequestCertificadeLogin
+- **28c1d92** - Davi Santanna, _2025-10-22_ — styles: add new colors for fonts and logo
+- **9092f1e** - Davi Santanna, _2025-10-22_ — feat: update logo for favicon
+- **28022c4** - Davi Santanna, _2025-10-22_ — refactor: change the home path / and delete WhatDoYouWantToDo
+- **1aa3501** - Davi Santanna, _2025-10-22_ — delete: old files
+- **0add0f3** - Davi Santanna, _2025-10-21_ — feat: create schema for hook form
+- **d0a401d** - Davi Santanna, _2025-10-21_ — feat: create hook useFormValidation
+- **6f95adc** - Davi Santanna, _2025-10-21_ — feat: create config for images used in section RequestCertificade
+- **9cbfb90** - Davi Santanna, _2025-10-21_ — feat: update navigation link to /requestCertificate
+- **37d16de** - Davi Santanna, _2025-10-21_ — feat: create section Request Certificate and form validation (data  just on console)
+- **23f53b9** - Davi Santanna, _2025-10-21_ — feat: create Route requestCertificate
+- **175ba12** - Davi Santanna, _2025-10-21_ — feat: add images for requestCertificade page
+- **7592af1** - Davi Santanna, _2025-10-21_ — feat: create config for errors messages
+- **549a2df** - Davi Santanna, _2025-10-21_ — feat: create type for Message component
+- **b0645c6** - Davi Santanna, _2025-10-21_ — chore: add hook form resolvers
+- **ad940ee** - Davi Santanna, _2025-10-21_ — feat: create Message component for request feedback
+- **cbe1884** - Davi Santanna, _2025-10-21_ — feat: add succes and error images for feedbacks messages
+- **2122267** - Davi Santanna, _2025-10-21_ — feat: add Certificade image
+- **45b4f9b** - Davi Santanna, _2025-10-20_ — feat: use React Router Dom to create Routes
+- **4efc3f2** - Davi Santanna, _2025-10-20_ — feat: add browserRouter with React Router Dom
+- **ff8ff1c** - Davi Santanna, _2025-10-20_ — feat: create WhatDoYouWantToDo component (just mobile)
+- **e0d510c** - dinho, _2025-10-20_ — docs: diagram
+- **106e0f5** - dinho, _2025-10-20_ — doc : create-visual-diagram-for-layers
+- **4382522** - Davi Santanna, _2025-10-20_ — feat: add first layout
+- **41ec1e8** - Davi Santanna, _2025-10-20_ — styles: add new styles for html,body,#root
+- **93e09a0** - Davi Santanna, _2025-10-20_ — feat: create footer component (just mobile)
+- **ccbafe8** - Davi Santanna, _2025-10-20_ — feat: create Logo component as SVG React component
+- **7a7d75d** - Davi Santanna, _2025-10-20_ — feat: create static menu ( just mobile )
+- **d3045e6** - Davi Santanna, _2025-10-20_ — chore: add react-icons library
+- **396c1e0** - Davi Santanna, _2025-10-20_ — style: create classes for Lato and Inter fonts
+- **f808817** - Davi Santanna, _2025-10-20_ — chore: add Inter and Lato fonts
+- **4f8f841** - Davi Santanna, _2025-10-17_ — chore: add initial setup
+- **c20c86b** - Davi Santanna, _2025-10-17_ — Initial commit
