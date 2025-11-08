@@ -36,7 +36,7 @@ function App() {
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
             <Route path="meus-certificados" element={<MyCertificates />} />
-            <Route path="download-certificado" element={
+            <Route path="download-certificado/:eventnane" element={
               <ProtecteCertificateRouter>
                 <DownloadCertificate />
               </ProtecteCertificateRouter>
