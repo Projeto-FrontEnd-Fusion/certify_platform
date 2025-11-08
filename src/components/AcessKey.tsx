@@ -52,8 +52,8 @@ export const AcessKey = () => {
         <p className="max-w-62 font-semibold text-center mx-auto text-black/60 text-xl sm:max-w-80">
           Insira a palavra-passe que foi fornecida durante o evento
         </p>
-        <span className="px-2 border">{JSON.stringify(auth)}</span>
-        <span className="border-red-400 border-2">{JSON.stringify(certificate)}</span>
+        {/* <span className="px-2 border">{JSON.stringify(auth)}</span>
+        <span className="border-red-400 border-2">{JSON.stringify(certificate)}</span> */}
         <div className="space-x-2 mx-auto flex max-[370px]:flex-wrap   max-[370px]:justify-center max-[370px]:space-y-2 ">
           {valuesRef.current.map((_, index) => (
             <input
