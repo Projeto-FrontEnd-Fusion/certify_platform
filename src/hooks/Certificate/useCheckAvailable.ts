@@ -5,7 +5,7 @@ import { useCertificateStoreData } from "@/stores/useCertificateStore"
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-export const useCheckAvailableCertificate = (certificateId: string, options?: { enabled?: boolean }) => {
+export const useCheckAvailableCertificate = (certificateId: string) => {
   const { setcertificate } = useCertificateStoreData()
   
   const QUERY_KEY = ['user-certificate', certificateId]
@@ -16,15 +16,14 @@ export const useCheckAvailableCertificate = (certificateId: string, options?: { 
       const response = await queryFn.findCertificateById(certificateId)
       
       if (response?.data?.certificate) {
-        console.log(response.data)
+        console.log("Aporra do certificado foi encontrado", response.data)
         setcertificate(response.data.certificate as CertificateInDb)
       }
       return response
       
     },
     queryKey: QUERY_KEY,
-    enabled: false ,
-    retry: options?.enabled
+    
     
   })
 
