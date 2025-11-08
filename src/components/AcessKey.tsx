@@ -5,10 +5,12 @@ import { AccessKeyHandler } from "@/utils/AcessKey";
 import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
 import type { CertificateRequest } from "@/api/Certificate/CertificateService";
 import { Link, useNavigate } from "react-router-dom";
+import { useCertificateStoreData } from "@/stores/useCertificateStore";
 
 
 export const AcessKey = () => {
   const { auth } = useAuthStoreData();
+  const {certificate} = useCertificateStoreData()
   
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -50,6 +52,8 @@ export const AcessKey = () => {
         <p className="max-w-62 font-semibold text-center mx-auto text-black/60 text-xl sm:max-w-80">
           Insira a palavra-passe que foi fornecida durante o evento
         </p>
+        <span className="px-2 border">{JSON.stringify(auth)}</span>
+        <span className="border-red-400 border-2">{JSON.stringify(certificate)}</span>
         <div className="space-x-2 mx-auto flex max-[370px]:flex-wrap   max-[370px]:justify-center max-[370px]:space-y-2 ">
           {valuesRef.current.map((_, index) => (
             <input
