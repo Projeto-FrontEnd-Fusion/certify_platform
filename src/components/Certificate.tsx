@@ -2,14 +2,25 @@ import { LuCalendarCheck2, LuCalendarFold, LuHourglass } from "react-icons/lu";
 import BackgroundImage from "@/assets/BackgroundCertificate.svg";
 import MedalCertificate from "@/assets/MedalCertificate.svg";
 import { useAuthStoreData } from "@/stores/useAuthStore";
-import { useCertificateStoreData } from "@/stores/useCertificateStore";
 import { formatDate } from "@/utils/FormatDate";
+import { useCheckAvailableCertificate } from "@/hooks/Certificate/useCheckAvailable";
+import type { CertificateInDb } from "@/api/Certificate/@types";
 
 export const Certificate = () => {
   const { auth } = useAuthStoreData();
-  const { certificate } = useCertificateStoreData();
 
-   const decriptionSplit =
+  const { data, isLoading, isError } = useCheckAvailableCertificate(auth?._id!);
+
+  if (!auth) {
+    return <span>Usuário não autenticado</span>;
+  }
+
+  if (isLoading) return <span>Carregando...</span>;
+  if (isError) return <span>Falha ao obter certificado</span>;
+
+   
+  const certificate =  data?.data.certificate as CertificateInDb
+    const decriptionSplit =
      certificate?.description.split(certificate?.event_name ?? "") || [];
 
   return (
@@ -19,6 +30,7 @@ export const Certificate = () => {
         flex-col py-14 relative scale-[0.3] md:scale-[0.6] lg:scale-[0.8] 
         xl:scale-100 origin-top`}
     >
+   
       <img
         src={MedalCertificate}
         alt="Medalha de certificação"
