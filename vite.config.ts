@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { visualizer } from "rollup-plugin-visualizer"
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({mode}) =>(
+  {
   plugins: [
     react(),
     tailwindcss(),
@@ -15,6 +16,17 @@ export default defineConfig({
       brotliSize: true,
     }),
   ],
+  server : {
+    host : true, 
+    allowedHosts : [
+            'www.certifyfusion.com.br',
+      'certifyfusion.com.br',
+    ]
+  },
+  
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  },
   build: {
     rollupOptions: {
       output: {
@@ -34,4 +46,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     }
   }
-})
+}
+))
