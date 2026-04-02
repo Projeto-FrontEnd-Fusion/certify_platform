@@ -5,7 +5,7 @@ import { StudentForm } from "@/components/StudentForm";
 
 export const SignUpForm = () => {
   return (
-    <div className="w-full h-full lg:max-h-screen bg-[#F2F2F9] flex flex-col-reverse lg:flex-row">
+    <div className="w-full bg-[#F2F2F9] flex flex-col-reverse lg:flex-row">
       <section className="flex-1 h-full w-full flex flex-col items-center">
         <div className="p-[30px]">
           <img src={LogoCertify} alt="Logo Certify" />
@@ -17,7 +17,7 @@ export const SignUpForm = () => {
         </div>
       </section>
 
-      <section className="hidden lg:flex lg:flex-1">
+      <section className="hidden lg:block lg:flex-1">
         <img src={GirlWithCertificateImg} alt="Garota com certificado" className="w-full h-full" />
       </section>
     </div>
