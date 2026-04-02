@@ -57,7 +57,7 @@ export function StudentForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-4 pt-7 pb-5">
+      <div className="flex justify-between gap-4 pt-7 pb-5">
         <SecondaryButton>
           Aluno
         </SecondaryButton>
