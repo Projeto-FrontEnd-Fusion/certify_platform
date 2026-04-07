@@ -7,10 +7,12 @@ import { toast } from "react-toastify";
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer";
 import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
 import { PrimaryButton } from "./ButtonPrimary";
-import { SecondaryButton } from "./ButtonSecondary";
+import { BiCheck } from "react-icons/bi";
+import { IoClose } from "react-icons/io5";
+import { ButtonLoader } from "./ButtonLoader";
 
 export function StudentForm() {
-  const { errors, handleSubmit, reset, control } = useFormValidation(SignUpSchema, {
+  const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpSchema, {
     fullname: "",
     email: "",
     cpf: "",
@@ -46,6 +48,18 @@ export function StudentForm() {
     }
   }, [isError, isSuccess]);
 
+  function usePasswordRules(password: string) {
+    return [
+      { label: "Mais de 10 caracteres", valid: password.length > 10 },
+      { label: "Pelo menos 1 número", valid: /\d/.test(password) },
+      { label: "Letras maiúsculas e minúsculas", valid: /[a-z]/.test(password) && /[A-Z]/.test(password) },
+      { label: "Pelo menos 1 caractere especial", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
+    ];
+  }
+
+  const passwordValue = watch("password", "");
+  const rules = usePasswordRules(passwordValue);
+
   const onSubmit = (formData: SignUpSchemaType) => {
     console.log("Formulário submetido", formData);
     // const authRequest = {
@@ -57,16 +71,6 @@ export function StudentForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex justify-between gap-4 pt-7 pb-5">
-        <SecondaryButton>
-          Aluno
-        </SecondaryButton>
-
-        <SecondaryButton>
-          Empresa
-        </SecondaryButton>
-      </div>
-
       <div className="flex flex-col gap-4">
         <Input<SignUpSchemaType>
           name="fullname"
@@ -115,8 +119,32 @@ export function StudentForm() {
           typeInput="password"
         />
 
+        <div className="flex flex-col gap-2 text-[19px]">
+          <span className="text-primary-blue-700">Sua senha deve conter:</span>
+          {rules.map((rule) => (
+            <div key={rule.label} className="flex items-center gap-2">
+              {rule.valid
+                ? <BiCheck className="text-primary-blue-700 w-5 h-5" />
+                : <IoClose className="text-[#CF1A0F] w-5 h-5" />
+              }
+              <span className={rule.valid ? "text-primary-blue-700" : "text-[#CF1A0F]"}>
+                {rule.label}
+              </span>
+            </div>
+          ))}
+
+          <span className="text-primary-blue-700">*campos obrigatórios</span>
+        </div>
+
         <PrimaryButton isDisabled={isPending}>
-          {isPending ? "Cadastrando..." : "Cadastrar"}
+          {isPending ? (
+            <>
+              Carregando
+              <ButtonLoader />
+            </>
+          ) : (
+            "Criar conta"
+          )}
         </PrimaryButton>
       </div>
 
