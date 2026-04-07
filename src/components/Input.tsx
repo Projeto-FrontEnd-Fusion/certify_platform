@@ -64,8 +64,11 @@ export function Input<T extends FieldValues>({
                 type={formattedType}
                 placeholder={isOptional ? placeholderText : `${placeholderText} *`}
                 onChange={(e) => handleInputChange(e.target.value, field.onChange, mask)}
-                className="w-full p-5 bg-primary-gray-100 text-primary-gray-base font-normal placeholder:text-[27px] text-[27px] rounded-[20px] outline-none border-2 border-transparent
-              focus:border-primary-blue-300"
+                className={`w-full p-5 bg-primary-gray-100 text-primary-gray-base font-normal placeholder:text-[27px] text-[27px] rounded-[20px] outline-none border-2 
+                  placeholder:text-primary-gray-base
+              focus:border-primary-blue-300
+              ${errors?.[name] ? 'border-[#CF1A0F]' : 'border-transparent'}
+              `}
               />
 
               {isPassword && (
@@ -76,9 +79,9 @@ export function Input<T extends FieldValues>({
                   className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer"
                 >
                   {showPassword ? (
-                    <LuEyeClosed size={24} color="#62748E" />
+                    <LuEyeClosed size={24} color="#66666E" />
                   ) : (
-                    <IoEyeOutline size={24} color="#62748E" />
+                    <IoEyeOutline size={24} color="#66666E" />
                   )}
                 </button>
               )}
