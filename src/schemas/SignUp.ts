@@ -34,7 +34,7 @@ export const SignUpSchema = z.object({
     .min(10, { message: "Confirme sua senha" }),
 })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não coincidem",
+    message: "A senha não corresponde com a anterior",
     path: ["confirmPassword"],
   });
 
