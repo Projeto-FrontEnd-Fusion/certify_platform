@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 .font-lato {
   font-family: "Lato", sans-serif;
 }
@@ -5,6 +7,7 @@
 .font-inter {
   font-family: "Inter", sans-serif;
 }
+
 .font-judson {
   font-family: "Judson", serif;
 }
@@ -16,4 +19,22 @@ body,
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+}
+
+@theme {
+  --color-primary-blue-100: #D4D4FE;
+  --color-primary-blue-200: #A9A8FE;
+  --color-primary-blue-300: #7D7BFD;
+  --color-primary-blue-base: #4D49FC;
+  --color-primary-blue-500: #1809E2;
+  --color-primary-blue-600: #090387;
+  --color-primary-blue-700: #03014C;
+
+  --color-primary-gray-100: #D8D8DA;
+  --color-primary-gray-200: #B0B0B5;
+  --color-primary-gray-300: #8A8A91;
+  --color-primary-gray-base: #66666E;
+  --color-primary-gray-500: #44444C;
+  --color-primary-gray-600: #25252A;
+  --color-primary-gray-700: #111113;
 }

@@ -2,13 +2,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ZodTypeAny, z } from "zod/v3";
 
-export const useFormValidation = (schema: ZodTypeAny) => {
+export const useFormValidation = <T extends ZodTypeAny>(
+  schema: T,
+  defaultValues: z.infer<T>
+) => {
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    watch,
     formState: { errors },
-  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+  } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues,
+  });
 
-  return { register, handleSubmit, errors, reset };
+  return { register, handleSubmit, errors, reset, control, watch };
 };
