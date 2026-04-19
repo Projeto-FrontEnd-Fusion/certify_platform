@@ -4,7 +4,7 @@ import { type ZodTypeAny, z } from "zod/v3";
 
 export const useFormValidation = <T extends ZodTypeAny>(
   schema: T,
-  defaultValues: z.infer<T>
+  defaultValues?: z.infer<T>
 ) => {
   const {
     register,
