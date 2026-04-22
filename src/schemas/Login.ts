@@ -4,12 +4,12 @@ export const LoginSchema = z.object({
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")
-    .email("Digite um e-mail válido"),
+    .email("E-mail ou senha inválidos."),
   password: z
     .string()
-    .min(6, { message: "A senha deve ter pelo menos 6 caracteres" })
-    .max(100, { message: "A senha deve ter no máximo 100 caracteres" }),
+    .min(6, { message: "E-mail ou senha inválidos." })
+    .max(100, { message: "E-mail ou senha inválidos." }),
 });
 
 
-export type LoginSchemaType = z.infer<typeof LoginSchema>
+export type LoginSchemaType = z.infer<typeof LoginSchema>;

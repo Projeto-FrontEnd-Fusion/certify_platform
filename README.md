@@ -177,16 +177,6 @@ Os chunks são divididos em:
 - `html2canvas` — html2canvas-pro
 - `state` — React Query, Zustand
 
-## Deploy
-
-O projeto está configurado para deploy na **Vercel** com SPA rewrite (`vercel.json`).
-
-Domínios configurados no CORS da API:
-- `https://www.certifyfusion.com.br`
-- `https://certifyfusion.com.br`
-- `https://certify-platform-iota.vercel.app`
-- `http://localhost:5173`
-
 ## Contribuição
 
 Consulte o [CONTRIBUTING.md](../API_CERTIFY/CONTRIBUTING.md) do projeto para diretrizes de contribuição.
