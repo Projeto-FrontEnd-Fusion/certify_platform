@@ -4,7 +4,7 @@ import { type ZodTypeAny, z } from "zod/v3";
 
 export const useFormValidation = <T extends ZodTypeAny>(
   schema: T,
-  defaultValues: z.infer<T>
+  defaultValues?: z.infer<T>
 ) => {
   const {
     register,
@@ -12,11 +12,12 @@ export const useFormValidation = <T extends ZodTypeAny>(
     reset,
     control,
     watch,
-    formState: { errors },
-  } = useForm<z.infer<typeof schema>>({
+    formState: { errors, isValid },
+  } = useForm<any>({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: "onChange",
   });
 
-  return { register, handleSubmit, errors, reset, control, watch };
+  return { register, handleSubmit, errors, reset, control, watch, isValid };
 };

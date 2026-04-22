@@ -1,133 +1,179 @@
-import { Images } from "@/config/RequestCertificadeImages";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BiLoader } from "react-icons/bi";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { ToastContainer, toast } from 'react-toastify';
 import { useLoginAuth } from "@/hooks/Auth/useLoginAuth";
 import { useFormValidation } from "@/hooks/useForm";
-import {
-  LoginSchema,
-  type LoginSchemaType,
-} from "@/schemas/Login";
+import { LoginSchema } from "@/schemas/Login";
 import { useAuthStoreData } from "@/stores/useAuthStore";
-import { useEffect } from "react";
-import { BiLoader } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
 import { TOAST_STYLES } from "./ToastStyleContainer";
-
+import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
+import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
+import Logo from "@/assets/Logo.svg";
 
 export const FormLogin = () => {
-  const { errors, handleSubmit, register } = useFormValidation(LoginSchema);
-  const {mutate, isPending, isSuccess, isError} = useLoginAuth()
-  const {auth} = useAuthStoreData()
+  const [role, setRole] = useState<"aluno" | "empresa">("aluno");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { errors, handleSubmit, register, isValid } = useFormValidation(LoginSchema);
+  const { mutate, isPending, isSuccess, isError } = useLoginAuth();
+  const { auth } = useAuthStoreData();
   const navigation = useNavigate();
 
   useEffect(() => {
     if (!auth?._id) return;
-    navigation("/meus-certificados");
-  }, [auth?._id!]);
-
-
-useEffect(() => {
-  if (isError) {
-    toast.error('Credenciais Inválidas', {
-      position: "top-center",
-      autoClose: 5000,
-      ...TOAST_STYLES.error
-    });
-  }
-
-  if (isSuccess) {
-    toast.success('Login realizado com sucesso!', {
-      position: "top-center",
-      autoClose: 3000,
-      ...TOAST_STYLES.success
-    });
-  }
-}, [isError, isSuccess]);
-
-  const onSubmit = handleSubmit((formData: LoginSchemaType) => {
-    const auth = {
-      ...formData,
-      role : "user"
+    if ((auth.role as string) === "empresa") {
+      navigation("/"); // Placeholder, redirect according to your existing structure
+    } else {
+      navigation("/meus-certificados");
     }
-    console.log(auth);
-    mutate(auth)
+  }, [auth, navigation]);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('E-mail ou senha inválidos.', {
+        position: "top-center",
+        autoClose: 5000,
+        ...TOAST_STYLES.error
+      });
+    }
+
+    if (isSuccess) {
+      toast.success('Login realizado com sucesso!', {
+        position: "top-center",
+        autoClose: 3000,
+        ...TOAST_STYLES.success
+      });
+    }
+  }, [isError, isSuccess]);
+
+  const onSubmit = handleSubmit((formData: any) => {
+    const authData = {
+      ...formData,
+      role
+    };
+    mutate(authData);
   });
+
   return (
-    <section className="px-2 py-16 w-full max-lg:space-y-8 h-full bg-[#F2F2F9] lg:flex lg:items-center lg:py-0 lg:px-0">
-      
+    <section className="flex min-h-screen w-full font-inter bg-[#F4F5F9] lg:bg-white text-[#1A1551]">
       <ToastContainer />
 
-      <figure className="max-w-[32rem] mx-auto lg:order-2 lg:max-w-full lg:mx-0 lg:h-full lg:flex-1">
-        <div className="flex max-lg:gap-2 max-lg:justify-center lg:h-full">
-          {Images.map(({ alt, src, id }) => (
-            <img
-              className="w-[32%] aspect-square rounded-2xl object-cover lg:nth-[2]:hidden lg:nth-[3]:hidden lg:rounded-none lg:w-full lg:aspect-auto lg:h-full"
-              key={id}
-              src={src}
-              alt={alt}
-            />
-          ))}
+      {/* Left Panel - Form */}
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 xl:px-32 relative">
+        <div className="max-w-md w-full mx-auto lg:mx-0 xl:mx-auto">
+          {/* Logo */}
+          <div className="mb-12 flex justify-center w-full">
+            <img src={Logo} alt="Certify Logo" className="h-[60px]" />
+          </div>
+
+          <h1 className="text-3xl lg:text-3xl font-bold mb-3 text-[#1A1551]">Acesse sua conta</h1>
+          <p className="text-gray-600 mb-8 text-sm lg:text-base leading-relaxed">
+            Você pode acessar sua conta com e-mail, {role === "empresa" ? "CNPJ" : "CPF"} ou telefone e senha cadastrados
+          </p>
+
+          <p className="sr-only">Login / Selecione se você é empresa ou aluno</p>
+
+          {/* Role Selector */}
+          <div className="flex space-x-4 mb-6">
+            <button
+              type="button"
+              className={`flex-1 py-3 rounded-2xl border font-semibold transition-colors ${role === "aluno"
+                  ? "bg-[#E0E7FF] border-[#4F46E5] text-[#4F46E5]"
+                  : "bg-transparent border-gray-300 text-gray-500 hover:border-gray-400"
+                }`}
+              onClick={() => setRole("aluno")}
+            >
+              Aluno
+            </button>
+            <button
+              type="button"
+              className={`flex-1 py-3 rounded-2xl border font-semibold transition-colors ${role === "empresa"
+                  ? "bg-[#E0E7FF] border-[#4F46E5] text-[#4F46E5]"
+                  : "bg-transparent border-gray-300 text-gray-500 hover:border-gray-400"
+                }`}
+              onClick={() => setRole("empresa")}
+            >
+              Empresa
+            </button>
+          </div>
+
+          <form onSubmit={onSubmit} className="space-y-4">
+            {/* Email Field */}
+            <div className="relative">
+              <input
+                {...register("email")}
+                type="text"
+                placeholder={`E-mail ou ${role === "empresa" ? "CNPJ" : "CPF"}`}
+                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
+                  }`}
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="relative">
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                placeholder="Senha"
+                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border pr-12 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
+                  }`}
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
+              </button>
+            </div>
+
+            {/* Shared Error Message as requested */}
+            {(errors.email || errors.password) && (
+              <p className="text-red-500 text-sm mt-1 font-medium">
+                E-mail ou senha inválidos.
+              </p>
+            )}
+
+            {/* Remember Me */}
+            <div className="flex items-center space-x-2 pt-1 pb-1">
+              <input
+                type="checkbox"
+                id="remember"
+                className="w-4 h-4 rounded border-gray-300 text-[#4F46E5] focus:ring-[#4F46E5]"
+              />
+              <label htmlFor="remember" className="text-sm font-medium text-[#1A1551]">
+                Lembre - se de mim
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={!isValid || isPending}
+              className="w-full py-4 bg-[#4F46E5] text-white rounded-xl font-bold mt-2 disabled:bg-[#4F46E5]/50 disabled:cursor-not-allowed hover:bg-[#4338CA] transition-colors flex justify-center items-center"
+            >
+              {isPending ? <BiLoader size={24} className="animate-spin" /> : "Acessar"}
+            </button>
+
+            {/* Forgot Password Link */}
+            <div className="text-center mt-6">
+              <Link to="/forgot-password" className="text-sm text-[#4F46E5] font-bold hover:underline transition-all block mt-4">
+                Esqueci a senha
+              </Link>
+            </div>
+          </form>
         </div>
-        <figcaption className="sr-only">
-          Pessoas recebendo certificados
-        </figcaption>
-      </figure>
-      <div className="space-y-8 lg:flex lg:flex-col lg:flex-1 xl:flex-2 lg:px-10">
-      <div className="space-y-4 font-inter max-w-[32rem] mx-auto">
-        <h2 className="text-xl font-semibold text-justify sm:text-justify sm:text-2xl text-[#1A1551] lg:text-start lg:text-3xl">
-          Acesse sua conta na CertiFy e confira todos os certificados
-          disponíveis para você.
-        </h2>
-        <p className="text-justify sm:text-justify sm:text-lg text-[#1A1551] lg:text-start lg:text-xl">
-          A CertiFy conecta você às instituições e eventos que reconheceram sua
-          participação.
-        </p>
       </div>
 
-      <form className="font-inter space-y-4 max-w-[32rem] mx-auto w-full" onSubmit={onSubmit}>
-        <fieldset className="space-y-4 w-full">
-          <div className="w-full">
-            <input
-              {...register("email")}
-              type="email"
-              placeholder="seuemail@email.com"
-              className="px-2.5 py-4 border w-full rounded-xl font-semibold border-[#1A1551] sm:text-lg lg:text-xl"
-            />
-            {errors.email && (
-              <span className="text-red-400 text-xs animate-pulse ml-2">
-                {errors.email.message as string}
-              </span>
-            )}
-          </div>
-          <div className="w-full">
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="digite a sua senha"
-              className="px-2.5 py-4 border w-full rounded-xl font-semibold border-[#1A1551] sm:text-lg  lg:text-xl"
-            />
-            {errors.password && (
-              <span className="text-red-400 text-xs animate-pulse ml-2">
-                {errors.password.message as string}
-              </span>
-            )}
-          </div>
-        </fieldset>
-        <button
-          className="py-4 bg-[#3925DD] text-white font-semibold cursor-pointer w-full rounded-xl
-        hover:shadow-lg hover:shadow-[#3a25dd79]
-        duration-300 transition active:scale-90 sm:text-lg lg:text-xl flex-justify-center"
-          type="submit"
-        >
-          {isPending ? <span className="flex justify-center"><BiLoader size={32} className="animate-spin" /></span> :  "Login" }
-         
-        </button>
-      </form>
-      <div className="font-inter text-xs w-fit mx-auto text-center flex flex-col lg:text-sm">
-        <p>Ainda não tem uma conta?</p>
-        <Link to={"/signup"} className="underline duration-300 will-change-transform transition hover:scale-[1.02] active:scale-95">
-          Crie a sua agora!
-        </Link>
-      </div>
+      {/* Right Panel - Image */}
+      <div className="hidden lg:block lg:flex-1 relative bg-black">
+        <img
+          src={role === "empresa" ? EmpresaPhoto : GirlWithCertificate}
+          alt="Imagem de destaque login"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${role === "empresa" ? "grayscale" : ""}`}
+        />
       </div>
     </section>
   );

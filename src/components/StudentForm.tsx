@@ -20,7 +20,7 @@ export function StudentForm() {
     password: "",
     confirmPassword: "",
   });
-  const { mutate, isPending, isSuccess, isError } = useAuthSignUp();
+  const { isPending, isSuccess, isError } = useAuthSignUp();
   const navigate = useNavigate();
 
   useEffect(() => {
