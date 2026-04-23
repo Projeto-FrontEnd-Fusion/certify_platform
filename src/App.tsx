@@ -14,6 +14,12 @@ const Login = lazy(() =>
   }))
 );
 
+const ForgotPassword = lazy(() =>
+  import("./pages/ForgotPassword").then((m) => ({
+    default: m.ForgotPassword,
+  }))
+);
+
 const SignUp = lazy(() =>
   import("./pages/SignUp").then((m) => ({
     default: m.SignUpForm,
@@ -43,6 +49,8 @@ function App() {
     <Suspense fallback={<LoadingPage />}>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-code" element={<NotFound />} /> {/* Provisório para o teste de redirecionamento */}
         <Route path="/signup" element={<SignUp />} />
         
 
