@@ -4,8 +4,8 @@ import z from "zod/v3";
 export const SignUpStudentSchema = z.object({
   fullname: z
     .string()
-    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" })
-    .max(60, { message: "O nome deve ter no máximo 60 caracteres" }),
+    .min(6, { message: "O nome deve ter pelo menos 6 caracteres" })
+    .max(100, { message: "O nome deve ter no máximo 100 caracteres" }),
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")
@@ -27,11 +27,11 @@ export const SignUpStudentSchema = z.object({
     }),
   password: z
     .string()
-    .min(10, { message: "A senha deve ter pelo menos 10 caracteres" })
+    .min(8, { message: "A senha deve ter pelo menos 8 caracteres" })
     .max(100, { message: "A senha deve ter no máximo 100 caracteres" }),
   confirmPassword: z
     .string()
-    .min(10, { message: "Confirme sua senha" }),
+    .min(8, { message: "Confirme sua senha" }),
 })
   .refine((data) => data.password === data.confirmPassword, {
     message: "A senha não corresponde com a anterior",
@@ -41,8 +41,8 @@ export const SignUpStudentSchema = z.object({
 export const SignUpCompanySchema = z.object({
   fullname: z
     .string()
-    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" })
-    .max(60, { message: "O nome deve ter no máximo 60 caracteres" }),
+    .min(6, { message: "O nome deve ter pelo menos 6 caracteres" })
+    .max(100, { message: "O nome deve ter no máximo 100 caracteres" }),
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")
@@ -67,11 +67,11 @@ export const SignUpCompanySchema = z.object({
     }),
   password: z
     .string()
-    .min(10, { message: "A senha deve ter pelo menos 10 caracteres" })
+    .min(8, { message: "A senha deve ter pelo menos 8 caracteres" })
     .max(100, { message: "A senha deve ter no máximo 100 caracteres" }),
   confirmPassword: z
     .string()
-    .min(10, { message: "Confirme sua senha" }),
+    .min(8, { message: "Confirme sua senha" }),
 })
   .refine((data) => data.password === data.confirmPassword, {
     message: "A senha não corresponde com a anterior",
