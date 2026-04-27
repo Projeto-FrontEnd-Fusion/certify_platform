@@ -10,6 +10,7 @@ import { PrimaryButton } from "./ButtonPrimary";
 import { BiCheck } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { ButtonLoader } from "./ButtonLoader";
+import { toCompanyPayload } from "@/adapters/auth/toCompanyPayload";
 
 export function CompanyForm() {
   const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpCompanySchema, {
@@ -22,7 +23,7 @@ export function CompanyForm() {
     password: "",
     confirmPassword: "",
   });
-  const { isPending, isSuccess, isError } = useAuthSignUp();
+  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,11 +65,9 @@ export function CompanyForm() {
 
   const onSubmit = (formData: SignUpCompanySchemaType) => {
     console.log("Formulário submetido", formData);
-    // const authRequest = {
-    //   ...formData,
-    //   role: "user",
-    // };
-    // mutate(authRequest);
+
+    // const companyPayload = toCompanyPayload(formData);
+    // mutate(companyPayload);
   };
 
   return (
