@@ -10,6 +10,7 @@ import { PrimaryButton } from "./ButtonPrimary";
 import { BiCheck } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { ButtonLoader } from "./ButtonLoader";
+import { toStudentPayload } from "@/adapters/auth/toStudentPayload";
 
 export function StudentForm() {
   const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpStudentSchema, {
@@ -20,7 +21,7 @@ export function StudentForm() {
     password: "",
     confirmPassword: "",
   });
-  const { isPending, isSuccess, isError } = useAuthSignUp();
+  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,11 +63,9 @@ export function StudentForm() {
 
   const onSubmit = (formData: SignUpStudentSchemaType) => {
     console.log("Formulário submetido", formData);
-    // const authRequest = {
-    //   ...formData,
-    //   role: "user",
-    // };
-    // mutate(authRequest);
+
+    // const studentPayload = toStudentPayload(formData)
+    // mutate(studentPayload);
   };
 
   return (
