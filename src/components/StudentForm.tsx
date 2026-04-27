@@ -5,14 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer";
-import { SignUpSchema, type SignUpSchemaType } from "@/schemas/SignUp";
+import { SignUpStudentSchema, type SignUpStudentSchemaType } from "@/schemas/SignUp";
 import { PrimaryButton } from "./ButtonPrimary";
 import { BiCheck } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { ButtonLoader } from "./ButtonLoader";
+import { toStudentPayload } from "@/adapters/auth/toStudentPayload";
 
 export function StudentForm() {
-  const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpSchema, {
+  const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpStudentSchema, {
     fullname: "",
     email: "",
     cpf: "",
@@ -20,8 +21,9 @@ export function StudentForm() {
     password: "",
     confirmPassword: "",
   });
-  const { isPending, isSuccess, isError } = useAuthSignUp();
-  const navigate = useNavigate();
+
+const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
+const navigate = useNavigate();
 
   useEffect(() => {
     if (isError) {
@@ -46,7 +48,7 @@ export function StudentForm() {
       }, 2000);
 
     }
-  }, [isError, isSuccess]);
+  }, [isError, isSuccess, navigate, reset]);
 
   function usePasswordRules(password: string) {
     return [
@@ -60,33 +62,31 @@ export function StudentForm() {
   const passwordValue = watch("password", "");
   const rules = usePasswordRules(passwordValue);
 
-  const onSubmit = (formData: SignUpSchemaType) => {
+  const onSubmit = (formData: SignUpStudentSchemaType) => {
     console.log("Formulário submetido", formData);
-    // const authRequest = {
-    //   ...formData,
-    //   role: "user",
-    // };
-    // mutate(authRequest);
+
+    // const studentPayload = toStudentPayload(formData)
+    // mutate(studentPayload);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-4">
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="fullname"
           control={control}
           errors={errors}
           placeholderText="Nome completo"
         />
 
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="email"
           control={control}
           errors={errors}
           placeholderText="Email"
         />
 
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="cpf"
           control={control}
           errors={errors}
@@ -94,7 +94,7 @@ export function StudentForm() {
           mask="cpf"
         />
 
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="phone"
           control={control}
           errors={errors}
@@ -103,7 +103,7 @@ export function StudentForm() {
           isOptional
         />
 
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="password"
           control={control}
           errors={errors}
@@ -111,7 +111,7 @@ export function StudentForm() {
           typeInput="password"
         />
 
-        <Input<SignUpSchemaType>
+        <Input<SignUpStudentSchemaType>
           name="confirmPassword"
           control={control}
           errors={errors}
