@@ -21,8 +21,9 @@ export function StudentForm() {
     password: "",
     confirmPassword: "",
   });
-  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
-  const navigate = useNavigate();
+
+const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
+const navigate = useNavigate();
 
   useEffect(() => {
     if (isError) {
