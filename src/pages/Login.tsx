@@ -159,7 +159,7 @@ export const FormLogin = () => {
 
             {/* Forgot Password Link */}
             <div className="text-center mt-6">
-              <Link to="/forgot-password" className="text-sm text-[#4F46E5] font-bold hover:underline transition-all block mt-4">
+              <Link to="/forgot-password" state={{ role }} className="text-sm text-[#4F46E5] font-bold hover:underline transition-all block mt-4">
                 Esqueci a senha
               </Link>
             </div>
