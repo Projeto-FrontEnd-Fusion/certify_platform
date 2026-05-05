@@ -20,6 +20,18 @@ const ForgotPassword = lazy(() =>
   }))
 );
 
+const VerifyCode = lazy(() =>
+  import("./pages/VerifyCode").then((m) => ({
+    default: m.VerifyCode,
+  }))
+);
+
+const ResetPassword = lazy(() =>
+  import("./pages/ResetPassword").then((m) => ({
+    default: m.ResetPassword,
+  }))
+);
+
 const SignUp = lazy(() =>
   import("./pages/SignUp").then((m) => ({
     default: m.SignUpForm,
@@ -50,7 +62,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-code" element={<NotFound />} /> {/* Provisório para o teste de redirecionamento */}
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
         
 
