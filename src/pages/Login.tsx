@@ -61,14 +61,14 @@ export const FormLogin = () => {
       <ToastContainer />
 
       {/* Left Panel - Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 xl:px-32 relative">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 xl:px-32 relative bg-[#fefefe]">
         <div className="max-w-md w-full mx-auto lg:mx-0 xl:mx-auto">
           {/* Logo */}
           <div className="mb-12 flex justify-center w-full">
-            <img src={Logo} alt="Certify Logo" className="h-[60px]" />
+            <img src={Logo} alt="Certify Logo" className="h-[4.5rem]" />
           </div>
 
-          <h1 className="text-3xl lg:text-3xl font-bold mb-3 text-[#1A1551]">Acesse sua conta</h1>
+          <h1 className="text-3xl lg:text-3xl font-bold mb-3 line-heigth:1.79rem text-[#0e0393]">Acesse sua conta</h1>
           <p className="text-gray-600 mb-8 text-sm lg:text-base leading-relaxed">
             Você pode acessar sua conta com e-mail, {role === "empresa" ? "CNPJ" : "CPF"} ou telefone e senha cadastrados
           </p>
@@ -80,7 +80,7 @@ export const FormLogin = () => {
             <button
               type="button"
               className={`flex-1 py-3 rounded-2xl border font-semibold transition-colors ${role === "aluno"
-                  ? "bg-[#E0E7FF] border-[#4F46E5] text-[#4F46E5]"
+                  ? "bg-[#E0E7FF] border-[#3a30f6] text-[#3a30f6]"
                   : "bg-transparent border-gray-300 text-gray-500 hover:border-gray-400"
                 }`}
               onClick={() => setRole("aluno")}
@@ -90,7 +90,7 @@ export const FormLogin = () => {
             <button
               type="button"
               className={`flex-1 py-3 rounded-2xl border font-semibold transition-colors ${role === "empresa"
-                  ? "bg-[#E0E7FF] border-[#4F46E5] text-[#4F46E5]"
+                  ? "bg-[#E0E7FF] border-[#3a30f6] text-[#3a30f6]"
                   : "bg-transparent border-gray-300 text-gray-500 hover:border-gray-400"
                 }`}
               onClick={() => setRole("empresa")}

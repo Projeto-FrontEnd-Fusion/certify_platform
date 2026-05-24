@@ -19,7 +19,7 @@ export const ForgotPassword = () => {
   
   const subtitleText = role === "empresa" 
     ? "Insira seu e-mail cadastrado e receba o código para alteração" 
-    : "Insira seu e-mail ou CPF cadastrado e receba o código para alteração";
+    : "Insira seu e-mail cadastrado e receba o código de verificação para alteração";
     
   const placeholderText = role === "empresa" ? "E-mail ou CNPJ" : "E-mail ou CPF";
   
@@ -45,14 +45,14 @@ export const ForgotPassword = () => {
       <ToastContainer />
 
       {/* Left Panel - Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 xl:px-32 relative">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 xl:px-32 relative  bg-[#f7f7f7e6]">
         <div className="max-w-md w-full mx-auto lg:mx-0 xl:mx-auto">
           {/* Logo */}
           <div className="mb-12 flex justify-center w-full">
-            <img src={Logo} alt="Certify Logo" className="h-[60px]" />
+            <img src={Logo} alt="Certify Logo" className="h-[60px] absolute top-4 left-1/2 -translate-x-1/2" />
           </div>
 
-          <h1 className="text-3xl lg:text-3xl font-bold mb-3 text-[#1A1551]">Esqueci minha senha</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold mb-3 text-[#0e0393]">Esqueci minha senha</h1>
           <p className="text-gray-600 mb-8 text-sm lg:text-base leading-relaxed">
             {subtitleText}
           </p>
@@ -79,7 +79,7 @@ export const ForgotPassword = () => {
             <button
               type="submit"
               disabled={!isValid || isPending}
-              className="w-full py-4 bg-[#4F46E5] text-white rounded-xl font-bold mt-2 disabled:bg-[#4F46E5]/50 disabled:cursor-not-allowed hover:bg-[#4338CA] transition-colors flex justify-center items-center"
+              className="w-full py-4 bg-[#362dea] text-white text-base rounded-xl font-bold mt-2 disabled:bg-[#4139e8]/50 disabled:cursor-not-allowed hover:bg-[#2d22f8] transition-colors flex justify-center items-center"
             >
               {isPending ? <BiLoader size={24} className="animate-spin" /> : "Recuperar senha"}
             </button>
