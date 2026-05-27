@@ -22,8 +22,8 @@ export function StudentForm() {
     confirmPassword: "",
   });
 
-const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
-const navigate = useNavigate();
+  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isError) {
@@ -83,7 +83,7 @@ const navigate = useNavigate();
           name="email"
           control={control}
           errors={errors}
-          placeholderText="Email"
+          placeholderText="E-mail"
         />
 
         <Input<SignUpStudentSchemaType>
@@ -98,7 +98,7 @@ const navigate = useNavigate();
           name="phone"
           control={control}
           errors={errors}
-          placeholderText="Celular (DDD)00000-0000"
+          placeholderText="Celular"
           mask="phone"
           isOptional
         />
