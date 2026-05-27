@@ -64,7 +64,7 @@ export function Input<T extends FieldValues>({
                 type={formattedType}
                 placeholder={isOptional ? placeholderText : `${placeholderText} *`}
                 onChange={(e) => handleInputChange(e.target.value, field.onChange, mask)}
-                className={`w-full p-5 bg-primary-gray-100 text-primary-gray-base font-normal placeholder:text-[27px] text-[27px] rounded-[20px] outline-none border-2 
+                className={`w-full p-5 bg-primary-gray-100 text-primary-gray-base font-normal placeholder:text-[27px] text-[27px] rounded-[20px] outline-none border-2 h-20
                   placeholder:text-primary-gray-base
               focus:border-primary-blue-300
               ${errors?.[name] ? 'border-[#CF1A0F]' : 'border-transparent'}
