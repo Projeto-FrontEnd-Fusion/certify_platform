@@ -16,7 +16,7 @@ export function SecondaryButton({ children, isDisabled = false, onClick, isActiv
     <button
       disabled={isDisabled}
       onClick={onClick}
-      className={`w-full py-5 px-5 lg:px-12 border-2 border-primary-blue-base text-primary-blue-base font-bold text-[27px] rounded-[20px] cursor-pointer outline-none
+      className={`w-full py-5 px-5 lg:px-12 border-2 border-primary-blue-base text-primary-blue-base font-bold text-[27px] rounded-[20px] cursor-pointer outline-none h-20 flex items-center justify-center
       hover:bg-primary-blue-100 hover:text-primary-blue-300 transition-colors duration-300 
       active:text-primary-blue-500
       disabled:border-3 disabled:border-primary-gray-100 disabled:text-primary-gray-300 disabled:cursor-not-allowed disabled:hover:bg-transparent
