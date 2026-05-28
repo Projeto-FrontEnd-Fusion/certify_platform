@@ -10,6 +10,8 @@ import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 
+
+
 export const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -44,12 +46,12 @@ export const ResetPassword = () => {
         <div className="max-w-md w-full mx-auto lg:mx-0 xl:mx-auto">
           {/* Logo */}
           <div className="mb-12 flex justify-center w-full">
-            <img src={Logo} alt="Certify Logo" className="h-[60px]" />
+            <img src={Logo} alt="Certify Logo" className="h-[60px] absolute top-4 left-1/2 -translate-x-1/2" />
           </div>
 
-          <h1 className="text-3xl lg:text-3xl font-bold mb-3 text-[#1A1551]">Redefinir senha</h1>
+          <h1 className="text-3xl lg:text-3xl font-bold mb-3 text-[#0e0393]">Redefinir senha</h1>
           <p className="text-gray-600 mb-8 text-sm lg:text-base leading-relaxed">
-            Insira seu e-mail cadastrado e receba o código para alteração
+            Insira seu e-mail cadastrado e receba o código de verificação para alteração.
           </p>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -68,7 +70,7 @@ export const ResetPassword = () => {
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
+            {showPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
               </button>
             </div>
             {errors.password && (
@@ -92,7 +94,19 @@ export const ResetPassword = () => {
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
+                <div
+               style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "transform 0.2s ease",
+              transform: showPassword ? "scaleY(0.1)" : "scaleY(1)",
+              }}
+            onClick={() => setShowPassword(!showPassword)}
+              >
+            <FiEye size={22} />
+              </div>
+              
               </button>
             </div>
             {errors.confirmPassword && (
@@ -105,14 +119,14 @@ export const ResetPassword = () => {
             <button
               type="submit"
               disabled={!isValid || isPending}
-              className="w-full py-4 bg-[#4F46E5] text-white rounded-xl font-bold mt-2 disabled:bg-[#4F46E5]/50 disabled:cursor-not-allowed hover:bg-[#4338CA] transition-colors flex justify-center items-center"
+              className="w-full py-4 bg-[#4F46E5] text-white rounded-xl font-bold mt-2 disabled:bg-[#1e12fc]]/50 disabled:cursor-not-allowed hover:bg-[#2d22f8]] transition-colors flex justify-center items-center"
             >
               {isPending ? <BiLoader size={24} className="animate-spin" /> : "Redefinir senha"}
             </button>
 
             {/* Back to Login Link */}
             <div className="text-center mt-6">
-              <Link to="/login" className="text-sm text-[#4F46E5] font-bold hover:underline transition-all block mt-4">
+              <Link to="/login" className="text-sm text-[#483ff6] font-bold hover:underline transition-all block mt-4">
                 Voltar ao Login
               </Link>
             </div>
