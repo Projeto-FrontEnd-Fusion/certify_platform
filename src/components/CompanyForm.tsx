@@ -84,7 +84,7 @@ export function CompanyForm() {
           name="email"
           control={control}
           errors={errors}
-          placeholderText="Email profissional"
+          placeholderText="E-mail profissional"
         />
 
         <Input<SignUpCompanySchemaType>
@@ -105,7 +105,7 @@ export function CompanyForm() {
           name="phone"
           control={control}
           errors={errors}
-          placeholderText="Celular (DDD)00000-0000"
+          placeholderText="Celular"
           mask="phone"
           isOptional
         />
