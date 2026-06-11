@@ -16,13 +16,13 @@ export const Footer = () => {
 
       <nav aria-label="Footer links" className="self-center">
         <Link
-          to={"pagina-de-contato"}
+          to={"/pagina-de-contato"}
           className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-[0.0625rem] after:bg-[#000000] after:w-full after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
         >
           🔗 Contato
         </Link>{" "}
         <span className="font-black">|</span>{" "}
-        <Link to={"politica-de-privacidade"}
+        <Link to={"/politica-de-privacidade"}
           // href="/politica-de-privacidade"
           className=" relative after:absolute after:left-0 after:-bottom-0.5 after:h-[0.0625rem] after:bg-[#000000] after:w-full after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
         >

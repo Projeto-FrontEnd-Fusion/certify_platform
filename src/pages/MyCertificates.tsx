@@ -1,5 +1,4 @@
 import { CertificateCard } from "@/components/CertificateCard";
-import { Header } from "@/components/header";
 import { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 
@@ -80,8 +79,6 @@ export function MyCertificates() {
 
   return (
     <div>
-      <Header />
-
       <main className="bg-[#F2F2F9] min-h-[calc(100vh-112px)] py-[65px] px-[96px]">
         <div className="w-full max-w-[842px] h-[60px] bg-[#D8D8DAC2] flex items-center gap-[27px] rounded-[20px] px-3 py-1.5 mx-auto">
           <IoIosSearch className="w-12 h-12" color="#66666E" />

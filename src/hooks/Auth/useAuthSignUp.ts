@@ -1,9 +1,16 @@
 import { type ApiAuthResponse, type AuthUserReponse, type SucessResponse } from "@/api/@types"
-import type { SignUpSchemaType } from "@/schemas/SignUp"
 import { useMutation } from "@tanstack/react-query"
 import { authServiceInstance } from "@/api/implements"
 
-interface SignUpType extends SignUpSchemaType {
+interface SignUpType {
+  fullname: string
+  email: string
+  password: string
+  cpf?: string
+  cnpj?: string
+  organizationName?: string
+  occupation?: string
+  phone?: string
   role: string
 }
 

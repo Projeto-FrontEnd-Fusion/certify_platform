@@ -65,8 +65,8 @@ export function StudentForm() {
   const onSubmit = (formData: SignUpStudentSchemaType) => {
     console.log("Formulário submetido", formData);
 
-    // const studentPayload = toStudentPayload(formData)
-    // mutate(studentPayload);
+    const studentPayload = toStudentPayload(formData)
+    mutate(studentPayload);
   };
 
   return (
