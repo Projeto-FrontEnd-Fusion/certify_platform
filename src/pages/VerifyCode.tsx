@@ -124,13 +124,12 @@ export const VerifyCode = () => {
             <img src={Logo} alt="Certify Logo" className="h-[60px]" />
           </div>
 
-          <form onSubmit={onSubmit} className="space-y-6">
-            <div className="text-center">
-              <h1 className="text-xl lg:text-xl font-bold mb-6 text-gray-700">
-                Insira o código que foi enviado ao seu e-mail
-              </h1>
-            </div>
+          <h1 className="text-2xl lg:text-3xl font-bold mb-3 text-[#0e0393]">Esqueci minha senha</h1>
+          <p className="text-primary-blue-700 mb-8 text-sm lg:text-base leading-relaxed">
+            Insira o código de verificação que foi enviado ao seu e-mail
+          </p>
 
+          <form onSubmit={onSubmit} className="space-y-6">
             {/* OTP Inputs */}
             <div className="flex justify-center gap-3 md:gap-4 mb-2">
               {code.map((digit, index) => (
@@ -145,11 +144,10 @@ export const VerifyCode = () => {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
                   disabled={isPending || maxAttemptsReached}
-                  className={`w-12 h-14 md:w-16 md:h-16 text-center text-2xl font-bold rounded-xl border focus:outline-none transition-all ${
-                    hasError
-                      ? "border-red-500 text-red-500"
-                      : "border-[#4F46E5] text-[#1A1551] focus:ring-2 focus:ring-[#4F46E5]/50"
-                  } ${isPending || maxAttemptsReached ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`w-12 h-14 md:w-16 md:h-16 text-center text-2xl font-bold rounded-xl border focus:outline-none transition-all ${hasError
+                    ? "border-red-500 text-red-500"
+                    : "border-[#4F46E5] text-[#1A1551] focus:ring-2 focus:ring-[#4F46E5]/50"
+                    } ${isPending || maxAttemptsReached ? "opacity-50 cursor-not-allowed" : ""}`}
                 />
               ))}
             </div>
@@ -187,13 +185,13 @@ export const VerifyCode = () => {
                   type="button"
                   onClick={handleResend}
                   disabled={maxAttemptsReached}
-                  className="text-[#4F46E5] font-bold hover:underline transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-[#4F46E5] font-bold hover:underline cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Enviar novamente <span className="ml-1">✓</span>
+                  Enviar novamente
                 </button>
               )}
             </div>
-            
+
             {/* Back to Login Link */}
             <div className="text-center mt-6">
               <Link to="/login" className="text-sm text-[#4F46E5] font-bold hover:underline transition-all block">
@@ -209,9 +207,8 @@ export const VerifyCode = () => {
         <img
           src={sideImage}
           alt="Imagem de destaque verificação de código"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            role === "empresa" ? "grayscale" : ""
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${role === "empresa" ? "grayscale" : ""
+            }`}
         />
       </div>
     </section>
