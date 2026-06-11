@@ -131,7 +131,7 @@ export const VerifyCode = () => {
 
           <form onSubmit={onSubmit} className="space-y-6">
             {/* OTP Inputs */}
-            <div className="flex justify-center gap-3 md:gap-4 mb-2">
+            <div className="flex gap-3 md:gap-4 mb-2">
               {code.map((digit, index) => (
                 <input
                   key={index}
@@ -144,7 +144,7 @@ export const VerifyCode = () => {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
                   disabled={isPending || maxAttemptsReached}
-                  className={`w-12 h-14 md:w-16 md:h-16 text-center text-2xl font-bold rounded-xl border focus:outline-none transition-all ${hasError
+                  className={`w-full h-14 md:h-[90px] text-center text-2xl font-bold rounded-xl border focus:outline-none transition-all ${hasError
                     ? "border-red-500 text-red-500"
                     : "border-[#4F46E5] text-[#1A1551] focus:ring-2 focus:ring-[#4F46E5]/50"
                     } ${isPending || maxAttemptsReached ? "opacity-50 cursor-not-allowed" : ""}`}
