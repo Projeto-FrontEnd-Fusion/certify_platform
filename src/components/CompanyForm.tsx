@@ -66,8 +66,8 @@ export function CompanyForm() {
   const onSubmit = (formData: SignUpCompanySchemaType) => {
     console.log("Formulário submetido", formData);
 
-    // const companyPayload = toCompanyPayload(formData);
-    // mutate(companyPayload);
+    const companyPayload = toCompanyPayload(formData);
+    mutate(companyPayload);
   };
 
   return (

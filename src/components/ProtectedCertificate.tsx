@@ -8,20 +8,5 @@ export interface ProtectedCertificated {
 }
 
 export const ProtecteCertificateRouter = ({ children }: ProtectedCertificated) => {
-  const { auth } = useAuthStoreData();
-  const { data, isLoading, refetch } = useCheckAvailableCertificate(auth?._id!);
-
-  console.log(data)
-
-
-  if(auth?.status !== "available"){
-    refetch()
-    return <AcessKey />
-  }
-
-  if (isLoading) {
-    return <div>Carregando...</div>; 
-  }
-
   return <>{children}</>;
 };

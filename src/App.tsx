@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { LoadingPage } from "./pages/Loading";
 import { AuthProtectedLayout } from "./layouts/AuthProtectedLayout";
@@ -69,6 +69,7 @@ function App() {
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
+            <Route index element={<Navigate to="/meus-certificados" replace />} />
             <Route path="pagina-de-contato" element={<ContactPage />} />
             <Route path="politica-de-privacidade" element={<PrivacyPolicy />} />
             <Route path="meus-certificados" element={<MyCertificates />} />

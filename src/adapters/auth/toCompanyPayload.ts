@@ -11,6 +11,6 @@ export function toCompanyPayload(data: SignUpCompanySchemaType) {
     occupation,
     organizationName,
     ...(phone ? { phone } : {}),
-    role: "user" as const,
+    role: "empresa" as const,
   }
 }
