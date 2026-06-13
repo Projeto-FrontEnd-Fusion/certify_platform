@@ -94,19 +94,7 @@ export const ResetPassword = () => {
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                <div
-               style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "transform 0.2s ease",
-              transform: showPassword ? "scaleY(0.1)" : "scaleY(1)",
-              }}
-            onClick={() => setShowPassword(!showPassword)}
-              >
-            <FiEye size={22} />
-              </div>
-              
+              {showConfirmPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
               </button>
             </div>
             {errors.confirmPassword && (
