@@ -49,7 +49,7 @@ export const ForgotPassword = () => {
         <div className="max-w-md w-full mx-auto lg:mx-0 xl:mx-auto">
           {/* Logo */}
           <div className="mb-12 flex justify-center w-full">
-            <img src={Logo} alt="Certify Logo" className="h-[60px] absolute top-4 left-1/2 -translate-x-1/2" />
+            <img src={Logo} alt="Certify Logo" className="h-[4.5rem]" />
           </div>
 
           <h1 className="text-2xl lg:text-3xl font-bold mb-3 text-[#0e0393]">Esqueci minha senha</h1>
