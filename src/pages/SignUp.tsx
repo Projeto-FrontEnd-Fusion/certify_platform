@@ -15,8 +15,9 @@ export const SignUpForm = () => {
     <div className="w-full bg-[#F2F2F9] flex flex-col-reverse lg:flex-row">
       <section className="flex-1 h-full w-full flex flex-col items-center">
         <div className="p-[30px]">
+           {/* Logo */}
           <div className='flex justify-center mb-18'>
-            <img src={LogoCertify} alt="Logo Certify" />
+            <img src={LogoCertify} alt="Logo Certify" className="h-[4.5rem]"/>
           </div>
 
           <h1 className="text-primary-blue-600 font-semibold text-[31px]">Criar conta</h1>
