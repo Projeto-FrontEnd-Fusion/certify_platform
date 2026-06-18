@@ -12,7 +12,7 @@ export const SignUpForm = () => {
   const [isStudent, setIsStudent] = useState(true);
 
   return (
-    <div className="w-full bg-[#F2F2F9] flex flex-col-reverse lg:flex-row">
+    <div className="w-full bg-[#F4F5F9] flex flex-col-reverse lg:flex-row">
       <section className="flex-1 h-full w-full flex flex-col items-center">
         <div className="p-[30px]">
            {/* Logo */}
