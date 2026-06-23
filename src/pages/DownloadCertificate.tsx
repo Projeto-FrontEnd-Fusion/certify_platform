@@ -4,7 +4,7 @@ import { DownloadButton } from "@/components/DownloadButton";
 
 export const DownloadCertificate = () => {
   return (
-    <section className="bg-[##F4F5F9] h-600px font-inter flex flex-col items-center  py-13 gap-4 relative">
+    <section className="bg-[#F4F5F9] h-600px font-inter flex flex-col items-center  py-13 gap-4 relative">
       <div className="space-y-2 text-center max-w-[20rem] md:max-w-[30rem]">
         <h2 className="text-xl font-semibold text-[#1A1551] md:text-3xl">
           Seu certificado está pronto!!
