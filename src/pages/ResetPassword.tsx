@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { BiLoader } from "react-icons/bi";
+import { BiCheck, BiLoader } from "react-icons/bi";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ToastContainer } from "react-toastify";
 import { useFormValidation } from "@/hooks/useForm";
@@ -9,14 +9,13 @@ import { useResetPasswordAuth } from "@/hooks/Auth/useResetPasswordAuth";
 import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
-
-
+import { IoClose } from "react-icons/io5";
 
 export const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { errors, handleSubmit, register, isValid } = useFormValidation(ResetPasswordSchema);
+  const { errors, handleSubmit, register, isValid, watch } = useFormValidation(ResetPasswordSchema);
   const { mutate, isPending, isSuccess } = useResetPasswordAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,6 +31,18 @@ export const ResetPassword = () => {
       return () => clearTimeout(timer);
     }
   }, [isSuccess, navigate]);
+
+  function usePasswordRules(password: string) {
+    return [
+      { label: "Mais de 10 caracteres", valid: password.length > 10 },
+      { label: "Pelo menos 1 número", valid: /\d/.test(password) },
+      { label: "Letras maiúsculas e minúsculas", valid: /[a-z]/.test(password) && /[A-Z]/.test(password) },
+      { label: "Pelo menos 1 caractere especial", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
+    ];
+  }
+
+  const passwordValue = watch("password", "");
+  const rules = usePasswordRules(passwordValue);
 
   const onSubmit = handleSubmit((formData: any) => {
     mutate(formData.password);
@@ -61,16 +72,15 @@ export const ResetPassword = () => {
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
                 placeholder="Nova senha"
-                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border pr-12 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${
-                  errors.password ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
-                }`}
+                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border pr-12 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
+                  }`}
               />
               <button
                 type="button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 onClick={() => setShowPassword(!showPassword)}
               >
-            {showPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
+                {showPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
               </button>
             </div>
             {errors.password && (
@@ -85,16 +95,15 @@ export const ResetPassword = () => {
                 {...register("confirmPassword")}
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirme sua nova senha"
-                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border pr-12 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${
-                  errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
-                }`}
+                className={`w-full bg-[#E8E8E8] px-4 py-4 rounded-xl border pr-12 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/50 transition-all font-medium ${errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-transparent"
+                  }`}
               />
               <button
                 type="button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-              {showConfirmPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
+                {showConfirmPassword ? <FiEyeOff size={22} /> : <FiEye size={22} />}
               </button>
             </div>
             {errors.confirmPassword && (
@@ -111,6 +120,21 @@ export const ResetPassword = () => {
             >
               {isPending ? <BiLoader size={24} className="animate-spin" /> : "Redefinir senha"}
             </button>
+
+            <div className="flex flex-col gap-2 text-[19px]">
+              <span className="text-primary-blue-700">Sua senha deve conter:</span>
+              {rules.map((rule) => (
+                <div key={rule.label} className="flex items-center gap-2">
+                  {rule.valid
+                    ? <BiCheck className="text-primary-blue-700 w-5 h-5" />
+                    : <IoClose className="text-[#CF1A0F] w-5 h-5" />
+                  }
+                  <span className={rule.valid ? "text-primary-blue-700" : "text-[#CF1A0F]"}>
+                    {rule.label}
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/* Back to Login Link */}
             <div className="text-center mt-6">
