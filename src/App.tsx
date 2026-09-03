@@ -55,6 +55,11 @@ import('./pages/ContactPage').then((m) =>({
   default : m.ContactPage,
 }))
 )
+const ProfilePage = lazy(() =>
+  import("./pages/ProfilePage").then((m) => ({
+    default: m.Profilepage,
+  }))
+);
 
 function App() {
   return (
@@ -65,7 +70,7 @@ function App() {
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
-        
+        <Route path="/perfil" element={<ProfilePage />} />
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
