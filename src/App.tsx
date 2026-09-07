@@ -61,6 +61,9 @@ const ProfilePage = lazy(() =>
   }))
 );
 
+const CertificateModelPage = lazy(
+  () => import("./pages/CertificateModel")
+);
 function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
@@ -71,6 +74,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/perfil" element={<ProfilePage />} />
+         <Route path="/modelo-certificado" element={<CertificateModelPage />} />
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
