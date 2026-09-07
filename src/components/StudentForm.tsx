@@ -21,18 +21,10 @@ export function StudentForm() {
     confirmPassword: "",
   });
 
-  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
+  const { isPending, isSuccess, mutate } = useAuthSignUp();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isError) {
-      toast.error('Falha ao Cadastrar, tente novamente mais tarde', {
-        position: "top-center",
-        autoClose: 5000,
-        ...TOAST_STYLES.error
-      });
-    }
-
     if (isSuccess) {
       toast.success('Cadastro realizado com sucesso!', {
         position: "top-center",
@@ -47,14 +39,12 @@ export function StudentForm() {
       }, 2000);
 
     }
-  }, [isError, isSuccess, navigate, reset]);
+  }, [isSuccess, navigate, reset]);
 
   const passwordValue = watch("password", "");
   const rules = getPasswordRules(passwordValue);
 
   const onSubmit = (formData: SignUpStudentSchemaType) => {
-    console.log("Formulário submetido", formData);
-
     const studentPayload = toStudentPayload(formData)
     mutate(studentPayload);
   };

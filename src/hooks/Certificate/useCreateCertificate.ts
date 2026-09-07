@@ -8,7 +8,7 @@ import type { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 export const useCreateCertificate = () =>  {
-  const {setAuthLogin} = useAuthStoreData()
+  const {updateAuth} = useAuthStoreData()
   const {setcertificate} = useCertificateStoreData()
   const certificatemutation = certificateServiceInstance
 
@@ -20,7 +20,7 @@ export const useCreateCertificate = () =>  {
 
 
       console.log("Certificate created successfully!", data);
-      setAuthLogin({status : "available"})
+      updateAuth({status : "available"})
       setcertificate(data.data.certificate)
 
 
@@ -31,7 +31,7 @@ export const useCreateCertificate = () =>  {
           })
       
     },
-    onError : (error: AxiosError<any>) => {
+    onError : (error: AxiosError<{ message?: string }>) => {
       const errorMessage =
     (error.response?.data as { message?: string })?.message ||
     error.message ||

@@ -10,7 +10,14 @@ export interface AuthSignUp {
   role: string;
 }
 
+export interface CompanySignUp extends AuthSignUp {
+  razao_social: string;
+  cnpj: string;
+}
+
 export interface AuthRepository{
   login : (auth: LoginSchemaType) => Promise<ApiAuthResponse>,
-  signUp : (auth : AuthSignUp) => Promise<ApiAuthResponse>
+  signUp : (auth : AuthSignUp) => Promise<ApiAuthResponse>,
+  signUpCompany : (auth : CompanySignUp) => Promise<ApiAuthResponse>,
+  logout : (refreshToken: string) => Promise<void>
 }

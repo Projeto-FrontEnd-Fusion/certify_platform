@@ -5,6 +5,7 @@ import type { LoginSchemaType } from "@/schemas/Login"
 import { useAuthStoreData } from "@/stores/useAuthStore"
 import { toast } from "react-toastify"
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer"
+import { getApiErrorMessage } from "@/api/getApiErrorMessage"
 
 export const useLoginAuth = () => {
   const { setAuthLogin } = useAuthStoreData()
@@ -20,20 +21,24 @@ export const useLoginAuth = () => {
           return
         }
         
-        const formattedData = formatteData(data)
-        console.log(formatteData)
+        const response = data as SucessResponse
+        const formattedData = response.data?.auth
         
-        if (formattedData && isValidAuthResponse(formattedData)) {
-          setAuthLogin(formattedData)
+        if (formattedData && response.data.access_token && response.data.refresh_token) {
+          setAuthLogin(
+            formattedData,
+            response.data.access_token,
+            response.data.refresh_token
+          )
         } else {
-          console.error("Dados de autenticação formatados são inválidos")
+          throw new Error("Resposta de autenticação sem usuário ou tokens")
         }
       } catch (err) {
         console.error("Erro ao processar resposta de login:", err)
       }
     },
     onError: (err: Error) => {
-         toast.error('Falha ao autenticar usuário', {
+         toast.error(getApiErrorMessage(err, 'E-mail ou senha inválidos.'), {
             position: "top-center",
             autoClose: 5000,
             ...TOAST_STYLES.error
@@ -56,10 +61,6 @@ export const useLoginAuth = () => {
       console.error("Erro ao formatar dados de autenticação:", err)
       return null
     }
-  }
-
-  const isValidAuthResponse = (auth: AuthUserReponse): boolean => {
-    return auth !== null && typeof auth === 'object'
   }
 
   const dataAuthApi = data ? formatteData(data) : null

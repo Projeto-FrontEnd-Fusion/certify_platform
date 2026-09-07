@@ -1,14 +1,16 @@
-import type { LoginSchemaType } from "@/schemas/Login"
 import type { CertificateInDb } from "./Certificate/@types"
 
 export type status = "pending" | "available" | "expired";
 
-export interface AuthUserReponse extends Omit<LoginSchemaType, "password">{
-_id : string,
-role : "user" | "admin",
-created_at : Date,
-updated_at : Date,
-status : status
+export interface AuthUserReponse {
+  _id: string;
+  fullname?: string;
+  razao_social?: string;
+  email: string;
+  role: "user" | "admin" | "empresa";
+  created_at?: string;
+  updated_at?: string;
+  status?: status;
 }
 
 export interface BaseResponse {
@@ -19,7 +21,10 @@ export interface BaseResponse {
 
 export interface SucessResponse extends BaseResponse{
   data : {
-    auth : AuthUserReponse
+    auth : AuthUserReponse,
+    access_token?: string,
+    refresh_token?: string,
+    token_type?: string
   }
 }
 

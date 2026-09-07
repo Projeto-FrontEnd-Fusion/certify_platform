@@ -5,7 +5,7 @@ import { FiEye, FiEyeOff,  FiAlertCircle } from "react-icons/fi";
 import { ToastContainer, toast } from 'react-toastify';
 import { useLoginAuth } from "@/hooks/Auth/useLoginAuth";
 import { useFormValidation } from "@/hooks/useForm";
-import { LoginSchema } from "@/schemas/Login";
+import { LoginSchema, type LoginSchemaType } from "@/schemas/Login";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { TOAST_STYLES } from "./ToastStyleContainer";
 import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
@@ -32,14 +32,6 @@ useEffect(() => {
 }, [auth, navigation]);
 
 useEffect(() => {
-  if (isError) {
-    toast.error("E-mail ou senha inválidos.", {
-      position: "top-center",
-      autoClose: 5000,
-      ...TOAST_STYLES.error,
-    });
-  }
-
   if (isSuccess) {
     toast.success("Login realizado com sucesso!", {
       position: "top-center",
@@ -47,15 +39,10 @@ useEffect(() => {
       ...TOAST_STYLES.success,
     });
   }
-}, [isError, isSuccess]);
+}, [isSuccess]);
 
-const onSubmit = handleSubmit((formData: any) => {
-  const authData = {
-    ...formData,
-    role,
-  };
-
-  mutate(authData);
+const onSubmit = handleSubmit((formData: LoginSchemaType) => {
+  mutate(formData);
 });
 
 return (
@@ -71,7 +58,7 @@ return (
           </span>
 
           <Link
-            to="/cadastro"
+            to="/signup"
             className="font-bold text-[#0069A8] transition-colors hover:underline"
           >
             Criar conta

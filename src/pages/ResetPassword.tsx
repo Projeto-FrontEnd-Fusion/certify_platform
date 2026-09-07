@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiCheck, BiLoader } from "react-icons/bi";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ToastContainer } from "react-toastify";
@@ -44,7 +44,7 @@ export const ResetPassword = () => {
   const passwordValue = watch("password", "");
   const rules = usePasswordRules(passwordValue);
 
-  const onSubmit = handleSubmit((formData: any) => {
+  const onSubmit = handleSubmit((formData) => {
     mutate(formData.password);
   });
 

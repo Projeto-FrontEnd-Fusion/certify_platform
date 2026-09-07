@@ -1,4 +1,4 @@
-import { FormEvent, ChangeEvent, useState } from "react";
+import { type FormEvent, type ChangeEvent, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Logo from "@/assets/Logo.svg";
@@ -158,7 +158,6 @@ export const Profilepage = () => {
         payload.password = formData.newPassword;
       }
 
-      console.log("Dados enviados para API:", payload);
 
       await new Promise<void>((resolve) => {
         setTimeout(resolve, 1200);

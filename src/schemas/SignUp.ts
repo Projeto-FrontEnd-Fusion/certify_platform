@@ -56,6 +56,7 @@ export const SignUpStudentSchema = z.object({
   });
 
 export const SignUpCompanySchema = z.object({
+  razao_social: z.string().trim().min(3, "Informe a razão social").max(200),
   fullname: z
     .string()
     .min(6, { message: "O nome deve ter pelo menos 6 caracteres" })
