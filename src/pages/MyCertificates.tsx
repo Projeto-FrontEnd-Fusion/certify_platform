@@ -4,7 +4,7 @@ import { IoIosSearch } from "react-icons/io";
 
 export function MyCertificates() {
 
-  const [institution,] = useState<{ institution: string, event: string, date: string }[] | null>(
+  const [institution,] = useState<{ institution: string, event: string, date: string }[]>(
     [
       {
         institution: "Comunidade Frontend Fusion",
@@ -67,10 +67,14 @@ export function MyCertificates() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCertificates = institution?.filter(cert => (
+  const hasCertificates = institution.length > 0;
+
+  const filteredCertificates = institution.filter(cert => (
     cert.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cert.institution.toLowerCase().includes(searchTerm.toLowerCase())
-  )) ?? null;
+  ));
+
+  const hasSearchResults = filteredCertificates.length > 0;
 
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -79,32 +83,45 @@ export function MyCertificates() {
 
   return (
     <div>
-      <main className="bg-[#F4F5F9] min-h-[calc(100vh-112px)] py-[65px] px-[96px]">
-        <div className="w-full max-w-[842px] h-[60px] bg-[#D8D8DAC2] flex items-center gap-[27px] rounded-[20px] px-3 py-1.5 mx-auto">
-          <IoIosSearch className="w-12 h-12" color="#66666E" />
-
-          <input
-            type="text"
-            placeholder="Buscar"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-full bg-transparent outline-none border-none placeholder:font-bold text-[27px]"
-          />
+      <main className="bg-[#F3F4F6] min-h-[calc(100vh-112px)] py-[65px] px-12 md:px-[96px]">
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-[842px] flex items-center gap-4 p-5 font-normal text-[#262626] rounded-[8px] outline-none h-[52px] border border-[#99A1AF] bg-transparent focus:border-[#0069A8] placeholder:text-[#262626]">
+            <input
+              className="w-full outline-none text-base"
+              placeholder="Busque seus certificados"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="flex justify-center">
+              <IoIosSearch />
+            </div>
+          </div>
         </div>
 
-        {!filteredCertificates && (
-          <section className="mt-[157px] text-center max-w-[1200px] mx-auto">
-            <h2 className="text-primary-blue-base font-bold text-[39px]">Você não possui certificados</h2>
-            <p className="text-primary-blue-700 font-normal text-[31px]">Verifique sua caixa de entrada e spam.
-              Se não tiver recebido e-mail da Ceritify entre em contato com a instituição e confirme seu e-mail cadastrado.</p>
+        <h2 className="text-[#1E293B] font-bold text-2xl mt-8 mb-20">Meus Certificados</h2>
+
+        {!hasCertificates && (
+          <section className="mt-16 text-center max-w-[1200px] mx-auto">
+            <h2 className="text-[#0069A8] font-bold text-xl">Você não possui certificados</h2>
+            <p className="text-[#1E293B] font-normal text-lg mt-2">
+              Verifique sua caixa de entrada e spam. <br />
+              Se não tiver recebido e-mail da Ceritify entre em contato com a instituição e confirme seu e-mail cadastrado.
+            </p>
           </section>
         )}
 
-        {filteredCertificates && (
-          <section className="mt-[72px]">
-            <h2 className="text-primary-blue-600 font-bold text-[35px] mb-[55px]">Meus Certificados</h2>
+        {hasCertificates && !hasSearchResults && (
+          <section className="mt-[157px] text-center max-w-[1200px] mx-auto">
+            <h2 className="text-[#0069A8] font-bold text-xl">Nenhum certificado encontrado</h2>
+            <p className="text-[#1E293B] font-normal text-lg mt-2">
+              Não encontramos certificados para "{searchTerm}". Tente buscar por outro termo.
+            </p>
+          </section>
+        )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-[32px]">
+        {hasCertificates && hasSearchResults && (
+          <section className="mt-[32px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
               {filteredCertificates.map((cert) => (
                 <CertificateCard
                   key={cert.event}
@@ -118,5 +135,5 @@ export function MyCertificates() {
         )}
       </main>
     </div>
-  )
+  );
 }
