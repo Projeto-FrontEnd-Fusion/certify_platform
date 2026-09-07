@@ -4,13 +4,9 @@ interface SecondaryButtonProps {
   children: ReactNode;
   isDisabled?: boolean;
   onClick?: () => void;
-  isActive?: boolean;
 }
 
-export function SecondaryButton({ children, isDisabled = false, onClick, isActive }: SecondaryButtonProps) {
-  const activeStyle = isActive
-    ? "bg-primary-blue-100 text-primary-blue-500"
-    : "";
+export function SecondaryButton({ children, isDisabled = false, onClick }: SecondaryButtonProps) {
 
   return (
     <button

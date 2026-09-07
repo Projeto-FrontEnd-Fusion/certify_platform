@@ -1,13 +1,12 @@
 import GirlWithCertificateImg from '@/assets/GirlWithCertificate.webp'
 import SignUpCompanyImg from '@/assets/SignUpCompanyImg.jpg'
 import LogoCertify from '@/assets/Logo.svg'
-import { SecondaryButton } from '@/components/ButtonSecondary';
 import { CompanyForm } from '@/components/CompanyForm';
 import { StudentForm } from "@/components/StudentForm";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LuShieldAlert } from "react-icons/lu";
-import { PrimaryButton } from '@/components/ButtonPrimary';
+import { ToggleButton } from '@/components/ToggleButton';
 
 export const SignUpForm = () => {
   const [isStudent, setIsStudent] = useState(true);
@@ -29,12 +28,12 @@ export const SignUpForm = () => {
         </h1>
 
         <div className='my-6 flex border border-[#E5E7EB] rounded-xl p-1.5 shadow-sm'>
-          <PrimaryButton>Aluno</PrimaryButton>
-          <SecondaryButton>Empresa</SecondaryButton>
+          <ToggleButton isActive={isStudent} onClick={() => setIsStudent(true)}>Aluno</ToggleButton>
+          <ToggleButton isActive={!isStudent} onClick={() => setIsStudent(false)}>Empresa</ToggleButton>
         </div>
 
         <div>
-          <StudentForm />
+          {isStudent ? <StudentForm /> : <CompanyForm />}
         </div>
 
         <div className="flex items-start gap-5 p-8">

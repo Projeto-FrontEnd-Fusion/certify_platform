@@ -1,3 +1,4 @@
+import { isValidCNPJ } from "@/utils/validators/isValidCNPJ";
 import { isValidCPF } from "@/utils/validators/isValidCPF";
 import z from "zod/v3";
 
@@ -63,18 +64,15 @@ export const SignUpCompanySchema = z.object({
     .string()
     .min(1, "O e-mail é obrigatório")
     .email("Digite um e-mail válido"),
-  organizationName: z.
-    string()
-    .min(1, "O nome da empresa é obrigatório"),
   cnpj: z
-    .string()
-    .transform((value) => value.replace(/\D/g, ""))
-    .refine((cnpj) => cnpj.length === 14, {
-      message: "CNPJ deve ter 14 dígitos",
-    }),
-  occupation: z
-    .string()
-    .min(1, "A ocupação é obrigatória"),
+  .string()
+  .transform((value) => value.replace(/[.\-/\s]/g, "").toUpperCase())
+  .refine((cnpj) => cnpj.length === 14, {
+    message: "CNPJ deve ter 14 caracteres",
+  })
+  .refine(isValidCNPJ, {
+    message: "CNPJ inválido",
+  }),
   phone: z
     .string()
     .transform((value) => value.replace(/\D/g, ""))

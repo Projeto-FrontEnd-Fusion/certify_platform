@@ -12,7 +12,7 @@ import { toStudentPayload } from "@/adapters/auth/toStudentPayload";
 import { getPasswordRules } from "@/utils/passwordRules";
 
 export function StudentForm() {
-  const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpStudentSchema, {
+  const { errors, handleSubmit, reset, control, watch, isValid } = useFormValidation(SignUpStudentSchema, {
     fullname: "",
     email: "",
     cpf: "",
@@ -66,14 +66,16 @@ export function StudentForm() {
           name="fullname"
           control={control}
           errors={errors}
-          placeholderText="Nome completo"
+          label="Nome completo"
+          placeholderText="Digite seu nome completo"
         />
 
         <Input<SignUpStudentSchemaType>
           name="email"
           control={control}
           errors={errors}
-          placeholderText="E-mail"
+          label="E-mail"
+          placeholderText="Digite seu e-mail"
         />
 
         <div className="grid grid-cols-2 gap-6">
@@ -81,7 +83,8 @@ export function StudentForm() {
             name="cpf"
             control={control}
             errors={errors}
-            placeholderText="CPF"
+            label="CPF"
+            placeholderText="Digite seu CPF"
             mask="cpf"
           />
 
@@ -89,9 +92,9 @@ export function StudentForm() {
             name="phone"
             control={control}
             errors={errors}
-            placeholderText="Telefone"
+            label="Telefone"
+            placeholderText="(00) 0000-0000"
             mask="phone"
-            isOptional
           />
         </div>
 
@@ -99,7 +102,8 @@ export function StudentForm() {
           name="password"
           control={control}
           errors={errors}
-          placeholderText="Senha"
+          label="Senha"
+          placeholderText="Digite sua senha"
           typeInput="password"
           rules={rules}
         />
@@ -108,12 +112,13 @@ export function StudentForm() {
           name="confirmPassword"
           control={control}
           errors={errors}
-          placeholderText="Confirmar senha"
+          label="Confirmar senha"
+          placeholderText="Confirme sua senha"
           typeInput="password"
         />
 
         <div className="w-full h-[52px]">
-          <PrimaryButton isDisabled={isPending || !rules.every(rule => rule.valid) || watch("password") !== watch("confirmPassword")}>
+          <PrimaryButton isDisabled={isPending || !isValid}>
             {isPending ? (
               <>
                 Carregando

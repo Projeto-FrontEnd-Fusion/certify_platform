@@ -7,18 +7,15 @@ import { toast } from "react-toastify";
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer";
 import { SignUpCompanySchema, type SignUpCompanySchemaType } from "@/schemas/SignUp";
 import { PrimaryButton } from "./ButtonPrimary";
-import { BiCheck } from "react-icons/bi";
-import { IoClose } from "react-icons/io5";
 import { ButtonLoader } from "./ButtonLoader";
 import { toCompanyPayload } from "@/adapters/auth/toCompanyPayload";
+import { getPasswordRules } from "@/utils/passwordRules";
 
 export function CompanyForm() {
-  const { errors, handleSubmit, reset, control, watch } = useFormValidation(SignUpCompanySchema, {
+  const { errors, handleSubmit, reset, control, watch, isValid } = useFormValidation(SignUpCompanySchema, {
     fullname: "",
     email: "",
-    organizationName: "",
     cnpj: "",
-    occupation: "",
     phone: "",
     password: "",
     confirmPassword: "",
@@ -51,17 +48,8 @@ export function CompanyForm() {
     }
   }, [isError, isSuccess, navigate, reset]);
 
-  function usePasswordRules(password: string) {
-    return [
-      { label: "Mais de 10 caracteres", valid: password.length > 10 },
-      { label: "Pelo menos 1 número", valid: /\d/.test(password) },
-      { label: "Letras maiúsculas e minúsculas", valid: /[a-z]/.test(password) && /[A-Z]/.test(password) },
-      { label: "Pelo menos 1 caractere especial", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
-    ];
-  }
-
   const passwordValue = watch("password", "");
-  const rules = usePasswordRules(passwordValue);
+  const rules = getPasswordRules(passwordValue);
 
   const onSubmit = (formData: SignUpCompanySchemaType) => {
     console.log("Formulário submetido", formData);
@@ -77,90 +65,69 @@ export function CompanyForm() {
           name="fullname"
           control={control}
           errors={errors}
-          placeholderText="Nome completo"
+          label="Nome completo"
+          placeholderText="Digite seu nome completo"
         />
 
         <Input<SignUpCompanySchemaType>
           name="email"
           control={control}
           errors={errors}
-          placeholderText="E-mail profissional"
+          label="E-mail corporativo"
+          placeholderText="Digite seu e-mail"
         />
 
-        <Input<SignUpCompanySchemaType>
-          name="organizationName"
-          control={control}
-          errors={errors}
-          placeholderText="Nome da organização"
-        />
+        <div className="grid grid-cols-2 gap-6">
+          <Input<SignUpCompanySchemaType>
+            name="cnpj"
+            control={control}
+            errors={errors}
+            label="CNPJ"
+            placeholderText="Digite seu CNPJ"
+            mask="cnpj"
+          />
 
-        <Input<SignUpCompanySchemaType>
-          name="cnpj"
-          control={control}
-          errors={errors}
-          placeholderText="CNPJ"
-        />
-
-        <Input<SignUpCompanySchemaType>
-          name="phone"
-          control={control}
-          errors={errors}
-          placeholderText="Celular"
-          mask="phone"
-          isOptional
-        />
-
-        <Input<SignUpCompanySchemaType>
-          name="occupation"
-          control={control}
-          errors={errors}
-          placeholderText="Profissão"
-          isOptional
-        />
+          <Input<SignUpCompanySchemaType>
+            name="phone"
+            control={control}
+            errors={errors}
+            label="Telefone"
+            placeholderText="(00) 0000-0000"
+            mask="phone"
+          />
+        </div>
 
         <Input<SignUpCompanySchemaType>
           name="password"
           control={control}
           errors={errors}
-          placeholderText="Crie sua senha"
+          label="Senha"
+          placeholderText="Digite sua senha"
           typeInput="password"
+          rules={rules}
         />
 
         <Input<SignUpCompanySchemaType>
           name="confirmPassword"
           control={control}
           errors={errors}
+          label="Confirmar senha"
           placeholderText="Confirme sua senha"
           typeInput="password"
         />
 
-        <div className="flex flex-col gap-2 text-[19px]">
-          <span className="text-primary-blue-700">Sua senha deve conter:</span>
-          {rules.map((rule) => (
-            <div key={rule.label} className="flex items-center gap-2">
-              {rule.valid
-                ? <BiCheck className="text-primary-blue-700 w-5 h-5" />
-                : <IoClose className="text-[#CF1A0F] w-5 h-5" />
-              }
-              <span className={rule.valid ? "text-primary-blue-700" : "text-[#CF1A0F]"}>
-                {rule.label}
-              </span>
-            </div>
-          ))}
-
-          <span className="text-primary-blue-700">*campos obrigatórios</span>
+        <div className="w-full h-[52px]">
+          <PrimaryButton isDisabled={isPending || !isValid}>
+            {isPending ? (
+              <>
+                Carregando
+                <ButtonLoader />
+              </>
+            ) : (
+              "Criar conta"
+            )}
+          </PrimaryButton>
         </div>
-
-        <PrimaryButton isDisabled={isPending}>
-          {isPending ? (
-            <>
-              Carregando
-              <ButtonLoader />
-            </>
-          ) : (
-            "Criar conta"
-          )}
-        </PrimaryButton>
       </div>
 
 
