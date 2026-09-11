@@ -64,6 +64,28 @@ const ProfilePage = lazy(() =>
   }))
 );
 
+const CertificateModelPage = lazy(
+  () => import("./pages/CertificateModel")
+);
+
+const CertificateDetails = lazy(() =>
+  import("./pages/Certificatedetails").then((m) => ({
+    default: m.CertificateDetails,
+  }))
+);
+
+const mockCertificate = {
+  id: "1",
+  studentName: "MARIA DA SILVA",
+  issueDate: "2026-03-08",
+  courseName: "Desenvolvimento Front-end",
+  workload: "40 horas",
+  authenticityCode: "DJFEJ338-94320",
+  title: "Certificado de Conclusão",
+  institution: "Certify",
+  signature: "",
+};
+
 function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
@@ -74,6 +96,11 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/perfil" element={<ProfilePage />} />
+         <Route path="/modelo-certificado" element={<CertificateModelPage />} />
+          <Route
+  path="/certificados/visualizar"
+  element={<CertificateDetails certificate={mockCertificate} />}
+/>
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
