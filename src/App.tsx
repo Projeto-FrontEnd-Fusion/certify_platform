@@ -7,6 +7,9 @@ import { NotFound } from "./pages/Notfound";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { DownloadCertificate } from "./pages/DownloadCertificate";
 import { ProtecteCertificateRouter } from "./components/ProtectedCertificate";
+import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout";
+import { CertificateCompany } from "./pages/CertificateCompany";
+
 
 const Login = lazy(() =>
   import("./pages/Login").then((m) => ({
@@ -45,15 +48,15 @@ const MyCertificates = lazy(() =>
 );
 
 const PrivacyPolicy = lazy(() =>
-import("./pages/PrivacyPolicy").then((m) =>({
-  default : m.PrivacyPolicy,
-}))
+  import("./pages/PrivacyPolicy").then((m) => ({
+    default: m.PrivacyPolicy,
+  }))
 )
 
 const ContactPage = lazy(() =>
-import('./pages/ContactPage').then((m) =>({
-  default : m.ContactPage,
-}))
+  import('./pages/ContactPage').then((m) => ({
+    default: m.ContactPage,
+  }))
 )
 const ProfilePage = lazy(() =>
   import("./pages/ProfilePage").then((m) => ({
@@ -82,14 +85,23 @@ function App() {
               <ProtecteCertificateRouter>
                 <DownloadCertificate />
               </ProtecteCertificateRouter>
-              
-              } />
-              
+
+            } />
+
             <Route path="meus-dados" element={<NotFound />} />
-             <Route path="validar-certificados" element={<NotFound />} />
+            <Route path="validar-certificados" element={<NotFound />} />
+          </Route>
+
+          <Route path="/empresa" element={<CompanyLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<NotFound />} />
+            <Route path="certificados" element={<CertificateCompany />} />
+            <Route path="alunos" element={<NotFound />} />
+            <Route path="modelos" element={<NotFound />} />
+            <Route path="relatorios" element={<NotFound />} />
           </Route>
         </Route>
-        
+
 
         <Route path="*" element={<NotFound />} />
       </Routes>
