@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiLoader } from "react-icons/bi";
 import { ToastContainer } from "react-toastify";
 import { useVerifyCodeAuth } from "@/hooks/Auth/useVerifyCodeAuth";
@@ -14,7 +14,7 @@ export const VerifyCode = () => {
   const [hasError, setHasError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const { mutate, isPending, isSuccess, isError, error, reset } = useVerifyCodeAuth();
+  const { mutate, isPending, isSuccess, isError, reset } = useVerifyCodeAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,7 +42,7 @@ export const VerifyCode = () => {
   }, [isError]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     if (countdown > 0) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     }
@@ -178,7 +178,7 @@ return (
                 <input
                   key={index}
                   id={`otp-${index}`}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  ref={(el) => { inputRefs.current[index] = el; }}
                   type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"

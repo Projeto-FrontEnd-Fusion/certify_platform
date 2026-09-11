@@ -14,24 +14,17 @@ import { getPasswordRules } from "@/utils/passwordRules";
 export function CompanyForm() {
   const { errors, handleSubmit, reset, control, watch, isValid } = useFormValidation(SignUpCompanySchema, {
     fullname: "",
+    razao_social: "",
     email: "",
     cnpj: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
-  const { isPending, isSuccess, isError, mutate } = useAuthSignUp();
+  const { isPending, isSuccess, mutate } = useAuthSignUp();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isError) {
-      toast.error('Falha ao Cadastrar, tente novamente mais tarde', {
-        position: "top-center",
-        autoClose: 5000,
-        ...TOAST_STYLES.error
-      });
-    }
-
     if (isSuccess) {
       toast.success('Cadastro realizado com sucesso!', {
         position: "top-center",
@@ -46,14 +39,12 @@ export function CompanyForm() {
       }, 2000);
 
     }
-  }, [isError, isSuccess, navigate, reset]);
+  }, [isSuccess, navigate, reset]);
 
   const passwordValue = watch("password", "");
   const rules = getPasswordRules(passwordValue);
 
   const onSubmit = (formData: SignUpCompanySchemaType) => {
-    console.log("Formulário submetido", formData);
-
     const companyPayload = toCompanyPayload(formData);
     mutate(companyPayload);
   };
@@ -61,6 +52,13 @@ export function CompanyForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-4">
+        <Input<SignUpCompanySchemaType>
+          name="razao_social"
+          control={control}
+          errors={errors}
+          label="Razão social"
+          placeholderText="Digite a razão social da empresa"
+        />
         <Input<SignUpCompanySchemaType>
           name="fullname"
           control={control}

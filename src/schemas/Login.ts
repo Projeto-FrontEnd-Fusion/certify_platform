@@ -1,6 +1,7 @@
 import z from "zod/v3";
 
 export const LoginSchema = z.object({
+  rememberMe: z.boolean().optional(),
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")

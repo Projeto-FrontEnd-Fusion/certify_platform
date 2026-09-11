@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiLoader } from "react-icons/bi";
 import { ToastContainer } from 'react-toastify';
 import { useFormValidation } from "@/hooks/useForm";
@@ -36,7 +36,7 @@ export const ForgotPassword = () => {
     }
   }, [isSuccess, navigate]);
 
-  const onSubmit = handleSubmit((formData: any) => {
+  const onSubmit = handleSubmit((formData) => {
     mutate(formData.identifier);
   });
 

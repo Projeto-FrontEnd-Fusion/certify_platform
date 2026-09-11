@@ -23,6 +23,7 @@ export const useCheckAvailableCertificate = (certificateId: string) => {
       
     },
     queryKey: QUERY_KEY,
+    enabled: Boolean(certificateId),
     
     
   })

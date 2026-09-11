@@ -1,10 +1,10 @@
-import { useForm } from "react-hook-form";
+import { useForm, type DefaultValues, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ZodTypeAny, z } from "zod/v3";
+import { z } from "zod/v3";
 
-export const useFormValidation = <T extends ZodTypeAny>(
-  schema: T,
-  defaultValues?: z.infer<T>
+export const useFormValidation = <T extends FieldValues>(
+  schema: z.ZodType<T, z.ZodTypeDef & { typeName: string }, T>,
+  defaultValues?: DefaultValues<T>
 ) => {
   const {
     register,
@@ -13,7 +13,7 @@ export const useFormValidation = <T extends ZodTypeAny>(
     control,
     watch,
     formState: { errors, isValid },
-  } = useForm<any>({
+  } = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues,
     mode: "onChange",

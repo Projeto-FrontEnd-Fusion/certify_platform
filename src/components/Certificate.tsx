@@ -9,7 +9,7 @@ import type { CertificateInDb } from "@/api/Certificate/@types";
 export const Certificate = () => {
   const { auth } = useAuthStoreData();
 
-  const { data, isLoading, isError } = useCheckAvailableCertificate(auth?._id!);
+  const { data, isLoading, isError } = useCheckAvailableCertificate(auth?._id ?? "");
 
   if (!auth) {
     return <span>Usuário não autenticado</span>;

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const ForgotPasswordSchema = z.object({
   identifier: z.string().min(1, 'Campo obrigatório').refine(val => {
