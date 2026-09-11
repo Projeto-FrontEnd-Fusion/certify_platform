@@ -1,26 +1,78 @@
-import { Certificate } from "@/components/Certificate";
-import { DownloadButton } from "@/components/DownloadButton";
+// import { Certificate } from "@/components/Certificate";
+// import { DownloadButton } from "@/components/DownloadButton";
+import TechLogo from '@/assets/tech-logo.png';
+import { PrimaryButton } from '@/components/ButtonPrimary';
+import { SecondaryButton } from '@/components/ButtonSecondary';
+import { FiLinkedin } from 'react-icons/fi';
+import { GoDownload } from "react-icons/go";
+import { MdOutlineEmail } from "react-icons/md";
 
 
 export const DownloadCertificate = () => {
   return (
-    <section className="bg-[#F4F5F9] h-600px font-inter flex flex-col items-center  py-13 gap-4 relative">
-      <div className="space-y-2 text-center max-w-[20rem] md:max-w-[30rem]">
-        <h2 className="text-xl font-semibold text-[#1A1551] md:text-3xl">
-          Seu certificado está pronto!!
-        </h2>
-        <p className="text-[#1a1551cc] md:text-lg">
-          Parabéns pela conquista! Agora você pode baixar e compartilhar seu
-          reconhecimento.
+    <section className="px-32 py-16 bg-[#F9FAFB] h-full flex flex-col gap-16">
+      <h1 className="text-[#1E293B] font-bold text-2xl">Nome do curso</h1>
+
+      <div className="bg-white border-8 border-primary-blue-base pt-20 pb-12 flex flex-col items-center">
+        <h2 className="uppercase text-primary-blue-base font-bold text-[55px]">Certificado</h2>
+        <span className="text-black text-[40px] font-normal mb-[42px]">de Conclusão de Curso</span>
+
+        <p className="text-black font-normal text-2xl text-center">
+          Certificamos que
+          <br />
+          <span className="text-[40px]">Maria Silva</span>
         </p>
+
+        <div className="w-full max-w-[460px] h-[1px] bg-black mt-2 mb-[54px]"></div>
+        <p className="text-black font-normal text-2xl">Concluiu com êxito o curso online</p>
+        <span className="text-primary-blue-600 font-bold text-[27px]">Desenvolvimento Web Full Stack</span>
+        <p className="text-black font-normal text-2xl mb-[54px]">com carga horária de 160 horas realizado dia 08 de março de 2026.</p>
+
+        <div className='flex items-center gap-20'>
+          <div className='flex flex-col items-center'>
+            <img
+              src={TechLogo}
+              alt="Tech Logo"
+              className="w-[148px] h-[46px] object-contain"
+            />
+
+            <p className='text-black font-normal text-base'>Instituto de Tecnologia e Desenvolvimento</p>
+          </div>
+
+          <div className='flex flex-col items-center w-[355px] max-w-full'>
+            <div className="w-full h-px bg-black mb-1"></div>
+            <span>Nome do responsável</span>
+            <span>Descrição do cargo</span>
+          </div>
+        </div>
+
+        <p className='mt-[30px] text-black text-base font-normal text-center'>
+          Código de autenticidade: <span className='font-bold'>DJFEJ338-94320</span>
+          <br />
+          Esse certificado foi gerado pela Certify
+        </p>
+
       </div>
-      <Certificate />
 
-      {/* max-[370px]:scale-[0.2] min-[370px]:scale-[0.3] min-[500px]:scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.8] 
-        xl:scale-100 */}
-
-      <div className="flex gap-3 absolute top-[25rem] min-[370px]:top-[27rem] min-[500px]:top-[32rem]  min-[500px]:gap-6 sm:gap-10 sm:top-[37rem] md:top-[41.5rem] lg:top-[51.5rem] xl:static">
-        <DownloadButton />
+      <div className='flex gap-[42px] px-[150px] w-full h-[52px]'>
+        <PrimaryButton>
+          <span className='flex justify-center items-center gap-3'>
+            Fazer download
+            <GoDownload className='w-5 h-5' />
+          </span>
+        </PrimaryButton>
+        <SecondaryButton>
+          <span className='flex justify-center items-center gap-3'>
+            Enviar por e-mail
+            <MdOutlineEmail className='w-5 h-5' />
+          </span>
+        </SecondaryButton>
+        <SecondaryButton>
+          <span className='flex justify-center items-center gap-3'>
+            Compartilhar no LinkedIn
+            <FiLinkedin className='w-5 h-5' />
+          </span>
+        </SecondaryButton>
       </div>
     </section>
   );
