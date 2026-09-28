@@ -270,7 +270,7 @@ return (
             href="mailto:suporte@certify.com.br"
             className="font-bold text-[#0069A8] hover:underline"
           >
-            suporte@certify.com.br
+          projetofrontendfusion@gmail.com
           </a>
         </div>
       </div>

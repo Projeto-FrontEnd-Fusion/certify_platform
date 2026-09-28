@@ -282,7 +282,7 @@ return (
               href="mailto:suporte@certify.com.br"
               className="text-sm font-semibold text-[#0069A8] transition-colors hover:underline"
             >
-              suporte@certify.com.br
+            projetofrontendfusion@gmail.com
             </a>
           </div>
         </div>

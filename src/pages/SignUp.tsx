@@ -50,7 +50,7 @@ export const SignUpForm = () => {
             <p className="text-[#4B5563] text-base font-medium">
               Fale com nosso suporte:{" "}
               <span className="text-[#0069A8]">
-                suporte@certify.com.br
+              projetofrontendfusion@gmail.com
               </span>
             </p>
           </div>
