@@ -26,3 +26,5 @@ export interface CertificateFilters {
   endDate: string;
   student: string;
 }
+
+export type RequestStatus = "loading" | "error" | "notFound" | "success";

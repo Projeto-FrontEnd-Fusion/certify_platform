@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
+import { CiBellOn } from "react-icons/ci";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 import { LogoCertify } from "@/components/LogoCertify";
 import { Logo } from "@/components/Logo";
@@ -18,11 +19,38 @@ export const CompanyLayout = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col md:flex-row h-screen">
+      <header
+        className="flex justify-between items-center px-4 py-7 md:hidden bg-[#0F2441] rounded-b-2xl"
+      >
+        <LogoCertify
+          iconColor="#2571B8"
+          certiColor="white"
+          fyColor="white"
+          className="h-8 w-[108px]"
+        />
+
+        <div className="flex items-center gap-3">
+          <button className="p-2 border border-white/10 rounded-full ">
+            <CiBellOn className="text-white w-5 h-5" />
+          </button>
+
+          <button className="p-2 border border-white/10 rounded-full ">
+            <CiSettings className="text-white w-5 h-5" />
+          </button>
+
+          <button className="p-2 border border-white/10 rounded-full ">
+            <LuLogOut className="text-[#FF0000]" />
+          </button>
+        </div>
+
+      </header>
+
       <aside
         className={`
+        hidden
         h-full
-        flex
+        md:flex
         flex-col
         justify-between
         bg-gradient-to-b

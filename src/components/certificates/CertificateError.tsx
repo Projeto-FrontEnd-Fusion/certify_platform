@@ -1,13 +1,12 @@
-import { MdAdd } from "react-icons/md";
-import EmptyCertificateIcon from '@/assets/EmptyCertificateIcon.svg'
+import ErrorCertificateIcon from '@/assets/ErrorCertificateIcon.svg'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-interface EmptyStateProps {
-  onCreate?: () => void;
+interface CertificateErrorProps {
+  onRetry?: () => void;
+  isRetrying?: boolean;
 }
 
-export function EmptyState({
-  onCreate,
-}: EmptyStateProps) {
+export function CertificateError({ onRetry, isRetrying = false }: CertificateErrorProps) {
   return (
     <div className="flex min-h-[570px] flex-col items-center justify-center">
       <div
@@ -21,21 +20,22 @@ export function EmptyState({
         "
       >
         <img
-          src={EmptyCertificateIcon}
+          src={ErrorCertificateIcon}
         />
       </div>
 
       <h3 className="text-base font-semibold text-[#111111]">
-        Nenhum certificado criado ainda
+        Não foi possível carregar os certificados
       </h3>
 
       <p className="mt-1 text-sm text-[#111111]/40">
-        Crie seu primeiro certificado para começar
+        Tente novamente em alguns instantes
       </p>
 
       <button
         type="button"
-        onClick={onCreate}
+        onClick={onRetry}
+        disabled={isRetrying}
         className="
           mt-5
           inline-flex
@@ -54,11 +54,15 @@ export function EmptyState({
           focus:ring-2
           focus:ring-[#0069A8]/30
           focus:ring-offset-2
+          disabled:cursor-not-allowed
+          disabled:opacity-70
         "
       >
-        <MdAdd size={20} />
-        Novo certificado
+        {isRetrying && (
+          <AiOutlineLoading3Quarters size={20} className="animate-spin" />
+        )}
+        Tente novamente
       </button>
     </div>
-  );
+  )
 }
