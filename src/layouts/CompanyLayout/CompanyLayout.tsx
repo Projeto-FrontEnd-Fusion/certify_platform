@@ -19,7 +19,7 @@ export const CompanyLayout = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col md:flex-row">
       <header
         className="flex justify-between items-center px-4 py-7 md:hidden bg-[#0F2441] rounded-b-2xl"
       >
@@ -48,20 +48,24 @@ export const CompanyLayout = () => {
 
       <aside
         className={`
-        hidden
-        h-full
-        md:flex
-        flex-col
-        justify-between
-        bg-gradient-to-b
-        from-[#073D60]
-        to-[#102A45]
-        px-4
-        py-6
-        transition-all
-        duration-300
-        ${isMenuOpen ? "w-60" : "w-20"}
-      `}
+    sticky
+    top-0
+    z-50
+    hidden
+    h-screen
+    shrink-0
+    md:flex
+    flex-col
+    justify-between
+    bg-gradient-to-b
+    from-[#073D60]
+    to-[#102A45]
+    px-4
+    py-6
+    transition-all
+    duration-300
+    ${isMenuOpen ? "w-60" : "w-20"}
+  `}
       >
         <div>
           <header
@@ -160,7 +164,7 @@ export const CompanyLayout = () => {
         </div>
       </aside>
 
-      <main className="flex-1 p-6 bg-[#EFEFEF]">
+      <main className="min-w-0 flex-1 bg-[#EFEFEF] p-6">
         <Outlet />
       </main>
     </div>
