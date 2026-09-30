@@ -13,6 +13,7 @@ import type {
   CertificateFilters as CertificateFiltersType,
   RequestStatus,
 } from "@/components/certificates/types";
+import { SelectTemplateModal } from "@/components/certificates/SelectTemplateModal";
 
 export const CertificateCompany = () => {
   const filterOptions = ['Todos', 'Rascunhos', 'Emitidos', 'Expirados', 'Cancelados'];
@@ -21,9 +22,12 @@ export const CertificateCompany = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState<RequestStatus>("error");
   const [isRetrying, setIsRetrying] = useState(false);
+  const [isCreateCertificateOpen, setIsCreateCertificateOpen] = useState<boolean>(false)
 
   function handleCreateCertificate() {
     console.log("Criar certificado");
+
+    setIsCreateCertificateOpen(true)
   }
 
   function handleApplyFilters(
@@ -82,7 +86,9 @@ export const CertificateCompany = () => {
       </header>
 
       <div className="my-3 md:hidden flex justify-end">
-        <button className="h-[34px] w-[146px] flex justify-center items-center gap-2 bg-[#0069A8] rounded-md text-[#F9FAFB] text-xs font-semibold">
+        <button
+          onClick={handleCreateCertificate}
+          className="h-[34px] w-[146px] flex justify-center items-center gap-2 bg-[#0069A8] rounded-md text-[#F9FAFB] text-xs font-semibold">
           <MdAdd />
           Novo Certificado
         </button>
@@ -111,7 +117,7 @@ export const CertificateCompany = () => {
           </div>
 
           <div className="hidden md:block h-12 w-[218px]">
-            <PrimaryButton>
+            <PrimaryButton onClick={handleCreateCertificate}>
               <div className="flex items-center justify-center gap-3">
                 <MdAdd size={20} />
                 Novo Certificado
@@ -187,6 +193,10 @@ export const CertificateCompany = () => {
         onClose={() => setIsFilterOpen(false)}
         onApply={handleApplyFilters}
       />
+
+      {isCreateCertificateOpen && (
+        <SelectTemplateModal onClose={() => setIsCreateCertificateOpen(false)} />
+      )}
     </div>
   )
 }
