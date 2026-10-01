@@ -1,6 +1,25 @@
-import type { CertificateInDb } from "./Certificate/@types"
 
 export type status = "pending" | "available" | "expired";
+
+/**
+ * =========================================
+ * Auth
+ * =========================================
+ */
+
+export interface AuthSignUp {
+  fullname: string;
+  email: string;
+  password: string;
+  cpf?: string;
+  phone?: string;
+  role: string;
+}
+
+export interface CompanySignUp extends AuthSignUp {
+  razao_social: string;
+  cnpj: string;
+}
 
 export interface AuthUserReponse {
   _id: string;
@@ -12,6 +31,51 @@ export interface AuthUserReponse {
   updated_at?: string;
   status?: status;
 }
+
+/**
+ * =========================================
+ * Certificate
+ * =========================================
+ */
+
+export interface CertificateInDb {
+  id: string;
+  user_id: string;
+  access_key: string;
+  status: status;
+  participant_name: string;
+  participant_email: string;
+  institution_name: string;
+  event_id: string;
+  event_name: string;
+  description: string;
+  workload: string;
+  event_start?: Date | null;
+  event_end?: Date | null;
+  event_date?: Date | null;
+  issued_at?: Date | null;
+  valid_until: Date;
+}
+
+export interface CertificateRequest {
+  fullname: string;
+  access_key?: string | undefined;
+  event_id: string | number;
+  status: status;
+  email: string;
+}
+
+export interface CertificateResponse extends BaseResponse{
+  data : {
+    certificate : CertificateInDb
+  }
+}
+
+/**
+ * =========================================
+ * Base Response
+ * =========================================
+ */
 
 export interface BaseResponse {
   success : boolean,
@@ -33,11 +97,6 @@ export interface ErrorResponse extends BaseResponse {
 }
 
 
-export interface CertificateResponse extends BaseResponse{
-  data : {
-    certificate : CertificateInDb
-  }
-}
 
 
 export type ApiAuthResponse = SucessResponse | ErrorResponse | CertificateResponse

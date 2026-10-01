@@ -1,4 +1,4 @@
-import type { CertificateRequest } from "@/api/Certificate/CertificateService"
+import type { CertificateRequest } from "@/api/@types"
 import { certificateServiceInstance } from "@/api/implements"
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer"
 import { useAuthStoreData } from "@/stores/useAuthStore"
