@@ -69,7 +69,7 @@ const CertificateModelPage = lazy(
 );
 
 const CertificateDetails = lazy(() =>
-  import("./pages/Certificatedetails").then((m) => ({
+  import("./pages/CertificateDetails").then((m) => ({
     default: m.CertificateDetails,
   }))
 );

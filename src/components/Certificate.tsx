@@ -4,7 +4,7 @@ import MedalCertificate from "@/assets/MedalCertificate.svg";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { formatDate } from "@/utils/FormatDate";
 import { useCheckAvailableCertificate } from "@/hooks/Certificate/useCheckAvailable";
-import type { CertificateInDb } from "@/api/Certificate/@types";
+import type { CertificateInDb } from "@/api/@types";
 
 export const Certificate = () => {
   const { auth } = useAuthStoreData();
@@ -19,7 +19,7 @@ export const Certificate = () => {
   if (isError) return <span>Falha ao obter certificado</span>;
 
    
-  const certificate =  data?.data.certificate as CertificateInDb
+  const certificate =  data?.data.certificate[0] as CertificateInDb
     const decriptionSplit =
      certificate?.description.split(certificate?.event_name ?? "") || [];
 

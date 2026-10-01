@@ -21,7 +21,7 @@ export const useCreateCertificate = () =>  {
 
       console.log("Certificate created successfully!", data);
       updateAuth({status : "available"})
-      setcertificate(data.data.certificate)
+      setcertificate(data.data.certificate[0])
 
 
        toast.success('Certificado Disponivel', {

@@ -23,4 +23,11 @@ export class CertificateService implements CertificateRepository {
     );
     return response.data;
   }
+
+  public async listCertificateByUserId(userId: string) : Promise<CertificateResponse> {
+    const response = await this.httpServiceAcessClient.get(
+      `/certificate/users/${userId}`
+    );
+    return response.data;
+  }
 }
