@@ -1,5 +1,5 @@
 import type { AxiosInstance } from "axios";
-import type { CertificateRequest, CertificateResponse } from "../@types";
+import type { CertificateRequest, CertificateResponse, CertificateListResponse } from "../@types";
 import type { CertificateRepository } from "./CertificateRepository";
 
 export class CertificateService implements CertificateRepository {
@@ -24,7 +24,7 @@ export class CertificateService implements CertificateRepository {
     return response.data;
   }
 
-  public async listCertificateByUserId(userId: string) : Promise<CertificateResponse> {
+  public async listCertificateByUserId(userId: string) : Promise<CertificateListResponse> {
     const response = await this.httpServiceAcessClient.get(
       `/certificate/users/${userId}`
     );

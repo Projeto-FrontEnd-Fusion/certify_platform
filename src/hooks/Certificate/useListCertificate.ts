@@ -1,4 +1,4 @@
-import type { CertificateResponse } from "@/api/@types"
+import type { CertificateListResponse } from "@/api/@types"
 import { useAuthStoreData } from "@/stores/useAuthStore"
 import { certificateServiceInstance } from "@/api/implements"
 import { useQuery } from "@tanstack/react-query"
@@ -10,21 +10,20 @@ export function useListCertificateByUserId() {
 
   //console.log(auth?._id);
 
-  return useQuery<CertificateResponse, AxiosError>({
+  return useQuery<CertificateListResponse, AxiosError>({
 
-    enabled: !!auth,
+    enabled: !!auth?._id,
 
-    queryKey: ['user_id', auth?._id],
+    queryKey: ['certificate', 'list', auth?._id],
     
     queryFn: async () => {
+      
       const response = await certificateServiceInstance.listCertificateByUserId(auth!._id)
       
-      if (response?.data) {
-        //console.log("Aporra do certificado foi encontrado", response.data.certificate[0].participant_email)
-      }
-      return response as CertificateResponse;
+      return response;
     },
     
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
+
 }

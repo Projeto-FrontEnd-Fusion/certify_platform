@@ -16,7 +16,7 @@ export const useCheckAvailableCertificate = (certificateId: string) => {
       
       if (response?.data?.certificate) {
         console.log("Aporra do certificado foi encontrado", response.data)
-        setcertificate(response.data.certificate[0] as CertificateInDb)
+        setcertificate(response.data.certificate as CertificateInDb)
       }
       return response
       

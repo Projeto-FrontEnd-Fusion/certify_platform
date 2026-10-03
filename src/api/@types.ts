@@ -67,11 +67,17 @@ export interface CertificateRequest {
 
 export interface CertificateResponse extends BaseResponse{
   data: {
+    certificate: CertificateInDb;
+  };
+}
+
+export interface CertificateListResponse extends BaseResponse{
+  data: {
     total: number;
     page: number;
     limit: number;
     total_pages: number;
-    items: CertificateInDb[]; // Corrigido de 'certificate' para 'items'
+    items: CertificateInDb[];
   };
 }
 

@@ -19,7 +19,7 @@ export const Certificate = () => {
   if (isError) return <span>Falha ao obter certificado</span>;
 
    
-  const certificate =  data?.data.certificate[0] as CertificateInDb
+  const certificate =  data?.data.certificate as CertificateInDb
     const decriptionSplit =
      certificate?.description.split(certificate?.event_name ?? "") || [];
 

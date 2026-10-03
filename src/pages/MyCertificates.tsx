@@ -12,9 +12,6 @@ export function MyCertificates() {
   
   const institution = data?.data?.items || [];
 
-  if (data?.success) {
-    console.log(data.data.items);
-  }
   if (isLoading) return <p>Buscando certificados do usuário...</p>;
   if (isError) return <p>Erro ao carregar os certificados.</p>;
   
