@@ -4,7 +4,7 @@ import MedalCertificate from "@/assets/MedalCertificate.svg";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { formatDate } from "@/utils/FormatDate";
 import { useCheckAvailableCertificate } from "@/hooks/Certificate/useCheckAvailable";
-import type { CertificateInDb } from "@/api/Certificate/@types";
+import type { CertificateInDb } from "@/api/@types";
 
 export const Certificate = () => {
   const { auth } = useAuthStoreData();

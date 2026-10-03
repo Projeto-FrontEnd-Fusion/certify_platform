@@ -3,7 +3,6 @@ import axios, { type AxiosInstance } from "axios"
 export class AuthApiInstance {
   private static instance: AxiosInstance | null = null
   
-  
   private constructor() {}
 
   public static createInstance(baseURL: string): AxiosInstance {
@@ -43,5 +42,4 @@ export class AuthApiInstance {
     
     return this.instance
   }
-
 }

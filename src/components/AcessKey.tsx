@@ -3,7 +3,7 @@ import { useAuthStoreData } from "@/stores/useAuthStore";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { AccessKeyHandler } from "@/utils/AcessKey";
 import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
-import type { CertificateRequest } from "@/api/Certificate/CertificateService";
+import type { CertificateRequest } from "@/api/@types";
 import { Link, useNavigate } from "react-router-dom";
 
 

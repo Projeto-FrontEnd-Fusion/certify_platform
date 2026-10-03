@@ -1,27 +1,8 @@
-import type { AxiosInstance } from "axios";import type { CertificateResponse } from "../@types";
+import type { AxiosInstance } from "axios";
+import type { CertificateRequest, CertificateResponse, CertificateListResponse } from "../@types";
+import type { CertificateRepository } from "./CertificateRepository";
 
-   
-export type status = "pending" | "available" | "expired"
-
-export interface CertificateRequest {
-  fullname: string;
-  access_key?: string | undefined;
-  event_id: string | number;
-  status: status;
-  email: string;
-}
-
-
-interface CertificateServiceInterface {
-  createCertificate(
-    userId: string,
-    certificate_data: CertificateRequest
-  ): Promise<CertificateResponse>;
-  findCertificateById(certificateId: string): Promise<CertificateResponse>;
-
-}
-
-export class CertificateService implements CertificateServiceInterface {
+export class CertificateService implements CertificateRepository {
   private httpServiceAcessClient: AxiosInstance;
 
   constructor(api: AxiosInstance) {
@@ -39,6 +20,20 @@ export class CertificateService implements CertificateServiceInterface {
   public async findCertificateById(certificateId: string): Promise<CertificateResponse> {
     const response = await this.httpServiceAcessClient.get(
       `/certificate/${certificateId}`
+    );
+    return response.data;
+  }
+
+  public async listCertificateByUserId(userId: string) : Promise<CertificateListResponse> {
+    const response = await this.httpServiceAcessClient.get(
+      `/certificate/users/${userId}`
+    );
+    return response.data;
+  }
+
+  public async validateCertificate(access_key: string): Promise<CertificateResponse> {
+    const response = await this.httpServiceAcessClient.get(
+      `/certificate/validate/${access_key}`
     );
     return response.data;
   }

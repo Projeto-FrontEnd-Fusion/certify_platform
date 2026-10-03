@@ -1,9 +1,22 @@
 import { CertificateCard } from "@/components/CertificateCard";
+import { useListCertificateByUserId } from "@/hooks/Certificate/useListCertificate";
 import { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 
 export function MyCertificates() {
 
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { data, isLoading, isError } = useListCertificateByUserId();
+  
+  const institution = data?.data?.items || [];
+
+  if (isLoading) return <p>Buscando certificados do usuário...</p>;
+  if (isError) return <p>Erro ao carregar os certificados.</p>;
+  
+
+  /*
   const [institution,] = useState<{ institution: string, event: string, date: string }[]>(
     [
       {
@@ -64,14 +77,13 @@ export function MyCertificates() {
     ]
 
   )
-
-  const [searchTerm, setSearchTerm] = useState("");
+*/
 
   const hasCertificates = institution.length > 0;
 
   const filteredCertificates = institution.filter(cert => (
-    cert.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cert.institution.toLowerCase().includes(searchTerm.toLowerCase())
+    cert.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cert.institution_name.toLowerCase().includes(searchTerm.toLowerCase())
   ));
 
   const hasSearchResults = filteredCertificates.length > 0;
@@ -124,10 +136,10 @@ export function MyCertificates() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
               {filteredCertificates.map((cert) => (
                 <CertificateCard
-                  key={cert.event}
-                  institution={cert.institution}
-                  date={formatDate(cert.date)}
-                  event={cert.event}
+                  key={cert.event_name}
+                  institution={cert.institution_name}
+                  date={formatDate(cert.event_date?.toString()??"")}
+                  event={cert.event_name}
                 />
               ))}
             </div>
