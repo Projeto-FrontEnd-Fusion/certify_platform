@@ -3,6 +3,7 @@ import { useListCertificateByUserId } from '@/hooks/Certificate/useListCertifica
 import { useAuthStoreData } from '@/stores/useAuthStore';
 import { useCreateCertificate } from '@/hooks/Certificate/useCreateCertificate';
 import { useCheckAvailableCertificate } from '@/hooks/Certificate/useCheckAvailable';
+import { useValidateCertificate } from '@/hooks/Certificate/useValidateCertificate';
 
 import type { CertificateRequest } from '@/api/@types';
 
@@ -134,6 +135,34 @@ function TestGetCertificate() {
 
 }
 
+function TestValidateCertificate() {
+
+    const [accessKey, setAccessKey] = useState('');
+
+    const { data, isLoading, isError, error } = useValidateCertificate(accessKey);
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={accessKey}
+                onChange={(e) => {
+                        setAccessKey(e.target.value)
+                    }
+                }
+                placeholder="access_key"
+            />
+
+            <div>
+                {isLoading ? "carregando" : 
+                    isError ? error?.message :
+                    JSON.stringify(data, null, 2)
+                }
+            </div>
+
+        </div>
+    )
+}
 
 export function TestCertificate() {
 
@@ -143,6 +172,7 @@ export function TestCertificate() {
             <TestListCertificate/>
             <TestCreateCertificate/>
             <TestGetCertificate/>
+            <TestValidateCertificate/>
         </div>
     )
 }

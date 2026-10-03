@@ -30,4 +30,11 @@ export class CertificateService implements CertificateRepository {
     );
     return response.data;
   }
+
+  public async validateCertificate(access_key: string): Promise<CertificateResponse> {
+    const response = await this.httpServiceAcessClient.get(
+      `/certificate/validate/${access_key}`
+    );
+    return response.data;
+  }
 }
