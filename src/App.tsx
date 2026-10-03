@@ -74,6 +74,20 @@ const CertificateDetails = lazy(() =>
   }))
 );
 
+/**===========================================
+ * Paginas para testar a integracao com a API
+ * ===========================================
+ */
+const TestLogin = lazy(() => import("./pages/__test__/Login").then((m) => ({ default: m.TestLogin })));
+const TestCertificate = lazy(() => import("./pages/__test__/Certificate").then((m) => ({ default: m.TestCertificate })));
+const TestEvent = lazy(() => import("./pages/__test__/Event").then((m) => ({ default: m.TestEvent })));
+/**===========================================
+ * 
+ * ===========================================
+ */
+
+
+
 const mockCertificate = {
   id: "1",
   studentName: "MARIA DA SILVA",
@@ -128,7 +142,12 @@ function App() {
             <Route path="relatorios" element={<NotFound />} />
           </Route>
         </Route>
-
+        
+        <Route path="/teste" >
+          <Route path="login" element={<TestLogin />} />
+          <Route path="certificate" element={<TestCertificate />} />
+          <Route path="event" element={<TestEvent />} />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>
