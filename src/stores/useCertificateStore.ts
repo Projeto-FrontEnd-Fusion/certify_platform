@@ -1,4 +1,4 @@
-import type { CertificateInDb } from "@/api/Certificate/@types";
+import type { CertificateInDb } from "@/api/@types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

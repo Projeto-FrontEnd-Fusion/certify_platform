@@ -1,5 +1,4 @@
-import type { CertificateResponse } from "@/api/@types"
-import type { CertificateInDb } from "@/api/Certificate/@types"
+import type { CertificateResponse, CertificateInDb } from "@/api/@types"
 import { certificateServiceInstance } from "@/api/implements"
 import { useCertificateStoreData } from "@/stores/useCertificateStore"
 import { useQuery } from "@tanstack/react-query"

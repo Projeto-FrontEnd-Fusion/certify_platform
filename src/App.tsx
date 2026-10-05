@@ -70,10 +70,24 @@ const CertificateModelPage = lazy(
 );
 
 const CertificateDetails = lazy(() =>
-  import("./pages/Certificatedetails").then((m) => ({
+  import("./pages/CertificateDetails").then((m) => ({
     default: m.CertificateDetails,
   }))
 );
+
+/**===========================================
+ * Paginas para testar a integracao com a API
+ * ===========================================
+ */
+const TestLogin = lazy(() => import("./pages/__test__/Login").then((m) => ({ default: m.TestLogin })));
+const TestCertificate = lazy(() => import("./pages/__test__/Certificate").then((m) => ({ default: m.TestCertificate })));
+const TestEvent = lazy(() => import("./pages/__test__/Event").then((m) => ({ default: m.TestEvent })));
+/**===========================================
+ * 
+ * ===========================================
+ */
+
+
 
 const mockCertificate = {
   id: "1",
@@ -108,7 +122,6 @@ function App() {
             <Route index element={<Navigate to="/meus-certificados" replace />} />
             <Route path="pagina-de-contato" element={<ContactPage />} />
             <Route path="politica-de-privacidade" element={<PrivacyPolicy />} />
-            <Route path="meus-certificados" element={<MyCertificates />} />
             <Route path="download-certificado/:eventnane" element={
               <ProtecteCertificateRouter>
                 <DownloadCertificate />
