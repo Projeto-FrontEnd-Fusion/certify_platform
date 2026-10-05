@@ -111,6 +111,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/perfil" element={<ProfilePage />} />
          <Route path="/modelo-certificado" element={<CertificateModelPage />} />
+         <Route path="meus-certificados" element={<MyCertificates />} />
           <Route
   path="/certificados/visualizar"
   element={<CertificateDetails certificate={mockCertificate} />}
@@ -121,7 +122,6 @@ function App() {
             <Route index element={<Navigate to="/meus-certificados" replace />} />
             <Route path="pagina-de-contato" element={<ContactPage />} />
             <Route path="politica-de-privacidade" element={<PrivacyPolicy />} />
-            <Route path="meus-certificados" element={<MyCertificates />} />
             <Route path="download-certificado/:eventnane" element={
               <ProtecteCertificateRouter>
                 <DownloadCertificate />
