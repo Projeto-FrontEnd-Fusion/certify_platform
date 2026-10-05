@@ -9,6 +9,7 @@ import { DownloadCertificate } from "./pages/DownloadCertificate";
 import { ProtecteCertificateRouter } from "./components/ProtectedCertificate";
 import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout";
 import { CertificateCompany } from "./pages/CertificateCompany";
+import { CertificationCreate } from "./pages/CertificationCreate";
 
 
 const Login = lazy(() =>
@@ -110,12 +111,11 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/perfil" element={<ProfilePage />} />
-         <Route path="/modelo-certificado" element={<CertificateModelPage />} />
-         <Route path="meus-certificados" element={<MyCertificates />} />
-          <Route
-  path="/certificados/visualizar"
-  element={<CertificateDetails certificate={mockCertificate} />}
-/>
+        <Route path="/modelo-certificado" element={<CertificateModelPage />} />
+        <Route
+          path="/certificados/visualizar"
+          element={<CertificateDetails certificate={mockCertificate} />}
+        />
 
         <Route path="/" element={<AuthProtectedLayout />}>
           <Route element={<AuthLayout />}>
@@ -136,17 +136,15 @@ function App() {
           <Route path="/empresa" element={<CompanyLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<NotFound />} />
-            <Route path="certificados" element={<CertificateCompany />} />
+
+            <Route path="/empresa/certificados" element={<CertificateCompany />} />
+            <Route path="/empresa/certificados/criar" element={<Navigate to="/empresa/certificados" replace />} />
+            <Route path="/empresa/certificados/criar/:id" element={<CertificationCreate />} />
+
             <Route path="alunos" element={<NotFound />} />
             <Route path="modelos" element={<NotFound />} />
             <Route path="relatorios" element={<NotFound />} />
           </Route>
-        </Route>
-        
-        <Route path="/teste" >
-          <Route path="login" element={<TestLogin />} />
-          <Route path="certificate" element={<TestCertificate />} />
-          <Route path="event" element={<TestEvent />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

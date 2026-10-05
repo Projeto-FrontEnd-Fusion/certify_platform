@@ -28,3 +28,5 @@ export interface CertificateFilters {
 }
 
 export type RequestStatus = "loading" | "error" | "notFound" | "success";
+
+export type CertificateVariant = 'classico' | 'moderno' | 'ornamental' | 'sem-borda';
