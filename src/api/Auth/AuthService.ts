@@ -1,6 +1,6 @@
 import type { LoginSchemaType } from "@/schemas/Login";
-import type { AuthRepository, AuthSignUp, CompanySignUp } from "./AuthRepository";
-import type { ApiAuthResponse } from "../@types";
+import type { AuthRepository } from "./AuthRepository";
+import type { ApiAuthResponse, AuthSignUp, CompanySignUp } from "../@types";
 import type { AxiosInstance } from "axios";
 
 export class AuthService implements AuthRepository {
