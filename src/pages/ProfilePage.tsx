@@ -26,13 +26,21 @@ type ProfileFormData = ProfileData & {
 
 type ProfileErrors = {
   fullName?: string;
+  birthDate?: string;
+  email?: string;
+  phone?: string;
+  cpf?: string;
   currentPassword?: string;
   newPassword?: string;
   confirmPassword?: string;
   form?: string;
 };
 
-type FeedbackType = "success" | "error" | "warning" | "info";
+type FeedbackType =
+  | "success"
+  | "error"
+  | "warning"
+  | "info";
 
 type Feedback = {
   type: FeedbackType;
@@ -40,15 +48,13 @@ type Feedback = {
   message: string;
 };
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5173/";
 
 const initialProfile: ProfileData = {
   fullName: "Ana Silva",
   birthDate: "01/10/1996",
   email: "ana.silva@email.com",
-  phone: "(00) 0 0000-0000",
-  cpf: "000.000.000-00",
+  phone: "(11) 9 9999-9999",
+  cpf: "123.456.789-00",
 };
 
 const initialForm: ProfileFormData = {
@@ -71,13 +77,127 @@ const formatPhone = (value: string): string => {
     return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
   }
 
-  return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(
+  return `(${numbers.slice(0, 2)}) ${numbers.slice(
+    2,
     7
-  )}`;
+  )}-${numbers.slice(7)}`;
+};
+
+const formatCPF = (value: string): string => {
+  const numbers = value.replace(/\D/g, "").slice(0, 11);
+
+  if (numbers.length <= 3) {
+    return numbers;
+  }
+
+  if (numbers.length <= 6) {
+    return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
+  }
+
+  if (numbers.length <= 9) {
+    return `${numbers.slice(0, 3)}.${numbers.slice(
+      3,
+      6
+    )}.${numbers.slice(6)}`;
+  }
+
+  return `${numbers.slice(0, 3)}.${numbers.slice(
+    3,
+    6
+  )}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
+};
+
+const formatBirthDate = (value: string): string => {
+  const numbers = value.replace(/\D/g, "").slice(0, 8);
+
+  if (numbers.length <= 2) {
+    return numbers;
+  }
+
+  if (numbers.length <= 4) {
+    return `${numbers.slice(0, 2)}/${numbers.slice(2)}`;
+  }
+
+  return `${numbers.slice(0, 2)}/${numbers.slice(
+    2,
+    4
+  )}/${numbers.slice(4)}`;
 };
 
 const isValidEmail = (email: string): boolean => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const isValidCPF = (cpf: string): boolean => {
+  const numbers = cpf.replace(/\D/g, "");
+
+  if (numbers.length !== 11) {
+    return false;
+  }
+
+  if (/^(\d)\1+$/.test(numbers)) {
+    return false;
+  }
+
+  let sum = 0;
+
+  for (let i = 0; i < 9; i++) {
+    sum += Number(numbers[i]) * (10 - i);
+  }
+
+  let remainder = (sum * 10) % 11;
+
+  if (remainder === 10) {
+    remainder = 0;
+  }
+
+  if (remainder !== Number(numbers[9])) {
+    return false;
+  }
+
+  sum = 0;
+
+  for (let i = 0; i < 10; i++) {
+    sum += Number(numbers[i]) * (11 - i);
+  }
+
+  remainder = (sum * 10) % 11;
+
+  if (remainder === 10) {
+    remainder = 0;
+  }
+
+  return remainder === Number(numbers[10]);
+};
+
+const isValidPhone = (phone: string): boolean => {
+  const numbers = phone.replace(/\D/g, "");
+
+  return numbers.length === 10 || numbers.length === 11;
+};
+
+const isValidBirthDate = (
+  birthDate: string
+): boolean => {
+  const match = birthDate.match(
+    /^(\d{2})\/(\d{2})\/(\d{4})$/
+  );
+
+  if (!match) {
+    return false;
+  }
+
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+
+  const date = new Date(year, month - 1, day);
+
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
 };
 
 const getInitials = (name: string): string => {
@@ -86,43 +206,19 @@ const getInitials = (name: string): string => {
     .split(/\s+/)
     .filter(Boolean);
 
-  if (!parts.length) return "AS";
+  if (!parts.length) {
+    return "AS";
+  }
 
   if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase();
+    return parts[0]
+      .slice(0, 2)
+      .toUpperCase();
   }
 
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-};
-
-const getApiErrorMessage = async (
-  response: Response,
-  fallback: string
-): Promise<string> => {
-  try {
-    const contentType = response.headers.get("content-type") || "";
-
-    if (contentType.includes("application/json")) {
-      const data = await response.json();
-
-      return (
-        data?.message ||
-        data?.error ||
-        data?.detail ||
-        fallback
-      );
-    }
-
-    const text = await response.text();
-
-    if (text && !text.toLowerCase().includes("<!doctype")) {
-      return text;
-    }
-
-    return fallback;
-  } catch {
-    return fallback;
-  }
+  return `${parts[0][0]}${
+    parts[parts.length - 1][0]
+  }`.toUpperCase();
 };
 
 const getAvatarUrlFromResponse = (
@@ -132,7 +228,10 @@ const getAvatarUrlFromResponse = (
     return null;
   }
 
-  const response = data as Record<string, unknown>;
+  const response = data as Record<
+    string,
+    unknown
+  >;
 
   const possibleUrl =
     response.avatarUrl ||
@@ -145,6 +244,44 @@ const getAvatarUrlFromResponse = (
   return typeof possibleUrl === "string"
     ? possibleUrl
     : null;
+};
+
+const getApiErrorMessage = async (
+  response: Response,
+  fallback: string
+): Promise<string> => {
+  try {
+    const contentType =
+      response.headers.get("content-type") || "";
+
+    if (
+      contentType.includes("application/json")
+    ) {
+      const data = await response.json();
+
+      return (
+        data?.message ||
+        data?.error ||
+        data?.detail ||
+        fallback
+      );
+    }
+
+    const text = await response.text();
+
+    if (
+      text &&
+      !text
+        .toLowerCase()
+        .includes("<!doctype")
+    ) {
+      return text;
+    }
+
+    return fallback;
+  } catch {
+    return fallback;
+  }
 };
 
 export const Profilepage = () => {
@@ -200,81 +337,13 @@ export const Profilepage = () => {
     useRef<string | null>(null);
 
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const response = await fetch(
-          `${API_URL}/students/me`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-            },
-            credentials: "include",
-          }
+    return () => {
+      if (previousPreviewRef.current) {
+        URL.revokeObjectURL(
+          previousPreviewRef.current
         );
-
-        if (!response.ok) {
-          return;
-        }
-
-        const contentType =
-          response.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-          return;
-        }
-
-        const data = await response.json();
-
-        const profileData: ProfileData = {
-          fullName:
-            data.fullName ||
-            data.full_name ||
-            initialProfile.fullName,
-
-          birthDate:
-            data.birthDate ||
-            data.birth_date ||
-            initialProfile.birthDate,
-
-          email:
-            data.email ||
-            initialProfile.email,
-
-          phone:
-            data.phone ||
-            initialProfile.phone,
-
-          cpf:
-            data.cpf ||
-            initialProfile.cpf,
-        };
-
-        setProfile(profileData);
-        setOriginalData(profileData);
-
-        setFormData((previous) => ({
-          ...previous,
-          ...profileData,
-        }));
-
-        const backendAvatar =
-          getAvatarUrlFromResponse(data);
-
-        if (backendAvatar) {
-          setAvatarUrl(backendAvatar);
-        }
-      } catch {
-        setFeedback({
-          type: "error",
-          title: "Não foi possível carregar o perfil",
-          message:
-            "Tente novamente em alguns instantes.",
-        });
       }
     };
-
-    loadProfile();
   }, []);
 
   useEffect(() => {
@@ -282,8 +351,13 @@ export const Profilepage = () => {
       return;
     }
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !uploadingAvatar) {
+    const handleKeyDown = (
+      event: KeyboardEvent
+    ) => {
+      if (
+        event.key === "Escape" &&
+        !uploadingAvatar
+      ) {
         closeAvatarModal();
       }
     };
@@ -307,17 +381,10 @@ export const Profilepage = () => {
         handleKeyDown
       );
     };
-  }, [avatarModalOpen, uploadingAvatar]);
-
-  useEffect(() => {
-    return () => {
-      if (previousPreviewRef.current) {
-        URL.revokeObjectURL(
-          previousPreviewRef.current
-        );
-      }
-    };
-  }, []);
+  }, [
+    avatarModalOpen,
+    uploadingAvatar,
+  ]);
 
   const showFeedback = (
     type: FeedbackType,
@@ -336,9 +403,24 @@ export const Profilepage = () => {
   ) => {
     const { name, value } = event.target;
 
+    let formattedValue = value;
+
+    if (name === "phone") {
+      formattedValue = formatPhone(value);
+    }
+
+    if (name === "cpf") {
+      formattedValue = formatCPF(value);
+    }
+
+    if (name === "birthDate") {
+      formattedValue =
+        formatBirthDate(value);
+    }
+
     setFormData((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: formattedValue,
     }));
 
     setErrors((previous) => ({
@@ -351,11 +433,38 @@ export const Profilepage = () => {
   };
 
   const validateProfile = (): ProfileErrors => {
-    const validationErrors: ProfileErrors = {};
+    const validationErrors: ProfileErrors =
+      {};
 
     if (!formData.fullName.trim()) {
       validationErrors.fullName =
         "O nome completo é obrigatório.";
+    }
+
+    if (
+      !formData.birthDate.trim() ||
+      !isValidBirthDate(formData.birthDate)
+    ) {
+      validationErrors.birthDate =
+        "Informe uma data de nascimento válida.";
+    }
+
+    if (
+      !formData.email.trim() ||
+      !isValidEmail(formData.email)
+    ) {
+      validationErrors.email =
+        "Informe um e-mail válido.";
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      validationErrors.phone =
+        "Informe um telefone válido.";
+    }
+
+    if (!isValidCPF(formData.cpf)) {
+      validationErrors.cpf =
+        "Informe um CPF válido.";
     }
 
     return validationErrors;
@@ -370,7 +479,7 @@ export const Profilepage = () => {
       validateProfile();
 
     if (
-      Object.keys(validationErrors).length > 0
+      Object.keys(validationErrors).length
     ) {
       setErrors(validationErrors);
       return;
@@ -380,109 +489,38 @@ export const Profilepage = () => {
     setFeedback(null);
     setLoadingProfile(true);
 
-    try {
-      const response = await fetch(
-        `${API_URL}/students/me`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            fullName:
-              formData.fullName.trim(),
-          }),
-        }
-      );
+    await new Promise((resolve) =>
+      setTimeout(resolve, 800)
+    );
 
-      if (!response.ok) {
-        const message =
-          await getApiErrorMessage(
-            response,
-            "Não foi possível atualizar suas informações."
-          );
+    const updatedProfile: ProfileData = {
+      fullName:
+        formData.fullName.trim(),
+      birthDate: formData.birthDate,
+      email: formData.email,
+      phone: formData.phone,
+      cpf: formData.cpf,
+    };
 
-        throw new Error(message);
-      }
+    setProfile(updatedProfile);
+    setOriginalData(updatedProfile);
 
-      let updatedProfile = {
-        ...profile,
-        fullName:
-          formData.fullName.trim(),
-      };
+    setFormData((previous) => ({
+      ...previous,
+      ...updatedProfile,
+    }));
 
-      const contentType =
-        response.headers.get("content-type") || "";
+    showFeedback(
+      "success",
+      "Informações atualizadas com sucesso!",
+      "Seus dados foram alterados corretamente."
+    );
 
-      if (contentType.includes("application/json")) {
-        const data = await response.json();
+    toast.success(
+      "Informações atualizadas com sucesso!"
+    );
 
-        updatedProfile = {
-          ...updatedProfile,
-
-          fullName:
-            data.fullName ||
-            data.full_name ||
-            updatedProfile.fullName,
-
-          birthDate:
-            data.birthDate ||
-            data.birth_date ||
-            updatedProfile.birthDate,
-
-          email:
-            data.email ||
-            updatedProfile.email,
-
-          phone:
-            data.phone ||
-            updatedProfile.phone,
-
-          cpf:
-            data.cpf ||
-            updatedProfile.cpf,
-        };
-      }
-
-      setProfile(updatedProfile);
-      setOriginalData(updatedProfile);
-
-      setFormData((previous) => ({
-        ...previous,
-        ...updatedProfile,
-      }));
-
-      showFeedback(
-        "success",
-        "Informações atualizadas com sucesso!",
-        "Seus dados foram alterados corretamente."
-      );
-
-      toast.success(
-        "Informações atualizadas com sucesso!"
-      );
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Não foi possível atualizar suas informações.";
-
-      setErrors({
-        form: message,
-      });
-
-      showFeedback(
-        "error",
-        "Não foi possível atualizar",
-        message
-      );
-
-      toast.error(message);
-    } finally {
-      setLoadingProfile(false);
-    }
+    setLoadingProfile(false);
   };
 
   const handleCancel = () => {
@@ -501,7 +539,8 @@ export const Profilepage = () => {
   };
 
   const validatePassword = (): ProfileErrors => {
-    const validationErrors: ProfileErrors = {};
+    const validationErrors: ProfileErrors =
+      {};
 
     if (!formData.currentPassword) {
       validationErrors.currentPassword =
@@ -541,7 +580,7 @@ export const Profilepage = () => {
       validatePassword();
 
     if (
-      Object.keys(validationErrors).length > 0
+      Object.keys(validationErrors).length
     ) {
       setErrors(validationErrors);
       return;
@@ -551,73 +590,28 @@ export const Profilepage = () => {
     setFeedback(null);
     setLoadingPassword(true);
 
-    try {
-      const response = await fetch(
-        `${API_URL}/students/me/password`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            currentPassword:
-              formData.currentPassword,
-            newPassword:
-              formData.newPassword,
-            confirmPassword:
-              formData.confirmPassword,
-          }),
-        }
-      );
+    await new Promise((resolve) =>
+      setTimeout(resolve, 800)
+    );
 
-      if (!response.ok) {
-        const message =
-          await getApiErrorMessage(
-            response,
-            "Não foi possível atualizar sua senha."
-          );
+    setFormData((previous) => ({
+      ...previous,
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    }));
 
-        throw new Error(message);
-      }
+    showFeedback(
+      "success",
+      "Senha atualizada com sucesso!",
+      "Sua senha foi alterada corretamente."
+    );
 
-      setFormData((previous) => ({
-        ...previous,
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      }));
+    toast.success(
+      "Senha atualizada com sucesso!"
+    );
 
-      showFeedback(
-        "success",
-        "Senha atualizada com sucesso!",
-        "Sua senha foi alterada corretamente."
-      );
-
-      toast.success(
-        "Senha atualizada com sucesso!"
-      );
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Não foi possível atualizar sua senha.";
-
-      setErrors({
-        form: message,
-      });
-
-      showFeedback(
-        "error",
-        "Não foi possível atualizar a senha",
-        message
-      );
-
-      toast.error(message);
-    } finally {
-      setLoadingPassword(false);
-    }
+    setLoadingPassword(false);
   };
 
   const validateAvatarFile = (
@@ -628,27 +622,25 @@ export const Profilepage = () => {
       "image/jpeg",
     ];
 
-    const fileName =
-      file.name.toLowerCase();
-
     const validExtension =
-      fileName.endsWith(".png") ||
-      fileName.endsWith(".jpg") ||
-      fileName.endsWith(".jpeg");
+      file.name
+        .toLowerCase()
+        .endsWith(".png") ||
+      file.name
+        .toLowerCase()
+        .endsWith(".jpg") ||
+      file.name
+        .toLowerCase()
+        .endsWith(".jpeg");
 
-    const validMime =
-      validMimeTypes.includes(
-        file.type
-      );
-
-    if (!validMime || !validExtension) {
+    if (
+      !validMimeTypes.includes(file.type) ||
+      !validExtension
+    ) {
       return "Formato inválido. Envie uma imagem PNG ou JPG.";
     }
 
-    const maxSize =
-      5 * 1024 * 1024;
-
-    if (file.size > maxSize) {
+    if (file.size > 5 * 1024 * 1024) {
       return "A imagem deve ter no máximo 5MB.";
     }
 
@@ -674,11 +666,13 @@ export const Profilepage = () => {
         URL.revokeObjectURL(
           previousPreviewRef.current
         );
+
         previousPreviewRef.current = null;
       }
 
       setAvatarPreviewUrl(null);
       setAvatarError(validationError);
+
       return;
     }
 
@@ -742,24 +736,15 @@ export const Profilepage = () => {
       return;
     }
 
-    const files =
-      Array.from(
-        event.dataTransfer.files
-      );
-
-    if (!files.length) {
-      return;
-    }
-
-    selectAvatarFile(files[0]);
+    selectAvatarFile(
+      event.dataTransfer.files?.[0]
+    );
   };
 
   const openFileSelector = () => {
-    if (uploadingAvatar) {
-      return;
+    if (!uploadingAvatar) {
+      fileInputRef.current?.click();
     }
-
-    fileInputRef.current?.click();
   };
 
   const handleUploadAreaKeyDown = (
@@ -791,6 +776,7 @@ export const Profilepage = () => {
       URL.revokeObjectURL(
         previousPreviewRef.current
       );
+
       previousPreviewRef.current = null;
     }
 
@@ -806,7 +792,10 @@ export const Profilepage = () => {
   };
 
   const handleAvatarUpload = async () => {
-    if (!selectedFile || uploadingAvatar) {
+    if (
+      !selectedFile ||
+      uploadingAvatar
+    ) {
       return;
     }
 
@@ -821,93 +810,26 @@ export const Profilepage = () => {
     setUploadingAvatar(true);
     setAvatarError("");
 
-    try {
-      const formDataUpload =
-        new FormData();
+    await new Promise((resolve) =>
+      setTimeout(resolve, 800)
+    );
 
-      formDataUpload.append(
-        "avatar",
-        selectedFile
-      );
-
-      const response = await fetch(
-        `${API_URL}/students/me/avatar`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-          },
-          body: formDataUpload,
-        }
-      );
-
-      if (!response.ok) {
-        const message =
-          await getApiErrorMessage(
-            response,
-            "Não foi possível importar a imagem. Tente novamente."
-          );
-
-        throw new Error(message);
-      }
-
-      let newAvatarUrl: string | null =
-        null;
-
-      const contentType =
-        response.headers.get("content-type") || "";
-
-      if (
-        contentType.includes(
-          "application/json"
-        )
-      ) {
-        const data =
-          await response.json();
-
-        newAvatarUrl =
-          getAvatarUrlFromResponse(
-            data
-          );
-      }
-
-      if (!newAvatarUrl) {
-        newAvatarUrl =
-          avatarPreviewUrl;
-      }
-
-      if (!newAvatarUrl) {
-        throw new Error(
-          "A imagem foi enviada, mas a API não retornou uma imagem válida."
-        );
-      }
-
-      setAvatarUrl(newAvatarUrl);
-
-      showFeedback(
-        "success",
-        "Foto de perfil adicionada com sucesso!",
-        "Sua nova foto foi salva e já está sendo exibida no seu perfil."
-      );
-
-      toast.success(
-        "Foto de perfil adicionada com sucesso!"
-      );
-
-      closeAvatarModal();
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Não foi possível importar a imagem. Tente novamente.";
-
-      setAvatarError(message);
-
-      toast.error(message);
-    } finally {
-      setUploadingAvatar(false);
+    if (avatarPreviewUrl) {
+      setAvatarUrl(avatarPreviewUrl);
     }
+
+    showFeedback(
+      "success",
+      "Foto de perfil adicionada com sucesso!",
+      "Sua nova foto já está sendo exibida no seu perfil."
+    );
+
+    toast.success(
+      "Foto de perfil adicionada com sucesso!"
+    );
+
+    setUploadingAvatar(false);
+    closeAvatarModal();
   };
 
   const avatarContent = (
@@ -916,11 +838,11 @@ export const Profilepage = () => {
         <img
           src={avatarUrl}
           alt={`Foto de perfil de ${profile.fullName}`}
-          className="w-20 h-20 rounded-full object-cover"
+          className="h-20 w-20 rounded-full object-cover"
         />
       ) : (
         <div
-          className="w-20 h-20 rounded-full bg-[#0069A8] text-white flex items-center justify-center font-bold text-2xl"
+          className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0069A8] text-2xl font-bold text-white"
           aria-label={`Avatar de ${profile.fullName}`}
         >
           {getInitials(profile.fullName)}
@@ -932,7 +854,7 @@ export const Profilepage = () => {
         type="button"
         onClick={openAvatarModal}
         aria-label="Alterar foto de perfil"
-        className="absolute -right-1 -bottom-1 w-8 h-8 rounded-full bg-white border border-[#D1D5DB] shadow-md flex items-center justify-center text-[#0069A8] hover:bg-[#F4F5F9] focus:outline-none focus:ring-2 focus:ring-[#0069A8]/30"
+        className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border border-[#D1D5DB] bg-white text-[#0069A8] shadow-md hover:bg-[#F4F5F9] focus:outline-none focus:ring-2 focus:ring-[#0069A8]/30"
       >
         <svg
           width="16"
@@ -981,520 +903,591 @@ export const Profilepage = () => {
         theme="light"
       />
 
-      <header className="fixed top-0 left-0 z-40 w-full h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 lg:px-12">
-        <a
-          href="/"
-          aria-label="Ir para a página inicial da Certify"
-          className="flex items-center"
-        >
-          <img
-            src={Logo}
-            alt="Certify Logo"
-            className="h-12 sm:h-14 lg:h-16 xl:h-[4.5rem] w-auto object-contain"
-          />
-        </a>
-
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:block text-right">
-            <p className="text-sm font-semibold text-[#1A1551]">
-              {profile.fullName}
-            </p>
-            <p className="text-xs text-gray-500">
-              Aluno
-            </p>
-          </div>
-
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={`Foto de ${profile.fullName}`}
-              className="w-12 h-12 rounded-full object-cover"
-            />
-          ) : (
-            <div
-              className="w-12 h-12 rounded-full bg-[#0069A8] text-white flex items-center justify-center font-bold"
-              aria-label={`Avatar de ${profile.fullName}`}
+      <div className="flex min-h-screen w-full">
+        <aside className="fixed left-0 top-0 z-40 flex h-screen w-[260px] flex-col bg-[#1A1551]">
+          <div className="flex h-20 shrink-0 items-center border-b border-white/10 px-6">
+            <a
+              href="/"
+              aria-label="Ir para a página inicial da Certify"
+              className="flex items-center"
             >
-              {getInitials(profile.fullName)}
-            </div>
-          )}
-        </div>
-      </header>
-
-      <main className="w-full min-h-screen pt-28 pb-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        <div className="w-full max-w-[842px] mx-auto">
-          <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-[35px] font-bold mb-3">
-              Meu perfil
-            </h1>
-
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-              Gerencie seus dados pessoais,
-              instituições vinculadas e
-              preferências da conta.
-            </p>
+              <img
+                src={Logo}
+                alt="Certify Logo"
+                className="h-12 w-auto object-contain"
+              />
+            </a>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E1E4EA] p-5 sm:p-7 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-              {avatarContent}
+          <nav className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-2">
+              <button
+  type="button"
+  className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/5"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    className="h-5 w-5 shrink-0"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 4h12v16H6z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 8h6M9 12h6M9 16h4"
+    />
+  </svg>
 
-              <div>
-                <h2 className="text-xl font-bold text-[#1A1551]">
+  <span>Certificados</span>
+</button>
+              <button
+                type="button"
+                aria-current="page"
+                className="flex w-full items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="h-5 w-5 shrink-0"
+                >
+                  <circle
+                    cx="12"
+                    cy="8"
+                    r="3"
+                  />
+                  <path d="M5 21a7 7 0 0114 0" />
+                </svg>
+
+                <span>Meu perfil</span>
+              </button>
+            </div>
+          </nav>
+
+          <div className="shrink-0 border-t border-white/10 p-4">
+            <div className="flex items-center gap-3 rounded-xl bg-white/5 p-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-[#0069A8]">
+                {getInitials(profile.fullName)}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-white">
                   {profile.fullName}
-                </h2>
+                </p>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="truncate text-xs text-white/50">
                   Aluno
                 </p>
               </div>
+
+              <div className="flex shrink-0 items-center gap-1">
+                <button
+                  type="button"
+                  aria-label="Configurações"
+                  title="Configurações"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
+                    <path d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.56V20h-2.54v-.1a1.7 1.7 0 00-1.03-1.56 1.7 1.7 0 00-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 008.1 15a1.7 1.7 0 00-1.56-1.03H6v-2.54h.1A1.7 1.7 0 007.66 10a1.7 1.7 0 00-.34-1.88l-.06-.06 1.8-1.8.06.06A1.7 1.7 0 0011 6a1.7 1.7 0 001.03-1.56V4h2.54v.1A1.7 1.7 0 0015.6 5.66a1.7 1.7 0 001.88-.34l.06-.06 1.8 1.8-.06.06A1.7 1.7 0 0018.94 9c0 .7.42 1.33 1.03 1.56H20v2.54h-.1A1.7 1.7 0 0019.4 15z" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Sair"
+                  title="Sair"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400/50"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                  >
+                    <path d="M10 17l5-5-5-5" />
+                    <path d="M15 12H3" />
+                    <path d="M21 19V5a2 2 0 00-2-2h-6" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
+        </aside>
 
-          {feedback && (
-            <div
-              role={
-                feedback.type === "error"
-                  ? "alert"
-                  : "status"
-              }
-              aria-live="polite"
-              className={`mb-6 w-full rounded-xl border px-4 py-4 flex items-start justify-between gap-4 ${feedbackClasses[feedback.type]}`}
+        <main className="ml-[260px] min-h-screen flex-1 bg-[#F4F5F9] px-6 py-8 lg:px-10">
+          <div className="mx-auto w-full max-w-[1100px]">
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-[#1A1551] sm:text-3xl">
+                Meu perfil
+              </h1>
+
+              <p className="mt-2 text-sm text-gray-600 sm:text-base">
+                Gerencie seus dados pessoais,
+                instituições vinculadas e
+                preferências da conta.
+              </p>
+            </div>
+
+            <div className="mb-6 rounded-2xl border border-[#E1E4EA] bg-white p-5 sm:p-7">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                {avatarContent}
+
+                <div>
+                  <h2 className="text-xl font-bold text-[#1A1551]">
+                    {profile.fullName}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-gray-500">
+                    {profile.email}
+                  </p>
+
+                  <p className="mt-2 text-sm font-semibold text-[#0069A8]">
+                    4 certificados
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {feedback && (
+              <div
+                role={
+                  feedback.type === "error"
+                    ? "alert"
+                    : "status"
+                }
+                aria-live="polite"
+                className={`mb-6 flex w-full items-start justify-between gap-4 rounded-xl border px-4 py-4 ${feedbackClasses[feedback.type]}`}
+              >
+                <div>
+                  <p className="text-sm font-bold">
+                    {feedback.title}
+                  </p>
+
+                  <p className="mt-1 text-sm">
+                    {feedback.message}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFeedback(null)
+                  }
+                  aria-label="Fechar mensagem"
+                  className="shrink-0 opacity-70 hover:opacity-100"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            <form
+              onSubmit={handleProfileSubmit}
+              noValidate
+              className="rounded-2xl border border-[#E1E4EA] bg-white p-5 sm:p-7 md:p-10"
             >
-              <div className="flex gap-3">
-                <div className="pt-0.5">
-                  {feedback.type ===
-                  "success" ? (
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden="true"
+              <div className="mb-8">
+                <h2 className="text-xl font-bold sm:text-2xl">
+                  Dados pessoais
+                </h2>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  Essas informações aparecem no seu
+                  certificado e no seu portfólio público.
+                </p>
+              </div>
+
+              <div className="space-y-5">
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    Nome completo
+                  </label>
+
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    placeholder="Nome Completo"
+                    value={formData.fullName}
+                    onChange={handleProfileChange}
+                    disabled={loadingProfile}
+                    autoComplete="name"
+                    aria-invalid={Boolean(
+                      errors.fullName
+                    )}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.fullName
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.fullName && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
                     >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="m8 12 2.5 2.5L16 9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M12 8v4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle
-                        cx="12"
-                        cy="16"
-                        r="1"
-                        fill="currentColor"
-                      />
-                    </svg>
+                      {errors.fullName}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <p className="font-bold text-sm">
-                    {feedback.title}
-                  </p>
-                  <p className="text-sm mt-1">
-                    {feedback.message}
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setFeedback(null)
-                }
-                aria-label="Fechar mensagem"
-                className="shrink-0 opacity-70 hover:opacity-100"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M6 6l12 12M18 6 6 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          )}
-
-          <form
-            onSubmit={handleProfileSubmit}
-            noValidate
-            className="bg-white rounded-2xl border border-[#E1E4EA] p-5 sm:p-7 md:p-10"
-          >
-            <div className="mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold">
-                Dados pessoais
-              </h2>
-
-              <p className="text-sm text-gray-500 mt-2">
-                Essas informações aparecem no seu
-                certificado e no seu portfólio público.
-              </p>
-            </div>
-
-            <div className="space-y-5">
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Nome completo
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  value={formData.fullName}
-                  onChange={handleProfileChange}
-                  disabled={loadingProfile}
-                  autoComplete="name"
-                  aria-invalid={Boolean(
-                    errors.fullName
-                  )}
-                  className={`w-full h-12 px-4 rounded-xl border bg-white outline-none ${
-                    errors.fullName
-                      ? "border-red-500"
-                      : "border-[#D1D5DB]"
-                  } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20 disabled:opacity-50`}
-                />
-
-                {errors.fullName && (
-                  <p
-                    role="alert"
-                    className="mt-2 text-sm text-red-600"
+                  <label
+                    htmlFor="birthDate"
+                    className="mb-2 block text-sm font-semibold"
                   >
-                    {errors.fullName}
-                  </p>
-                )}
-              </div>
+                    Data de nascimento
+                  </label>
 
-              <div>
-                <label
-                  htmlFor="birthDate"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Data de nascimento
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
+                  <input
+                    id="birthDate"
+                    name="birthDate"
+                    type="text"
+                    placeholder="DD/MM/AAAA"
+                    value={formData.birthDate}
+                    onChange={handleProfileChange}
+                    disabled={loadingProfile}
+                    inputMode="numeric"
+                    maxLength={10}
+                    aria-invalid={Boolean(
+                      errors.birthDate
+                    )}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.birthDate
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
 
-                <input
-                  id="birthDate"
-                  name="birthDate"
-                  type="text"
-                  value={formData.birthDate}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl border border-[#D1D5DB] bg-[#F4F5F9] text-gray-500 outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  E-mail
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl border border-[#D1D5DB] bg-[#F4F5F9] text-gray-500 outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Telefone
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl border border-[#D1D5DB] bg-[#F4F5F9] text-gray-500 outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="cpf"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  CPF
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="cpf"
-                  name="cpf"
-                  type="text"
-                  value={formData.cpf}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl border border-[#D1D5DB] bg-[#F4F5F9] text-gray-500 outline-none cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {errors.form &&
-              !loadingPassword && (
-                <div
-                  role="alert"
-                  className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
-                >
-                  {errors.form}
+                  {errors.birthDate && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.birthDate}
+                    </p>
+                  )}
                 </div>
-              )}
 
-            <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 mt-8">
-              <button
-                type="button"
-                onClick={handleCancel}
-                disabled={loadingProfile}
-                className="w-full sm:w-auto sm:min-w-[150px] py-3.5 px-6 rounded-xl border border-[#0069A8] text-[#0069A8] font-bold hover:bg-[#0069A8]/5 disabled:opacity-50"
-              >
-                Cancelar
-              </button>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    E-mail
+                  </label>
+
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="nome@email.com"
+                    value={formData.email}
+                    onChange={handleProfileChange}
+                    disabled={loadingProfile}
+                    autoComplete="email"
+                    aria-invalid={Boolean(
+                      errors.email
+                    )}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.email
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.email && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    Telefone
+                  </label>
+
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="(00) 0 0000-0000"
+                    value={formData.phone}
+                    onChange={handleProfileChange}
+                    disabled={loadingProfile}
+                    inputMode="numeric"
+                    maxLength={16}
+                    aria-invalid={Boolean(
+                      errors.phone
+                    )}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.phone
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.phone && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.phone}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="cpf"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    CPF
+                  </label>
+
+                  <input
+                    id="cpf"
+                    name="cpf"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={formData.cpf}
+                    onChange={handleProfileChange}
+                    disabled={loadingProfile}
+                    inputMode="numeric"
+                    maxLength={14}
+                    aria-invalid={Boolean(
+                      errors.cpf
+                    )}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.cpf
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.cpf && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.cpf}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={loadingProfile}
+                  className="w-full rounded-xl border border-[#0069A8] px-6 py-3.5 font-bold text-[#0069A8] hover:bg-[#0069A8]/5 disabled:opacity-50 sm:w-auto sm:min-w-[150px]"
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={loadingProfile}
+                  aria-busy={loadingProfile}
+                  className="w-full rounded-xl bg-[#0069A8] px-6 py-3.5 font-bold text-white hover:bg-[#005582] disabled:cursor-not-allowed disabled:bg-[#0069A8]/50 sm:w-auto sm:min-w-[220px]"
+                >
+                  {loadingProfile ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Salvando...
+                    </span>
+                  ) : (
+                    "Salvar alterações"
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <form
+              onSubmit={handlePasswordSubmit}
+              noValidate
+              className="mt-6 rounded-2xl border border-[#E1E4EA] bg-white p-5 sm:p-7 md:p-10"
+            >
+              <div className="mb-8">
+                <h2 className="text-xl font-bold sm:text-2xl">
+                  Segurança
+                </h2>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  Altere sua senha de acesso.
+                </p>
+              </div>
+
+              <div className="space-y-5">
+                <div>
+                  <label
+                    htmlFor="currentPassword"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    Senha atual
+                  </label>
+
+                  <input
+                    id="currentPassword"
+                    name="currentPassword"
+                    type="password"
+                    value={
+                      formData.currentPassword
+                    }
+                    onChange={handleProfileChange}
+                    autoComplete="current-password"
+                    disabled={loadingPassword}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.currentPassword
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.currentPassword && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.currentPassword}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="newPassword"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    Nova senha
+                  </label>
+
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    placeholder="Digite a nova senha"
+                    value={formData.newPassword}
+                    onChange={handleProfileChange}
+                    autoComplete="new-password"
+                    disabled={loadingPassword}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.newPassword
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  <p className="mt-2 text-xs text-gray-500">
+                    Mínimo de 8 caracteres.
+                  </p>
+
+                  {errors.newPassword && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.newPassword}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="confirmPassword"
+                    className="mb-2 block text-sm font-semibold"
+                  >
+                    Confirmar nova senha
+                  </label>
+
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Repita a nova senha"
+                    value={
+                      formData.confirmPassword
+                    }
+                    onChange={handleProfileChange}
+                    autoComplete="new-password"
+                    disabled={loadingPassword}
+                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+                      errors.confirmPassword
+                        ? "border-red-500"
+                        : "border-[#D1D5DB]"
+                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+                  />
+
+                  {errors.confirmPassword && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-sm text-red-600"
+                    >
+                      {errors.confirmPassword}
+                    </p>
+                  )}
+                </div>
+              </div>
 
               <button
                 type="submit"
-                disabled={loadingProfile}
-                aria-busy={loadingProfile}
-                className="w-full sm:w-auto sm:min-w-[220px] py-3.5 px-6 rounded-xl bg-[#0069A8] text-white font-bold hover:bg-[#005582] disabled:bg-[#0069A8]/50 disabled:cursor-not-allowed"
+                disabled={loadingPassword}
+                aria-busy={loadingPassword}
+                className="mt-8 w-full rounded-xl bg-[#0069A8] px-6 py-3.5 font-bold text-white hover:bg-[#005582] disabled:cursor-not-allowed disabled:bg-[#0069A8]/50 sm:w-auto sm:min-w-[220px]"
               >
-                {loadingProfile ? (
+                {loadingPassword ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Salvando...
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Atualizando...
                   </span>
                 ) : (
-                  "Salvar alterações"
+                  "Atualizar senha"
                 )}
               </button>
-            </div>
-          </form>
-
-          <form
-            onSubmit={handlePasswordSubmit}
-            noValidate
-            className="bg-white rounded-2xl border border-[#E1E4EA] p-5 sm:p-7 md:p-10 mt-6"
-          >
-            <div className="mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold">
-                Segurança
-              </h2>
-
-              <p className="text-sm text-gray-500 mt-2">
-                Altere sua senha de acesso.
-              </p>
-            </div>
-
-            <div className="space-y-5">
-              <div>
-                <label
-                  htmlFor="currentPassword"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Senha atual
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="currentPassword"
-                  name="currentPassword"
-                  type="password"
-                  value={
-                    formData.currentPassword
-                  }
-                  onChange={handleProfileChange}
-                  autoComplete="current-password"
-                  disabled={loadingPassword}
-                  className={`w-full h-12 px-4 rounded-xl border bg-white outline-none ${
-                    errors.currentPassword
-                      ? "border-red-500"
-                      : "border-[#D1D5DB]"
-                  } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                />
-
-                {errors.currentPassword && (
-                  <p
-                    role="alert"
-                    className="mt-2 text-sm text-red-600"
-                  >
-                    {errors.currentPassword}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Nova senha
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  value={formData.newPassword}
-                  onChange={handleProfileChange}
-                  autoComplete="new-password"
-                  disabled={loadingPassword}
-                  className={`w-full h-12 px-4 rounded-xl border bg-white outline-none ${
-                    errors.newPassword
-                      ? "border-red-500"
-                      : "border-[#D1D5DB]"
-                  } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                />
-
-                <p className="mt-2 text-xs text-gray-500">
-                  Digite a nova senha. Mínimo de 8 caracteres.
-                </p>
-
-                {errors.newPassword && (
-                  <p
-                    role="alert"
-                    className="mt-2 text-sm text-red-600"
-                  >
-                    {errors.newPassword}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Confirmar nova senha
-                  <span className="text-red-500 ml-1">
-                    *
-                  </span>
-                </label>
-
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={
-                    formData.confirmPassword
-                  }
-                  onChange={handleProfileChange}
-                  autoComplete="new-password"
-                  disabled={loadingPassword}
-                  className={`w-full h-12 px-4 rounded-xl border bg-white outline-none ${
-                    errors.confirmPassword
-                      ? "border-red-500"
-                      : "border-[#D1D5DB]"
-                  } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                />
-
-                <p className="mt-2 text-xs text-gray-500">
-                  Repita a nova senha.
-                </p>
-
-                {errors.confirmPassword && (
-                  <p
-                    role="alert"
-                    className="mt-2 text-sm text-red-600"
-                  >
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loadingPassword}
-              aria-busy={loadingPassword}
-              className="w-full sm:w-auto sm:min-w-[220px] mt-8 py-3.5 px-6 rounded-xl bg-[#0069A8] text-white font-bold hover:bg-[#005582] disabled:bg-[#0069A8]/50 disabled:cursor-not-allowed"
-            >
-              {loadingPassword ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Atualizando...
-                </span>
-              ) : (
-                "Atualizar senha"
-              )}
-            </button>
-          </form>
-        </div>
-      </main>
+            </form>
+          </div>
+        </main>
+      </div>
 
       {avatarModalOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(event) => {
             if (
-              event.target === event.currentTarget &&
+              event.target ===
+                event.currentTarget &&
               !uploadingAvatar
             ) {
               closeAvatarModal();
@@ -1506,24 +1499,23 @@ export const Profilepage = () => {
             aria-modal="true"
             aria-labelledby="avatar-modal-title"
             aria-describedby="avatar-modal-description"
-            className="w-full max-w-[560px] max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-5 sm:p-7"
+            className="max-h-[90vh] w-full max-w-[560px] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-7"
           >
-            <div className="flex items-start justify-between gap-4 mb-2">
+            <div className="mb-2 flex items-start justify-between gap-4">
               <div>
                 <h2
                   id="avatar-modal-title"
-                  className="text-xl sm:text-2xl font-bold text-[#1A1551]"
+                  className="text-xl font-bold text-[#1A1551] sm:text-2xl"
                 >
                   Adicionar foto de perfil
                 </h2>
 
                 <p
                   id="avatar-modal-description"
-                  className="mt-2 text-sm text-gray-500 leading-relaxed"
+                  className="mt-2 text-sm leading-relaxed text-gray-500"
                 >
-                  Deixe o seu perfil ainda mais
-                  personalizado adicionando uma foto de
-                  perfil
+                  Deixe seu perfil ainda mais personalizado
+                  adicionando uma foto.
                 </p>
               </div>
 
@@ -1532,22 +1524,9 @@ export const Profilepage = () => {
                 onClick={closeAvatarModal}
                 disabled={uploadingAvatar}
                 aria-label="Fechar"
-                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 disabled:opacity-50"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M6 6l12 12M18 6 6 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                ×
               </button>
             </div>
 
@@ -1563,7 +1542,9 @@ export const Profilepage = () => {
             {!selectedFile ? (
               <div
                 role="button"
-                tabIndex={uploadingAvatar ? -1 : 0}
+                tabIndex={
+                  uploadingAvatar ? -1 : 0
+                }
                 aria-label="Selecionar imagem de perfil"
                 onClick={openFileSelector}
                 onKeyDown={
@@ -1572,19 +1553,15 @@ export const Profilepage = () => {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`mt-6 min-h-[240px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center text-center p-6 cursor-pointer transition-all ${
+                className={`mt-6 flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
                   isDragOver
                     ? "border-[#0069A8] bg-[#0069A8]/10"
                     : avatarError
                     ? "border-red-400 bg-red-50"
                     : "border-[#B9C0CC] bg-[#FAFBFC] hover:border-[#0069A8] hover:bg-[#0069A8]/5"
-                } ${
-                  uploadingAvatar
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
                 }`}
               >
-                <div className="w-14 h-14 rounded-full bg-[#EAF5FB] text-[#0069A8] flex items-center justify-center mb-4">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#EAF5FB] text-[#0069A8]">
                   <svg
                     width="28"
                     height="28"
@@ -1625,44 +1602,42 @@ export const Profilepage = () => {
                     openFileSelector();
                   }}
                   disabled={uploadingAvatar}
-                  className="mt-2 text-[#0069A8] font-semibold underline underline-offset-2"
+                  className="mt-2 font-semibold text-[#0069A8] underline underline-offset-2"
                 >
                   clique para selecionar
                 </button>
 
                 <p className="mt-4 text-xs text-gray-500">
-                  Apenas imagem em PNG ou JPG, até 5MB
+                  Apenas PNG ou JPG, até 5MB
                 </p>
               </div>
             ) : (
-              <div className="mt-6">
-                <div className="rounded-2xl border border-[#D1D5DB] bg-[#FAFBFC] p-6 flex flex-col items-center">
-                  <img
-                    src={avatarPreviewUrl || ""}
-                    alt="Pré-visualização da nova foto de perfil"
-                    className="w-40 h-40 rounded-full object-cover border-4 border-white shadow-md"
-                  />
+              <div className="mt-6 rounded-2xl border border-[#D1D5DB] bg-[#FAFBFC] p-6 text-center">
+                <img
+                  src={avatarPreviewUrl || ""}
+                  alt="Pré-visualização da nova foto de perfil"
+                  className="mx-auto h-40 w-40 rounded-full border-4 border-white object-cover shadow-md"
+                />
 
-                  <p className="mt-4 text-sm font-semibold text-[#1A1551] text-center break-all">
-                    {selectedFile.name}
-                  </p>
+                <p className="mt-4 break-all text-sm font-semibold text-[#1A1551]">
+                  {selectedFile.name}
+                </p>
 
-                  <button
-                    type="button"
-                    onClick={openFileSelector}
-                    disabled={uploadingAvatar}
-                    className="mt-3 text-sm font-semibold text-[#0069A8] hover:underline disabled:opacity-50"
-                  >
-                    Trocar imagem
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={openFileSelector}
+                  disabled={uploadingAvatar}
+                  className="mt-3 text-sm font-semibold text-[#0069A8] hover:underline"
+                >
+                  Trocar imagem
+                </button>
               </div>
             )}
 
             {avatarError && (
               <p
                 role="alert"
-                className="mt-3 text-sm text-red-600 font-medium"
+                className="mt-3 text-sm font-medium text-red-600"
               >
                 {avatarError}
               </p>
@@ -1676,11 +1651,11 @@ export const Profilepage = () => {
                 uploadingAvatar
               }
               aria-busy={uploadingAvatar}
-              className="w-full mt-6 py-3.5 px-6 rounded-xl bg-[#0069A8] text-white font-bold hover:bg-[#005582] disabled:bg-[#0069A8]/40 disabled:cursor-not-allowed transition-colors"
+              className="mt-6 w-full rounded-xl bg-[#0069A8] px-6 py-3.5 font-bold text-white hover:bg-[#005582] disabled:cursor-not-allowed disabled:bg-[#0069A8]/40"
             >
               {uploadingAvatar ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                   Importando imagem...
                 </span>
               ) : (
