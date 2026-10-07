@@ -1,108 +1,55 @@
 import { useEffect, useMemo, useState } from "react";
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import Logo from "@/assets/Logo.svg";
+
 import VerifyCodeModal from "./../components/modals/VerifyCodeModal";
+import TermsModal from "./../components/modals/Termsmodal";
+import PrivacyModal from "./../components/modals/PrivacyPolicyModal";
 
 type CertificateRecord = {
   institution: string;
   event: string;
   date: string;
   authenticationCode: string;
-};
-
-type Certificate = CertificateRecord & {
   studentName: string;
   certificateName: string;
   issuedAt: string;
   validity: string;
+  completionDate: string;
+  workload: string;
+  responsibleName: string;
+  responsibleRole: string;
+};
+
+type Certificate = CertificateRecord & {
   verificationUrl: string;
   certificateUrl: string;
 };
 
 const certificateRecords: CertificateRecord[] = [
   {
-    institution: "Comunidade Frontend Fusion",
-    event: "Imersão Dev Insight",
-    date: "2025-11-08T06:21:49.955000",
-    authenticationCode: "CFI-0001",
-  },
-  {
-    institution: "Escola Técnica CodeLab",
-    event: "Semana do Desenvolvedor Web",
-    date: "2024-03-15T10:45:22.123000",
-    authenticationCode: "CFI-0002",
-  },
-  {
-    institution: "Instituto TechEdu",
-    event: "Workshop de APIs com FastAPI",
-    date: "2025-04-20T14:32:10.987000",
-    authenticationCode: "CFI-0003",
-  },
-  {
-    institution: "Projeto Conecta Jovem",
-    event: "Formação Frontend Responsivo",
-    date: "2023-05-12T08:15:43.672000",
-    authenticationCode: "CFI-0004",
-  },
-  {
-    institution: "Fundação Saber Digital",
-    event: "Maratona de Programação Solidária",
-    date: "2024-06-01T18:27:09.451000",
-    authenticationCode: "CFI-0005",
-  },
-  {
-    institution: "Universidade Livre de Tecnologia",
-    event: "Trilha Fullstack 2025",
-    date: "2025-07-25T09:05:18.299000",
-    authenticationCode: "CFI-0006",
-  },
-  {
-    institution: "ONG Jovens do Futuro",
-    event: "Bootcamp React + TypeScript",
-    date: "2023-08-19T12:54:30.834000",
-    authenticationCode: "CFI-0007",
-  },
-  {
-    institution: "TechSocial Academy",
-    event: "Oficina Git & GitHub na Prática",
-    date: "2024-09-03T17:11:57.221000",
-    authenticationCode: "CFI-0008",
-  },
-  {
-    institution: "Comunidade Fusion Devs",
-    event: "Encontro de Mentores de Tecnologia",
-    date: "2025-09-30T19:43:11.678000",
-    authenticationCode: "CFI-0009",
-  },
-  {
-    institution: "Escola Digital Ação Cidadã",
-    event: "Curso de Introdução à Programação",
-    date: "2023-10-10T11:20:54.502000",
-    authenticationCode: "CFI-0010",
-  },
-  {
-    institution: "Laboratório de Inovação Educacional",
-    event: "Hackathon pela Educação",
-    date: "2024-10-28T15:39:02.744000",
-    authenticationCode: "CFI-0011",
+    institution: "Instituto de Tecnologia e Desenvolvimento",
+    event: "Conclusão de Curso",
+    date: "2026-03-15T10:00:00",
+    authenticationCode: "DJFEJ338-94320",
+    studentName: "Ana Silva",
+    certificateName:
+      "Design de Experiência do Usuário (UX)",
+    issuedAt: "15 de março de 2024",
+    validity: "Vitalício",
+    completionDate: "08 de março de 2026",
+    workload: "160 horas",
+    responsibleName: "Nome do responsável",
+    responsibleRole: "Descrição do cargo",
   },
 ];
 
 const buildCertificate = (
   record: CertificateRecord,
 ): Certificate => {
-  const date = new Date(record.date);
-
   return {
     ...record,
-    studentName: "Aluno Certify",
-    certificateName: record.event,
-    issuedAt: date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }),
-    validity: "Vitalício",
     verificationUrl: `${window.location.origin}/verificar/${record.authenticationCode}`,
     certificateUrl: "/certificates/certificate.pdf",
   };
@@ -164,7 +111,11 @@ const CertificatePreview = ({
             </div>
 
             <p className="relative z-10 mt-4 text-[9px] font-bold uppercase tracking-[0.2em] text-[#0069A8] sm:mt-6 sm:text-xs">
-              Certificado de conclusão
+              CERTIFICADO
+            </p>
+
+            <p className="relative z-10 mt-2 text-[9px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
+              de Conclusão de Curso
             </p>
 
             <h3 className="relative z-10 mt-2 max-w-[90%] text-lg font-bold leading-tight text-[#1A1551] sm:text-2xl md:text-3xl">
@@ -181,16 +132,21 @@ const CertificatePreview = ({
 
             <div className="relative z-10 mt-4 h-px w-24 bg-[#0069A8]/30 sm:mt-6 sm:w-32" />
 
-            <p className="relative z-10 mt-3 text-[9px] text-gray-500 sm:text-xs">
-              Emitido pela instituição
+            <p className="relative z-10 mt-3 max-w-[600px] text-[9px] leading-relaxed text-gray-500 sm:text-xs">
+              Concluiu com êxito o curso online
             </p>
 
-            <p className="relative z-10 text-xs font-bold text-[#0069A8] sm:text-sm">
-              {certificate.institution}
+            <p className="relative z-10 mt-1 max-w-[90%] text-xs font-bold text-[#0069A8] sm:text-sm">
+              {certificate.certificateName}
+            </p>
+
+            <p className="relative z-10 mt-2 max-w-[90%] text-[8px] leading-relaxed text-gray-400 sm:text-[10px]">
+              com carga horária de {certificate.workload} realizado dia{" "}
+              {certificate.completionDate}.
             </p>
 
             <p className="relative z-10 mt-3 text-[8px] text-gray-400 sm:text-[10px]">
-              {certificate.issuedAt}
+              {certificate.institution}
             </p>
           </div>
         </div>
@@ -251,7 +207,7 @@ const CertificateMetadata = ({
           </p>
 
           <p className="mt-1 text-sm font-bold text-[#1A1551]">
-            {certificate.institution}
+            Certify
           </p>
         </div>
 
@@ -277,6 +233,26 @@ const CertificateMetadata = ({
               </p>
             </div>
           </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-gray-500">
+            Data de conclusão
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-[#1A1551]">
+            {certificate.completionDate}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-gray-500">
+            Carga horária
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-[#1A1551]">
+            {certificate.workload}
+          </p>
         </div>
 
         <div>
@@ -331,7 +307,7 @@ const CertificateMetadata = ({
             </p>
 
             <p className="mt-0.5 text-xs font-medium text-green-700">
-              Certificado autenticado
+              Válido
             </p>
           </div>
 
@@ -343,6 +319,28 @@ const CertificateMetadata = ({
 
             Válido
           </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 border-t border-[#D1D5DB] pt-5 sm:grid-cols-2">
+          <div>
+            <p className="text-xs font-semibold text-gray-500">
+              Nome do responsável
+            </p>
+
+            <p className="mt-1 text-sm font-bold text-[#1A1551]">
+              {certificate.responsibleName}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold text-gray-500">
+              Descrição do cargo
+            </p>
+
+            <p className="mt-1 text-sm font-bold text-[#1A1551]">
+              {certificate.responsibleRole}
+            </p>
+          </div>
         </div>
 
         <div className="space-y-3 border-t border-[#D1D5DB] pt-5">
@@ -468,6 +466,12 @@ const CertificateValidationPage = () => {
   const [isVerifyModalOpen, setIsVerifyModalOpen] =
     useState(false);
 
+  const [isTermsModalOpen, setIsTermsModalOpen] =
+    useState(false);
+
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] =
+    useState(false);
+
   const normalizedCode = useMemo(
     () => code?.trim().toUpperCase() ?? "",
     [code],
@@ -518,6 +522,7 @@ const CertificateValidationPage = () => {
   ) => {
     try {
       await navigator.clipboard.writeText(value);
+
       showToast(successMessage);
     } catch {
       showToast(
@@ -571,10 +576,13 @@ const CertificateValidationPage = () => {
       const link = document.createElement("a");
 
       link.href = url;
+
       link.download = `certificado-${certificate.authenticationCode}.pdf`;
 
       document.body.appendChild(link);
+
       link.click();
+
       link.remove();
 
       URL.revokeObjectURL(url);
@@ -598,15 +606,15 @@ const CertificateValidationPage = () => {
   if (isValidating) {
     return (
       <section className="flex min-h-screen w-full items-center justify-center bg-[#F4F5F9] font-inter text-[#1A1551]">
-        <div className="flex flex-col items-center justify-center px-6 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F0F8FC] text-[#0069A8]">
+        <div className="w-full max-w-[500px] px-6 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F0F8FC] text-[#0069A8]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className="h-7 w-7 animate-spin"
+              className="h-8 w-8 animate-spin"
             >
               <circle
                 cx="12"
@@ -622,15 +630,128 @@ const CertificateValidationPage = () => {
             </svg>
           </div>
 
-          <h1 className="mt-5 text-xl font-bold sm:text-2xl">
-            Validando certificado...
+          <p className="mt-5 text-xs font-bold uppercase tracking-wider text-[#0069A8]">
+            Tela carregando
+          </p>
+
+          <h1 className="mt-2 text-2xl font-bold">
+            Verificando certificado...
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
-            Estamos verificando a autenticidade do
-            código informado.
+          <p className="mt-2 text-sm leading-relaxed text-gray-500">
+            Estamos consultando os dados para confirmar
+            a autenticidade
           </p>
+
+          <div className="mt-8 space-y-3 text-left">
+            {[
+              "Lendo código de autenticação",
+              "Consultando certificado",
+              "Validando informações",
+              "Concluído",
+            ].map((step, index) => (
+              <div
+                key={step}
+                className="flex items-center gap-3 rounded-xl border border-[#D1D5DB] bg-white px-4 py-3"
+              >
+                <div
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                    index === 0
+                      ? "bg-[#0069A8] text-white"
+                      : "bg-[#F4F5F9] text-gray-400"
+                  }`}
+                >
+                  {index === 0 ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="h-4 w-4 animate-spin"
+                    >
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                        className="opacity-30"
+                      />
+
+                      <path
+                        strokeLinecap="round"
+                        d="M21 12a9 9 0 00-9-9"
+                      />
+                    </svg>
+                  ) : (
+                    <span className="text-xs font-bold">
+                      {index + 1}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">
+                    {step}
+                  </p>
+
+                  <p className="text-xs text-gray-400">
+                    {index === 0
+                      ? "Em andamento"
+                      : "Aguardando"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 border-t border-[#D1D5DB] pt-6">
+            <p className="text-sm font-bold text-[#1A1551]">
+              Certify<sup>®</sup>
+            </p>
+
+            <p className="mt-1 text-xs text-gray-400">
+              Conhecimento que transforma
+            </p>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-400">
+              <button
+                type="button"
+                onClick={() =>
+                  setIsTermsModalOpen(true)
+                }
+                className="transition-colors hover:text-[#0069A8] hover:underline"
+              >
+                Termos de uso
+              </button>
+
+              <span aria-hidden="true">|</span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setIsPrivacyModalOpen(true)
+                }
+                className="transition-colors hover:text-[#0069A8] hover:underline"
+              >
+                Política de privacidade
+              </button>
+            </div>
+
+            <p className="mt-2 text-xs font-semibold text-gray-400">
+              certify.com
+            </p>
+          </div>
         </div>
+
+        <TermsModal
+          isOpen={isTermsModalOpen}
+          onClose={() => setIsTermsModalOpen(false)}
+        />
+
+        <PrivacyModal
+          isOpen={isPrivacyModalOpen}
+          onClose={() => setIsPrivacyModalOpen(false)}
+        />
       </section>
     );
   }
@@ -709,6 +830,16 @@ const CertificateValidationPage = () => {
         <VerifyCodeModal
           isOpen={isVerifyModalOpen}
           onClose={() => setIsVerifyModalOpen(false)}
+        />
+
+        <TermsModal
+          isOpen={isTermsModalOpen}
+          onClose={() => setIsTermsModalOpen(false)}
+        />
+
+        <PrivacyModal
+          isOpen={isPrivacyModalOpen}
+          onClose={() => setIsPrivacyModalOpen(false)}
         />
       </section>
     );
@@ -799,7 +930,7 @@ const CertificateValidationPage = () => {
 
             <p className="mx-auto mt-3 max-w-[600px] text-sm leading-relaxed text-gray-500 sm:text-base">
               Este certificado é autêntico e foi emitido
-              pela instituição responsável.
+              pela plataforma Certify
             </p>
           </section>
 
@@ -896,7 +1027,7 @@ const CertificateValidationPage = () => {
                 </p>
 
                 <p className="mt-0.5 text-xs text-gray-500">
-                  Autenticidade confirmada
+                  Este certificado foi verificado em tempo real em nossa base de dados.
                 </p>
               </div>
             </div>
@@ -934,7 +1065,7 @@ const CertificateValidationPage = () => {
                 </p>
 
                 <p className="mt-0.5 text-xs text-gray-500">
-                  Informações verificadas
+                  As informações são exibidas de forma segura e não podem ser alteradas.
                 </p>
               </div>
             </div>
@@ -964,17 +1095,83 @@ const CertificateValidationPage = () => {
                 </p>
 
                 <p className="mt-0.5 text-xs text-gray-500">
-                  Sua conquista reconhecida
+                  A Certify emite certificados autênticos para impulsionar carreiras.
                 </p>
               </div>
             </div>
           </section>
+
+          <section className="mt-6 rounded-2xl border border-[#D1D5DB] bg-white px-5 py-5 sm:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold text-gray-500">
+                  Código de autenticidade
+                </p>
+
+                <p className="mt-1 break-all font-mono text-sm font-bold text-[#1A1551]">
+                  {certificate.authenticationCode}
+                </p>
+              </div>
+
+              <p className="text-sm text-gray-500">
+                Esse certificado foi gerado pela Certify
+              </p>
+            </div>
+          </section>
+
+          <footer className="mt-8 border-t border-[#D1D5DB] py-8 text-center">
+            <p className="text-base font-bold text-[#1A1551]">
+              Certify<sup>®</sup>
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Conhecimento que transforma
+            </p>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-400">
+              <button
+                type="button"
+                onClick={() =>
+                  setIsTermsModalOpen(true)
+                }
+                className="transition-colors hover:text-[#0069A8] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0069A8]/30"
+              >
+                Termos de uso
+              </button>
+
+              <span aria-hidden="true">|</span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setIsPrivacyModalOpen(true)
+                }
+                className="transition-colors hover:text-[#0069A8] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0069A8]/30"
+              >
+                Política de privacidade
+              </button>
+            </div>
+
+            <p className="mt-2 text-xs font-semibold text-gray-400">
+              certify.com
+            </p>
+          </footer>
         </div>
       </main>
 
       <VerifyCodeModal
         isOpen={isVerifyModalOpen}
         onClose={() => setIsVerifyModalOpen(false)}
+      />
+
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      />
+
+      <PrivacyModal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
       />
 
       {toast && (
