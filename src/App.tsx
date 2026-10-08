@@ -75,6 +75,11 @@ const CertificateDetails = lazy(() =>
   }))
 );
 
+const CertificateValidationPage = lazy(() =>
+  import("./pages/CertificateValidation")
+);
+
+
 /**===========================================
  * Paginas para testar a integracao com a API
  * ===========================================
@@ -112,6 +117,14 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/modelo-certificado" element={<CertificateModelPage />} />
+        <Route
+  path="/validar-certificado/:code"
+  element={<CertificateValidationPage />}
+/>
+      <Route
+        path="/verificar/:code"
+        element={<CertificateValidationPage />}
+      />
         <Route
           path="/certificados/visualizar"
           element={<CertificateDetails certificate={mockCertificate} />}
