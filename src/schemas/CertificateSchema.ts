@@ -18,8 +18,10 @@ export type UploadedImage = z.infer<typeof uploadedImageSchema>;
 export const stepOneSchema = z.object({
   activityType: z.string().min(1, "Selecione o tipo de atividade"),
   description: z.string().min(1, "Selecione a descrição"),
-  activityName: z.string().min(3, "Informe o nome da atividade"),
-  workload: z.string().min(1, "Informe a carga horária"),
+  activityName: z.string().min(5, "Informe ao menos 5 caracteres para o nome da atividade").max(200),
+  workload: z.string().refine(value => Number.isInteger(Number(value)) && Number(value) > 0, 'Informe uma carga horária inteira maior que zero'),
+  startDate: z.string().min(1, 'Informe a data de início'),
+  endDate: z.string().min(1, 'Informe a data de término'),
   modalityEnabled: z.boolean(),
   modality: z.string().optional(),
   validityEnabled: z.boolean(),
@@ -34,11 +36,12 @@ export const stepTwoSchema = z.object({
   participants: z
     .array(
       z.object({
-        name: z.string().min(1, "Nome obrigatório"),
+        name: z.string().min(2, "Informe ao menos 2 caracteres para o nome"),
         email: z.email("E-mail inválido"),
       }),
     )
-    .min(1, "Adicione ao menos um participante"),
+    .min(1, "Adicione ao menos um participante")
+    .max(200, 'O limite é de 200 participantes por lote'),
 });
 
 export const certificateFormSchema = z
@@ -48,6 +51,9 @@ export const certificateFormSchema = z
     ...stepTwoSchema.shape,
   })
   .superRefine((data, ctx) => {
+    if (data.endDate < data.startDate) {
+      ctx.addIssue({code: 'custom', path: ['endDate'], message: 'A data de término deve ser igual ou posterior ao início'});
+    }
     if (data.modalityEnabled && !data.modality) {
       ctx.addIssue({ code: "custom", path: ["modality"], message: "Selecione a modalidade" });
     }

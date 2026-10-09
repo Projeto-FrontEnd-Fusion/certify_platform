@@ -5,6 +5,7 @@ interface MenuLink {
   icon: IconType;
   label: string;
   href: string;
+  available?: boolean;
 }
 
 interface SidebarLinkProps {
@@ -14,6 +15,8 @@ interface SidebarLinkProps {
 
 export const SidebarLink = ({ link, isMenuOpen }: SidebarLinkProps) => {
   const Icon = link.icon;
+
+  if (link.available === false) return <div aria-disabled="true" title="Ainda não disponível" className="flex items-center gap-2 rounded-md px-3 py-2 text-white/40"><Icon className="h-5 w-5 shrink-0" />{isMenuOpen && <span>{link.label}</span>}</div>;
 
   return (
     <NavLink

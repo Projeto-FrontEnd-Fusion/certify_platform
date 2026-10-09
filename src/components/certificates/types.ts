@@ -2,14 +2,17 @@ export type CertificateStatus =
   | "all"
   | "issued"
   | "sent"
-  | "draft";
+  | "draft"
+  | "expired"
+  | "inactive";
 
 export interface Certificate {
-  id: number;
+  id: number | string;
   name: string;
   student: string;
   model: string;
   issuedAt: string;
+  issuedTimestamp?: number;
   status: CertificateStatus;
 }
 

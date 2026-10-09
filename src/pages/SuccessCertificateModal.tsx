@@ -5,6 +5,7 @@ interface SuccessCertificateModalProps {
   onSendLater: () => void;
   onBack: () => void;
   isSending?: boolean;
+  message?: string;
 }
 
 export const SuccessCertificateModal = ({
@@ -14,6 +15,7 @@ export const SuccessCertificateModal = ({
   onSendLater,
   onBack,
   isSending = false,
+  message,
 }: SuccessCertificateModalProps) => {
   if (!isOpen) return null;
 
@@ -60,6 +62,7 @@ export const SuccessCertificateModal = ({
         </p>
 
         <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
+          {message && <p role="status">{message}</p>}
           <button
             type="button"
             onClick={onSendLater}

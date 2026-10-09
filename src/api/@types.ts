@@ -1,5 +1,5 @@
 
-export type status = "pending" | "available" | "expired";
+export type status = "pending" | "available" | "expired" | "inactive";
 
 /**
  * =========================================
@@ -43,6 +43,9 @@ export interface AuthUserReponse {
  */
 
 export interface CertificateInDb {
+  issuer_id?: string;
+  notifications?: {student?: {status: string}};
+  design?: {variant?: string; logo?: {dataUrl: string}; signature?: {dataUrl: string}; modality?: string; syllabus?: string};
   id: string;
   user_id: string;
   access_key: string;
@@ -54,11 +57,11 @@ export interface CertificateInDb {
   event_name: string;
   description: string;
   workload: string;
-  event_start?: Date | null;
-  event_end?: Date | null;
-  event_date?: Date | null;
-  issued_at?: Date | null;
-  valid_until: Date;
+  event_start?: Date | string | null;
+  event_end?: Date | string | null;
+  event_date?: Date | string | null;
+  issued_at?: Date | string | null;
+  valid_until: Date | string | null;
 }
 
 export interface CertificateRequest {

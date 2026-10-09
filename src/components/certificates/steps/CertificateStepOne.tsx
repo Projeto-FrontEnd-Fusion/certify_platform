@@ -177,6 +177,7 @@ export function CertificateStepOne({ onNext, onChangeTemplate }: CertificateStep
   const { register, control, formState: { errors } } = useFormContext<CertificateFormData>();
 
   const variant = useWatch({ control, name: "variant" });
+  const previewData = useWatch({control});
   const modalityEnabled = useWatch({ control, name: "modalityEnabled" });
   const validityEnabled = useWatch({ control, name: "validityEnabled" });
   const syllabusEnabled = useWatch({ control, name: "syllabusEnabled" })
@@ -199,7 +200,7 @@ export function CertificateStepOne({ onNext, onChangeTemplate }: CertificateStep
           </button>
         </div>
 
-        <CertificateTemplate variant={variant} />
+        <CertificateTemplate variant={variant} data={previewData} />
       </div>
 
       <div className="flex-1 bg-white p-6 flex flex-col gap-4 rounded-md">
@@ -223,6 +224,13 @@ export function CertificateStepOne({ onNext, onChangeTemplate }: CertificateStep
             className="h-10 w-full rounded-sm border border-[#A1A1A133] bg-white px-3 text-xs text-[#404040] outline-none"
             placeholder="Ex: Introdução ao React"
           />
+        </Field>
+
+        <Field label="Data de início" error={errors.startDate?.message}>
+          <input type="date" {...register('startDate')} className="rounded-lg border p-3" />
+        </Field>
+        <Field label="Data de término" error={errors.endDate?.message}>
+          <input type="date" {...register('endDate')} className="rounded-lg border p-3" />
         </Field>
 
         <Field label="Carga horária" error={errors.workload?.message}>
