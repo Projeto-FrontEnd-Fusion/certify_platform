@@ -11,6 +11,8 @@ const statusConfig: Record<
     className: string;
   }
 > = {
+  expired: {label: 'Expirado', className: 'bg-orange-100 text-orange-700'},
+  inactive: {label: 'Cancelado', className: 'bg-red-100 text-red-700'},
   draft: {
     label: "Rascunho",
     className: "bg-[#F2994A33] text-[#F2994A]",

@@ -34,6 +34,10 @@ export function getDraft(id: string): CertificateDraft | null {
   return readAll()[id] ?? null;
 }
 
+export function listDrafts(): CertificateDraft[] {
+  return Object.values(readAll());
+}
+
 export function saveDraft(draft: Omit<CertificateDraft, "updatedAt">): boolean {
   const drafts = readAll();
   drafts[draft.id] = { ...draft, updatedAt: new Date().toISOString() };

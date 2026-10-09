@@ -91,18 +91,6 @@ const CertificateValidationPage = lazy(() =>
 
 
 
-const mockCertificate = {
-  id: "1",
-  studentName: "MARIA DA SILVA",
-  issueDate: "2026-03-08",
-  courseName: "Desenvolvimento Front-end",
-  workload: "40 horas",
-  authenticityCode: "DJFEJ338-94320",
-  title: "Certificado de Conclusão",
-  institution: "Certify",
-  signature: "",
-};
-
 function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
@@ -113,7 +101,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
 
-        <Route path="/modelo-certificado" element={<CertificateModelPage />} />
+        <Route path="/modelo-certificado" element={<Navigate to="/empresa/modelos" replace />} />
         <Route
   path="/validar-certificado/:code"
   element={<CertificateValidationPage />}
@@ -123,8 +111,8 @@ function App() {
         element={<CertificateValidationPage />}
       />
         <Route
-          path="/certificados/visualizar"
-          element={<CertificateDetails certificate={mockCertificate} />}
+          path="/certificados/visualizar/:id?"
+          element={<CertificateDetails />}
         />
 
         <Route path="/" element={<AuthProtectedLayout />}>
@@ -146,7 +134,7 @@ function App() {
           </Route>
 
           <Route path="/empresa" element={<CompanyLayout />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route index element={<Navigate to="certificados" replace />} />
             <Route path="dashboard" element={<NotFound />} />
 
             <Route path="/empresa/certificados" element={<CertificateCompany />} />
@@ -154,7 +142,7 @@ function App() {
             <Route path="/empresa/certificados/criar/:id" element={<CertificationCreate />} />
 
             <Route path="alunos" element={<NotFound />} />
-            <Route path="modelos" element={<NotFound />} />
+            <Route path="modelos" element={<CertificateModelPage />} />
             <Route path="relatorios" element={<NotFound />} />
           </Route>
         </Route>

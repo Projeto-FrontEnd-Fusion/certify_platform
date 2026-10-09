@@ -1,10 +1,16 @@
-'use client'
+import { useAccountNavigation } from "@/hooks/useAccountNavigation";
 
 import { PrimaryButton } from "@/components/ButtonPrimary";
 import { CertificateFilters } from "@/components/certificates/CertificateFilters";
 import { CertificateTable } from "@/components/certificates/CertificateTable";
-import { certificates } from "@/components/certificates/data/certificates.data";
-import { useMemo, useState } from "react";
+import { certificateServiceInstance } from '@/api/implements';
+import { useAuthStoreData } from '@/stores/useAuthStore';
+import { useQuery } from '@tanstack/react-query';
+import { certificateDate } from '@/lib/certificate-display';
+import { listDrafts } from '@/lib/certificate-draft';
+import { variantLabels } from '@/components/certificates/constants';
+import type { Certificate, CertificateStatus } from '@/components/certificates/types';
+import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { CiFilter } from "react-icons/ci";
 import { CiBellOn } from "react-icons/ci";
@@ -16,16 +22,40 @@ import type {
 import { SelectTemplateModal } from "@/components/certificates/SelectTemplateModal";
 
 export const CertificateCompany = () => {
+  const { name, initials, openProfile } = useAccountNavigation();
   const filterOptions = ['Todos', 'Rascunhos', 'Emitidos', 'Expirados', 'Cancelados'];
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [status, setStatus] = useState<RequestStatus>("error");
-  const [isRetrying, setIsRetrying] = useState(false);
+  const {auth} = useAuthStoreData();
+  const [filters, setFilters] = useState<CertificateFiltersType | null>(null);
+  const query = useQuery({queryKey: ['issuer-certificates', auth?._id], enabled: !!auth?._id,
+    queryFn: async () => {
+      const items = [];
+      let page = 1;
+      let pages = 1;
+      do {
+        const result = await certificateServiceInstance.listByIssuer(auth!._id, page);
+        items.push(...result.data.items);
+        pages = result.data.total_pages;
+        page += 1;
+      } while (page <= pages);
+      return items;
+    }});
+  const certificates: Certificate[] = (query.data || []).map(item => ({
+    id: item.id, name: item.event_name, student: item.participant_name,
+    model: item.design?.variant || '', issuedAt: certificateDate(item.issued_at),
+    status: (item.status === 'inactive' ? 'inactive' : item.status === 'expired' || (item.valid_until && new Date(item.valid_until) < new Date()) ? 'expired' : item.notifications?.student?.status === 'sent' ? 'sent' : 'issued') as CertificateStatus,
+    issuedTimestamp: item.issued_at ? new Date(item.issued_at).getTime() : 0,
+  }));
+  for (const draft of listDrafts()) certificates.push({id: `draft:${draft.id}`, name: draft.data.activityName || 'Rascunho',
+    student: `${draft.data.participants?.length || 0} participantes`, model: draft.data.variant,
+    issuedAt: certificateDate(draft.updatedAt), status: 'draft', issuedTimestamp: new Date(draft.updatedAt).getTime()});
+  const status: RequestStatus = query.isPending ? 'loading' : query.isError ? 'error' : 'success';
+  const isRetrying = query.isFetching;
   const [isCreateCertificateOpen, setIsCreateCertificateOpen] = useState<boolean>(false)
 
   function handleCreateCertificate() {
-    console.log("Criar certificado");
 
     setIsCreateCertificateOpen(true)
   }
@@ -33,28 +63,25 @@ export const CertificateCompany = () => {
   function handleApplyFilters(
     filters: CertificateFiltersType,
   ) {
-    console.log("Filtros aplicados:", filters);
+    setFilters(filters);
   }
 
-  function handleRetry() {
-    setIsRetrying(true);
+  function handleRetry() {void query.refetch();}
 
-    setTimeout(() => {
-      setIsRetrying(false);
-      setStatus("success"); // troque para "error" se quiser simular falha de novo
-    }, 1500);
-  }
-
-  const filteredCertificates = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    if (!term) return certificates;
-
-    return certificates.filter((certificate) =>
-      certificate.name.toLowerCase().includes(term) ||
-      certificate.student.toLowerCase().includes(term) ||
-      String(certificate.id).includes(term)
-    );
-  }, [searchTerm]);
+  const term = searchTerm.trim().toLowerCase();
+  const tabStatus: Record<string, CertificateStatus[]> = {Todos: ['issued', 'sent', 'draft', 'expired', 'inactive'],
+    Rascunhos: ['draft'], Emitidos: ['issued', 'sent'], Expirados: ['expired'], Cancelados: ['inactive']};
+  const modelMap: Record<string, string> = {'no-border': 'sem-borda', classic: 'classico', modern: 'moderno', ornamental: 'ornamental'};
+  const filteredCertificates = certificates.filter(item => {
+    if (!tabStatus[activeFilter].includes(item.status)) return false;
+    if (term && !`${item.name} ${item.student} ${item.id}`.toLowerCase().includes(term)) return false;
+    if (filters?.status && filters.status !== 'all' && filters.status !== item.status) return false;
+    if (filters?.student && !item.student.toLowerCase().includes(filters.student.toLowerCase())) return false;
+    if (filters?.model && item.model !== modelMap[filters.model]) return false;
+    if (filters?.startDate && (item.issuedTimestamp || 0) < new Date(`${filters.startDate}T00:00:00`).getTime()) return false;
+    if (filters?.endDate && (item.issuedTimestamp || 0) > new Date(`${filters.endDate}T23:59:59`).getTime()) return false;
+    return true;
+  }).map(item => ({...item, model: variantLabels[item.model as keyof typeof variantLabels] || 'Não informado'}));
 
   const displayStatus: RequestStatus =
     status === "success" && certificates.length > 0 && filteredCertificates.length === 0
@@ -70,16 +97,16 @@ export const CertificateCompany = () => {
         </div>
 
         <div className="hidden md:flex items-center">
-          <button>
+          <button disabled aria-label="Notificações indisponíveis" title="Notificações ainda não disponíveis" className="opacity-40">
             <CiBellOn className="text-black/45 w-5 h-5" />
           </button>
 
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0069A833] text-[#0069A8] font-bold text-sm border border-[#0069A84D] ml-6 mr-3">
-            AS
-          </div>
+          <button type="button" onClick={openProfile} aria-label="Abrir meu perfil" className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0069A833] text-[#0069A8] font-bold text-sm border border-[#0069A84D] ml-6 mr-3">
+            {initials}
+          </button>
 
           <div className="flex flex-col justify-center">
-            <p className="font-semibold text-black text-sm">Ana Silva</p>
+            <p className="font-semibold text-black text-sm">{name}</p>
             <span className="font-normal text-black/45 text-xs">Administrador</span>
           </div>
         </div>

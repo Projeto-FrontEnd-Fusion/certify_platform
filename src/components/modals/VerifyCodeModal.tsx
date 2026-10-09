@@ -77,6 +77,7 @@ const VerifyCodeModal = ({
       const codeIndex = segments.findIndex(
         (segment) =>
           segment.toLowerCase() === "verificar" ||
+          segment.toLowerCase() === "validar-certificado" ||
           segment.toLowerCase() === "validate" ||
           segment.toLowerCase() === "validar",
       );
@@ -85,8 +86,7 @@ const VerifyCodeModal = ({
         return decodeURIComponent(
           segments[codeIndex + 1],
         )
-          .trim()
-          .toUpperCase();
+          .trim();
       }
 
       const codeFromQuery =
@@ -94,13 +94,13 @@ const VerifyCodeModal = ({
         url.searchParams.get("codigo");
 
       if (codeFromQuery) {
-        return codeFromQuery.trim().toUpperCase();
+        return codeFromQuery.trim();
       }
     } catch {
-      return trimmedValue.toUpperCase();
+      return trimmedValue;
     }
 
-    return trimmedValue.toUpperCase();
+    return trimmedValue;
   };
 
   const handlePaste = async () => {

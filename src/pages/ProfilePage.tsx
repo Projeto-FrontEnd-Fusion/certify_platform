@@ -1,3 +1,5 @@
+import { useAccountNavigation } from "@/hooks/useAccountNavigation";
+import { useQueryClient } from '@tanstack/react-query';
 import { authServiceInstance } from '@/api/implements';
 import { getApiErrorMessage } from '@/api/getApiErrorMessage';
 import { useAuthStoreData } from '@/stores/useAuthStore';
@@ -205,7 +207,7 @@ const getInitials = (name: string): string => {
     .filter(Boolean);
 
   if (!parts.length) {
-    return "AS";
+    return "";
   }
 
   if (parts.length === 1) {
@@ -220,20 +222,23 @@ const getInitials = (name: string): string => {
 };
 
 export const Profilepage = () => {
+  const queryClient = useQueryClient();
+  const { goHome, logout, isCompany } = useAccountNavigation();
   const { auth, updateAuth } = useAuthStoreData();
   const resolveAvatar = (url: string) => new URL(url, import.meta.env.VITE_API_URL).href;
   useEffect(() => {
     let active = true;
     authServiceInstance.getProfile().then((user) => {
       if (!active) return;
-      const loaded = {fullName: user.fullname || '', email: user.email, phone: user.phone || '', cpf: user.cpf || '', birthDate: user.birth_date || ''};
+      const loaded = {fullName: user.fullname || user.razao_social || '', email: user.email, phone: user.phone || '', cpf: user.cpf || '', birthDate: user.birth_date || ''};
       setProfile(loaded); setOriginalData(loaded);
       setFormData({...loaded, currentPassword: '', newPassword: '', confirmPassword: ''});
       setAvatarUrl(user.avatar_url ? new URL(user.avatar_url, import.meta.env.VITE_API_URL).href : null);
       updateAuth(user);
+      queryClient.setQueryData(['account-profile', user._id], user);
     }).catch((error) => { if (active) setErrors({form: getApiErrorMessage(error, 'Falha ao carregar perfil')}); });
     return () => { active = false; };
-  }, [updateAuth]);
+  }, [updateAuth, queryClient]);
 
   const [profile, setProfile] =
     useState<ProfileData>(initialProfile);
@@ -473,6 +478,7 @@ export const Profilepage = () => {
         ...(formData.birthDate ? {birth_date: formData.birthDate} : {}),
       });
       updateAuth(user);
+      queryClient.setQueryData(['account-profile', user._id], user);
     const updatedProfile: ProfileData = {
       fullName:
         formData.fullName.trim(),
@@ -881,6 +887,7 @@ export const Profilepage = () => {
             <div className="space-y-2">
               <button
   type="button"
+  onClick={goHome}
   className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/5"
 >
   <svg
@@ -942,13 +949,14 @@ export const Profilepage = () => {
                 </p>
 
                 <p className="truncate text-xs text-white/50">
-                  Aluno
+                  {isCompany ? "Empresa" : "Aluno"}
                 </p>
               </div>
 
               <div className="flex shrink-0 items-center gap-1">
                 <button
                   type="button"
+                  onClick={() => document.getElementById("profile-settings")?.scrollIntoView({ behavior: "smooth" })}
                   aria-label="Configurações"
                   title="Configurações"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
@@ -971,6 +979,7 @@ export const Profilepage = () => {
 
                 <button
                   type="button"
+                  onClick={logout}
                   aria-label="Sair"
                   title="Sair"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400/50"
@@ -992,7 +1001,7 @@ export const Profilepage = () => {
           </div>
         </aside>
 
-        <main className="ml-[260px] min-h-screen flex-1 bg-[#F4F5F9] px-6 py-8 lg:px-10">
+        <main id="profile-settings" className="ml-[260px] min-h-screen flex-1 bg-[#F4F5F9] px-6 py-8 lg:px-10">
           <div className="mx-auto w-full max-w-[1100px]">
             <div className="mb-8">
               <h1 className="text-2xl font-bold text-[#1A1551] sm:text-3xl">

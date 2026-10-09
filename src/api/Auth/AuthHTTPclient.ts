@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from "axios"
+import { installSessionInterceptors } from '../sessionInterceptors';
 
 export class AuthApiInstance {
   private static instance: AxiosInstance | null = null
@@ -14,20 +15,7 @@ export class AuthApiInstance {
       },
       timeout: 10000, 
     })
-    setup.interceptors.request.use((config) => {
-      const rawSession = localStorage.getItem("auth-storage")
-      if (!rawSession) return config
-
-      try {
-        const session = JSON.parse(rawSession)
-        const accessToken = session?.state?.accessToken
-        if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
-      } catch {
-        localStorage.removeItem("auth-storage")
-      }
-
-      return config
-    })
+    installSessionInterceptors(setup, baseURL);
     return setup
   }
 

@@ -1,31 +1,16 @@
 import Logo from "@/assets/Logo.svg";
-import { useNavigate } from "react-router-dom";
-import { authServiceInstance } from "@/api/implements";
-import { useAuthStoreData } from "@/stores/useAuthStore";
+import { useAccountNavigation } from "@/hooks/useAccountNavigation";
 
 
 export function Header() {
-  const navigate = useNavigate();
-  const { auth, refreshToken, authLogout } = useAuthStoreData();
-  const initials = (auth?.fullname || auth?.razao_social || auth?.email || "")
-    .split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-  const handleLogout = async () => {
-    try {
-      if (refreshToken) await authServiceInstance.logout(refreshToken);
-    } catch {
-      // The local session must still be cleared if revocation is unavailable.
-    } finally {
-      authLogout();
-      navigate("/login", { replace: true });
-    }
-  };
+  const { initials, openProfile, logout, home } = useAccountNavigation();
   return (
     <header className="flex justify-between items-center px-12 md:px-24 py-[30px] bg-[#F9FAFB] h-[112px] sticky top-0 z-50">
-      <img src={Logo} alt="Logo Certify" className="w-[155px] h-[46px]" />
+      <a href={home} aria-label="Ir para meus certificados"><img src={Logo} alt="Logo Certify" className="w-[155px] h-[46px]" /></a>
 
       <div className="flex items-center gap-4">
-        <button type="button" onClick={() => navigate("/perfil")}>Meu perfil</button>
-        <button type="button" onClick={handleLogout} aria-label="Sair da conta" title="Sair" className="w-12 h-12 bg-[#2571B8] text-[#F9FAFB] text-lg rounded-full flex items-center justify-center">
+        <button type="button" onClick={openProfile}>Meu perfil</button>
+        <button type="button" onClick={logout} aria-label="Sair da conta" title="Sair" className="w-12 h-12 bg-[#2571B8] text-[#F9FAFB] text-lg rounded-full flex items-center justify-center">
           {initials}
         </button>
       </div>

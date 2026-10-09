@@ -25,7 +25,7 @@ useEffect(() => {
   if (!auth?._id) return;
 
   if ((auth.role as string) === "empresa") {
-    navigation("/");
+    navigation("/empresa/certificados");
   } else {
     navigation("/meus-certificados");
   }

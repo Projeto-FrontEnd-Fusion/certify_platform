@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react'
-import techLogo from '@/assets/tech-logo.png'
+import { useQuery } from '@tanstack/react-query';
+import { authServiceInstance } from '@/api/implements';
+import { useAuthStoreData } from '@/stores/useAuthStore';
+import { certificateDate, type PublicCertificate } from '@/lib/certificate-display';
+import type { CertificateFormData } from '@/schemas/CertificateSchema';
+import type { DeepPartial } from 'react-hook-form';
 import type { CertificateVariant } from './types';
 import ornamentalFrame from '@/assets/certification-decoration.svg'
 
@@ -60,48 +65,64 @@ const VARIANTS: Record<
 
 interface CertificateTemplateProps {
   variant?: CertificateVariant
+  data?: DeepPartial<CertificateFormData>;
+  certificate?: PublicCertificate;
 }
 
-export function CertificateTemplate({ variant = 'classico' }: CertificateTemplateProps) {
+export function CertificateTemplate({ variant = 'classico', data, certificate }: CertificateTemplateProps) {
   const { frame, decoration } = VARIANTS[variant]
+  const {auth, accessToken} = useAuthStoreData();
+  const profile = useQuery({queryKey: ['account-profile', auth?._id],
+    enabled: !!accessToken && !!auth?._id && !certificate,
+    queryFn: () => authServiceInstance.getProfile(), staleTime: 60_000, retry: false});
+  const institution = certificate?.institution_name || profile.data?.razao_social || profile.data?.fullname;
+  const logo = certificate?.design?.logo?.dataUrl || data?.logo?.dataUrl;
+  const signature = certificate?.design?.signature?.dataUrl || data?.signature?.dataUrl;
+  const participant = certificate?.participant_name || data?.participants?.[0]?.name;
+  const activity = certificate?.event_name || data?.activityName;
+  const workload = certificate?.workload || data?.workload;
+  const endDate = certificate?.event_end || (data?.endDate ? `${data.endDate}T12:00:00` : undefined);
 
   return (
     <div
+      role="region"
+      aria-label="Prévia do certificado"
       className={`relative w-full overflow-hidden bg-white flex flex-col items-center px-6 py-3.5 ${frame}`}
     >
       {decoration}
+      {!certificate && <p className="text-[8px] text-gray-500">{data ? 'Prévia — certificado ainda não emitido' : 'Prévia do modelo'}</p>}
 
       <p className="tracking-[11px] text-[#0069A8] font-bold text-xs">CERTIFICADO</p>
-      <p className="font-normal text-[8px]">de Conclusão de Curso</p>
+      <p className="font-normal text-[8px]">{certificate?.description || data?.description || 'Descrição da certificação'}</p>
       <p className="font-normal text-[10px]">Certificamos que</p>
-      <p className="font-normal text-lg text-[#0069A8] font-playwrite">Nome do aluno</p>
+      <p className="font-normal text-lg text-[#0069A8] font-playwrite">{participant || 'Participante a definir'}</p>
       <div className="h-0.5 w-full bg-black mb-1.5"></div>
 
-      <p className="font-normal text-[6px]">Concluiu com êxito o curso online</p>
-      <p className="font-bold text-[8px] text-[#0069A8]">Desenvolvimento Web Full Stack</p>
+      <p className="font-normal text-[6px]">{data?.activityType}{data?.modalityEnabled && data.modality ? ` · ${data.modality}` : ''}</p>
+      <p className="font-bold text-[8px] text-[#0069A8]">{activity || 'Atividade a definir'}</p>
       <p className="font-normal text-[6px]">
-        com carga horária de <b>160 horas</b>: realizado dia <b>08 de março de 2026</b>.
+        Carga horária: <b>{workload ? `${workload} horas` : 'A definir'}</b> · Término: <b>{certificateDate(endDate)}</b>
       </p>
 
       <div className="flex justify-between items-end w-full">
         <div>
-          <img src={techLogo} alt="logo tech" className="w-10 h-8" />
+          {logo && <img src={logo} alt="Logo da instituição emissora" className="w-10 h-8 object-contain" />}
           <p className="font-normal text-[8px] text-black">
-            Instituto de Tecnologia e <br /> Desenvolvimento
+            {institution || (profile.isError ? 'Não foi possível carregar a instituição' : profile.isFetching ? 'Carregando instituição...' : 'Instituição a definir')}
           </p>
         </div>
 
         <div>
+          {signature && <img src={signature} alt="Assinatura da instituição emissora" className="h-8 max-w-24 object-contain" />}
           <div className="h-0.5 w-full bg-black"></div>
           <div className="p-2">
-            <p className="font-normal text-[8px]">Nome do responsável</p>
-            <p className="font-normal text-[8px]">Descrição do cargo</p>
+            <p className="font-normal text-[8px]">{institution || 'Instituição emissora'}</p>
           </div>
         </div>
       </div>
 
       <p className="font-normal text-[8px]">
-        Código de autenticidade: <b>DJFEJ338-94320</b>
+        Código de autenticidade: <b>{certificate?.access_key || 'Disponível após a emissão'}</b>
       </p>
       <p className="font-normal text-[8px]">Esse certificado foi gerado pela Certify</p>
     </div>

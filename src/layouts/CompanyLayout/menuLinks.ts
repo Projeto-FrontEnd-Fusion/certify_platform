@@ -8,6 +8,7 @@ interface MenuLink {
   icon: IconType;
   label: string;
   href: string;
+  available?: boolean;
 }
 
 export const menuLinks: MenuLink[] = [
@@ -15,6 +16,7 @@ export const menuLinks: MenuLink[] = [
     icon: RxDashboard,
     label: "Dashboard",
     href: "/empresa/dashboard",
+    available: false,
   },
   {
     icon: PiCertificateBold,
@@ -25,6 +27,7 @@ export const menuLinks: MenuLink[] = [
     icon: BsPeople,
     label: "Alunos",
     href: "/empresa/alunos",
+    available: false,
   },
   {
     icon: RxDashboard,
@@ -35,5 +38,6 @@ export const menuLinks: MenuLink[] = [
     icon: RiPieChart2Line,
     label: "Relatórios",
     href: "/empresa/relatorios",
+    available: false,
   },
 ];

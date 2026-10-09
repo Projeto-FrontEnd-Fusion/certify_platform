@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type status = "pending" | "available" | "expired";
+export type status = "pending" | "available" | "expired" | "inactive";
 
 export interface authPayload {
   _id: string;

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 const user = {
   _id: '507f1f77bcf86cd799439011', fullname: 'Aluno Teste', email: 'student@example.com',
@@ -11,6 +12,7 @@ async function signIn(page: Page) {
       state: { auth, accessToken: 'test-access-token', refreshToken: 'test-refresh-token' }, version: 0,
     }));
   }, user);
+  await page.route('**/api/v1/auth/me', route => route.fulfill({json: {success: true, data: {auth: user}}}));
 }
 
 test('protects the profile without an authenticated session', async ({ page }) => {
@@ -79,7 +81,7 @@ test('uploads the avatar as multipart and resolves its URL against the API origi
   await expect(page.getByAltText(`Foto de perfil de ${user.fullname}`).first()).toHaveAttribute('src', /:8000\/static\/uploads\/avatars\/test.png$/);
 });
 
-test('opens a certificate returned with MongoDB _id and downloads a valid PDF', async ({ page }) => {
+test('opens a certificate returned with MongoDB _id and downloads a valid PDF', async ({ page }, testInfo) => {
   await signIn(page);
   const certificate = {
     _id: '507f1f77bcf86cd799439022', participant_name: user.fullname,
@@ -97,14 +99,13 @@ test('opens a certificate returned with MongoDB _id and downloads a valid PDF', 
   });
   await page.goto('/meus-certificados');
   await page.getByRole('button', { name: /Evento de Integração/ }).click();
-  await expect(page.getByRole('heading', { name: user.fullname })).toBeVisible();
+  await expect(page.getByText(user.fullname, {exact: true}).first()).toBeVisible();
   const downloading = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'PDF', exact: true }).click();
+  await page.getByRole('button', { name: 'Fazer download', exact: true }).first().click();
   const download = await downloading;
   expect(download.suggestedFilename()).toMatch(/\.pdf$/);
   expect(await download.failure()).toBeNull();
-  const stream = await download.createReadStream();
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
-  expect(Buffer.concat(chunks).subarray(0, 5).toString()).toBe('%PDF-');
+  const pdfPath = testInfo.outputPath('certificate.pdf');
+  await download.saveAs(pdfPath);
+  expect((await readFile(pdfPath)).subarray(0, 5).toString()).toBe('%PDF-');
 });

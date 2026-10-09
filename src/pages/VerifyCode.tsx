@@ -29,7 +29,6 @@ export const VerifyCode = () => {
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
-        // Redirecionamento provisório. Deve apontar para a próxima etapa.
         navigate("/reset-password", { state: { role, email: location.state?.email, code: code.join("") } });
       }, 1500);
       return () => clearTimeout(timer);

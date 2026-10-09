@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { certificateServiceInstance } from '@/api/implements';
+import { certificateDate, downloadCertificate, type PublicCertificate } from '@/lib/certificate-display';
+import { getApiErrorMessage } from '@/api/getApiErrorMessage';
 import Logo from "@/assets/Logo.svg";
 
 import VerifyCodeModal from "./../components/modals/VerifyCodeModal";
@@ -24,51 +27,7 @@ type CertificateRecord = {
 
 type Certificate = CertificateRecord & {
   verificationUrl: string;
-  certificateUrl: string;
-};
-
-const certificateRecords: CertificateRecord[] = [
-  {
-    institution: "Instituto de Tecnologia e Desenvolvimento",
-    event: "Conclusão de Curso",
-    date: "2026-03-15T10:00:00",
-    authenticationCode: "DJFEJ338-94320",
-    studentName: "Ana Silva",
-    certificateName:
-      "Design de Experiência do Usuário (UX)",
-    issuedAt: "15 de março de 2024",
-    validity: "Vitalício",
-    completionDate: "08 de março de 2026",
-    workload: "160 horas",
-    responsibleName: "Nome do responsável",
-    responsibleRole: "Descrição do cargo",
-  },
-];
-
-const buildCertificate = (
-  record: CertificateRecord,
-): Certificate => {
-  return {
-    ...record,
-    verificationUrl: `${window.location.origin}/verificar/${record.authenticationCode}`,
-    certificateUrl: "/certificates/certificate.pdf",
-  };
-};
-
-const findCertificate = (
-  code: string,
-): Certificate | null => {
-  const normalizedCode = decodeURIComponent(code)
-    .trim()
-    .toUpperCase();
-
-  const record = certificateRecords.find(
-    (certificate) =>
-      certificate.authenticationCode.toUpperCase() ===
-      normalizedCode,
-  );
-
-  return record ? buildCertificate(record) : null;
+  source: PublicCertificate;
 };
 
 const CertificatePreview = ({
@@ -454,6 +413,8 @@ const CertificateValidationPage = () => {
   const [certificate, setCertificate] =
     useState<Certificate | null>(null);
 
+  const [validationError, setValidationError] = useState('');
+
   const [isValidating, setIsValidating] =
     useState(true);
 
@@ -473,39 +434,33 @@ const CertificateValidationPage = () => {
     useState(false);
 
   const normalizedCode = useMemo(
-    () => code?.trim().toUpperCase() ?? "",
+    () => code?.trim() ?? "",
     [code],
   );
 
   useEffect(() => {
-    const validateCertificate = async () => {
+    let cancelled = false;
+    const validate = async () => {
       setIsValidating(true);
       setCertificate(null);
-
+      setValidationError('');
       try {
-        if (!normalizedCode) {
-          return;
-        }
-
-        await new Promise((resolve) =>
-          window.setTimeout(resolve, 500),
-        );
-
-        const foundCertificate =
-          findCertificate(normalizedCode);
-
-        if (foundCertificate) {
-          setCertificate({
-            ...foundCertificate,
-            verificationUrl: window.location.href,
-          });
-        }
-      } finally {
-        setIsValidating(false);
-      }
+        if (!normalizedCode) return;
+        const data = await certificateServiceInstance.validatePublicCertificate(normalizedCode);
+        if (cancelled) return;
+        setCertificate({institution: data.institution_name || 'Não informado', event: data.event_name,
+          date: data.issued_at ? new Date(data.issued_at).toISOString() : '', authenticationCode: data.access_key || normalizedCode,
+          studentName: data.participant_name, certificateName: data.description || 'Certificado',
+          issuedAt: certificateDate(data.issued_at), validity: data.valid_until ? certificateDate(data.valid_until) : 'Sem validade',
+          completionDate: certificateDate(data.event_end), workload: `${data.workload} horas`,
+          responsibleName: data.institution_name || '', responsibleRole: 'Instituição emissora',
+          verificationUrl: window.location.href, source: data});
+      } catch (error) {
+        if (!cancelled) setValidationError(getApiErrorMessage(error, 'Não foi possível consultar o certificado.'));
+      } finally {if (!cancelled) setIsValidating(false);}
     };
-
-    validateCertificate();
+    void validate();
+    return () => {cancelled = true;};
   }, [normalizedCode]);
 
   const showToast = (message: string) => {
@@ -561,31 +516,7 @@ const CertificateValidationPage = () => {
     try {
       setIsDownloading(true);
 
-      const response = await fetch(
-        certificate.certificateUrl,
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "Falha ao baixar certificado.",
-        );
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-
-      link.download = `certificado-${certificate.authenticationCode}.pdf`;
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
-
-      URL.revokeObjectURL(url);
+      await downloadCertificate(certificate.source);
 
       showToast(
         "Certificado baixado com sucesso!",
@@ -759,6 +690,7 @@ const CertificateValidationPage = () => {
   if (!certificate) {
     return (
       <section className="min-h-screen w-full bg-[#F4F5F9] font-inter text-[#1A1551]">
+        {validationError && <p role="alert">{validationError}</p>}
         <header className="flex h-20 w-full items-center justify-between bg-[#1A1551] px-4 sm:px-6 lg:px-10">
           <img
             src={Logo}

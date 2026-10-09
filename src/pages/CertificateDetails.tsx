@@ -1,3 +1,4 @@
+import { useAccountNavigation } from "@/hooks/useAccountNavigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FiAlertCircle,
@@ -7,6 +8,11 @@ import {
   FiMail,
   FiX,
 } from "react-icons/fi";
+import { useParams, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { certificateServiceInstance } from '@/api/implements';
+import { certificateDate, downloadCertificate } from '@/lib/certificate-display';
+import { getApiErrorMessage } from '@/api/getApiErrorMessage';
 import Logo from "@/assets/Logo.svg";
 
 interface Certificate {
@@ -19,12 +25,7 @@ interface Certificate {
   title: string;
   institution: string;
   signature?: string;
-  acceptedDate?: string;
-  lastUpdated?: string;
-}
-
-interface CertificateDetailsProps {
-  certificate: Certificate;
+  logo?: string;
 }
 
 type VerificationStatus = "success" | "loading" | "error";
@@ -277,9 +278,25 @@ function VerificationModal({
   );
 }
 
-export function CertificateDetails({
-  certificate,
-}: CertificateDetailsProps) {
+export function CertificateDetails() {
+  const {id} = useParams();
+  const [params] = useSearchParams();
+  const certificateId = id || params.get('id') || '';
+  const query = useQuery({queryKey: ['certificate-details', certificateId], enabled: !!certificateId,
+    queryFn: () => certificateServiceInstance.findCertificateById(certificateId)});
+  if (!certificateId) return <p role="alert">Selecione um certificado para visualizar.</p>;
+  if (query.isPending) return <p>Carregando certificado...</p>;
+  if (query.isError || !query.data) return <div role="alert"><p>{getApiErrorMessage(query.error, 'Não foi possível carregar o certificado.')}</p><button onClick={() => query.refetch()}>Tentar novamente</button></div>;
+  const data = query.data.data.certificate;
+  return <CertificateDetailsContent certificate={{id: data.id, studentName: data.participant_name,
+    issueDate: data.issued_at ? new Date(data.issued_at).toISOString() : '', courseName: data.event_name,
+    workload: data.workload, authenticityCode: data.access_key, title: data.description || 'Certificado',
+    institution: data.institution_name, signature: data.design?.signature?.dataUrl, logo: data.design?.logo?.dataUrl}} />;
+}
+
+function CertificateDetailsContent({certificate}: {certificate: Certificate}) {
+  const account = useAccountNavigation();
+  const [actionMessage, setActionMessage] = useState('');
   const [isDownloading, setIsDownloading] =
     useState(false);
 
@@ -299,53 +316,7 @@ export function CertificateDetails({
       .toUpperCase();
   }, [certificate.studentName]);
 
-  const formattedDate = useMemo(() => {
-    return new Intl.DateTimeFormat(
-      navigator.language || "pt-BR",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }
-    ).format(new Date(certificate.issueDate));
-  }, [certificate.issueDate]);
-
-  const acceptedDate = useMemo(() => {
-    if (!certificate.acceptedDate) {
-      return formattedDate;
-    }
-
-    return new Intl.DateTimeFormat(
-      navigator.language || "pt-BR",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }
-    ).format(new Date(certificate.acceptedDate));
-  }, [
-    certificate.acceptedDate,
-    formattedDate,
-  ]);
-
-  const lastUpdated = useMemo(() => {
-    if (!certificate.lastUpdated) {
-      return formattedDate;
-    }
-
-    return new Intl.DateTimeFormat(
-      navigator.language || "pt-BR",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }
-    ).format(new Date(certificate.lastUpdated));
-  }, [
-    certificate.lastUpdated,
-    formattedDate,
-  ]);
-
+  const formattedDate = certificateDate(certificate.issueDate);
   const createVerificationSteps =
     (): VerificationStep[] => [
       {
@@ -367,18 +338,6 @@ export function CertificateDetails({
         critical: true,
       },
       {
-        id: "accepted-date",
-        label: `Aceitar em ${acceptedDate}`,
-        status: "loading",
-        critical: true,
-      },
-      {
-        id: "last-updated",
-        label: `Última atualização ${lastUpdated}`,
-        status: "loading",
-        critical: true,
-      },
-      {
         id: "verified",
         label: "VERIFICADO",
         status: "loading",
@@ -386,90 +345,15 @@ export function CertificateDetails({
       },
     ];
 
-  const updateStep = (
-    stepId: string,
-    status: VerificationStatus,
-    label?: string
-  ) => {
-    setVerificationSteps((currentSteps) =>
-      currentSteps.map((step) =>
-        step.id === stepId
-          ? {
-              ...step,
-              status,
-              label: label ?? step.label,
-            }
-          : step
-      )
-    );
-  };
-
   const verifyCertificate = async () => {
     setVerificationSteps(createVerificationSteps());
     setIsVerificationOpen(true);
-
     try {
-      await new Promise((resolve) =>
-        setTimeout(resolve, 600)
-      );
-
-      updateStep("issue-date", "success");
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 400)
-      );
-
-      updateStep("issuer", "success");
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 400)
-      );
-
-      updateStep("recipient", "success");
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 400)
-      );
-
-      updateStep(
-        "accepted-date",
-        "success"
-      );
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 400)
-      );
-
-      updateStep(
-        "last-updated",
-        "success"
-      );
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 400)
-      );
-
-      updateStep(
-        "verified",
-        "success"
-      );
+      await certificateServiceInstance.validatePublicCertificate(certificate.authenticityCode);
+      setVerificationSteps(steps => steps.map(step => ({...step, status: 'success'})));
     } catch (error) {
-      console.error(
-        "Erro durante a verificação:",
-        error
-      );
-
-      setVerificationSteps((currentSteps) =>
-        currentSteps.map((step) =>
-          step.status === "loading"
-            ? {
-                ...step,
-                status: "error",
-                label: "Erro ao verificar",
-              }
-            : step
-        )
-      );
+      setVerificationSteps(steps => steps.map(step => ({...step, status: 'error',
+        label: getApiErrorMessage(error, 'Não foi possível verificar o certificado.')})));
     }
   };
 
@@ -479,58 +363,36 @@ export function CertificateDetails({
     try {
       setIsDownloading(true);
 
-      const response = await fetch(
-        `/api/certificates/${certificate.id}/pdf`
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "Não foi possível baixar o certificado."
-        );
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = "certificado.pdf";
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
+      const data = await certificateServiceInstance.findCertificateById(certificate.id);
+      await downloadCertificate(data.data.certificate);
     } catch (error) {
-      console.error(
-        "Erro ao baixar certificado:",
-        error
-      );
+      setActionMessage(getApiErrorMessage(error, 'Não foi possível baixar o certificado.'));
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const handleSendEmail = () => {
-    console.log(
-      "Enviar certificado por e-mail:",
-      certificate.id
-    );
+  const [isSending, setIsSending] = useState(false);
+  const handleSendEmail = async () => {
+    if (isSending) return;
+    setIsSending(true);
+    try {
+      const result = await certificateServiceInstance.sendLinks([certificate.id]);
+      setActionMessage(result.sent ? 'E-mail aceito pelo servidor de envio.' : 'Envio pendente ou com falha. Tente novamente.');
+    } catch (error) {
+      setActionMessage(getApiErrorMessage(error, 'Não foi possível enviar o e-mail.'));
+    } finally {setIsSending(false);}
   };
-
   const handleLinkedIn = () => {
-    console.log(
-      "Compartilhar certificado no LinkedIn:",
-      certificate.id
-    );
+    const url = `${window.location.origin}/validar-certificado/${encodeURIComponent(certificate.authenticityCode)}`;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <section className="flex min-h-screen w-full font-inter bg-[#F4F5F9] text-[#1A1551]">
       <header className="fixed top-0 left-0 z-40 w-full h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 lg:px-12">
         <a
-          href="/"
+          href={account.home}
           aria-label="Ir para a página inicial da Certify"
           className="flex items-center"
         >
@@ -541,16 +403,17 @@ export function CertificateDetails({
           />
         </a>
 
-        <div
+        <button type="button" onClick={account.openProfile}
           className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#0069A8] text-white flex items-center justify-center font-bold text-sm sm:text-base"
-          aria-label={`Perfil do aluno ${initials}`}
+          aria-label="Abrir meu perfil"
           title="Perfil do aluno"
         >
-          {initials}
-        </div>
+          {account.initials}
+        </button>
       </header>
 
       <main className="w-full min-h-screen pt-20 bg-[#F4F5F9]">
+        {actionMessage && <p role="status" className="p-4">{actionMessage}</p>}
         <section
           aria-labelledby="certificate-metadata-title"
           className="sticky top-20 z-30 w-full bg-white border-b border-gray-200 shadow-sm"
@@ -631,8 +494,8 @@ export function CertificateDetails({
                 <article className="w-full aspect-[1.414/1] bg-white rounded-xl sm:rounded-2xl border border-[#D1D5DB] p-5 sm:p-7 md:p-10 lg:p-12 flex flex-col items-center justify-between text-center">
                   <div className="w-full flex justify-center">
                     <img
-                      src={Logo}
-                      alt="Certify Logo"
+                      src={certificate.logo || Logo}
+                      alt={certificate.institution}
                       className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"
                     />
                   </div>
@@ -657,6 +520,7 @@ export function CertificateDetails({
                     <p className="text-sm sm:text-lg md:text-xl font-bold text-[#1A1551]">
                       {certificate.courseName}
                     </p>
+                    <p className="text-sm text-gray-600">{certificate.institution}</p>
 
                     <div className="space-y-1">
                       <p className="text-xs sm:text-sm md:text-base text-gray-600">
@@ -746,6 +610,7 @@ export function CertificateDetails({
                 <button
                   type="button"
                   onClick={handleSendEmail}
+                  disabled={isSending}
                   className="w-full sm:flex-1 h-12 px-5 bg-transparent border border-[#0069A8] text-[#0069A8] rounded-xl font-bold text-sm sm:text-base hover:bg-[#0069A8]/5 active:bg-[#0069A8]/10 focus:outline-none focus:ring-2 focus:ring-[#0069A8]/30 transition-colors flex items-center justify-center gap-2"
                 >
                   <FiMail

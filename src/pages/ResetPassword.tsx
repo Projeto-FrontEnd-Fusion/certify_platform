@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BiCheck, BiLoader } from "react-icons/bi";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useFormValidation } from "@/hooks/useForm";
 import { ResetPasswordSchema } from "@/schemas/ResetPassword";
 import { useResetPasswordAuth } from "@/hooks/Auth/useResetPasswordAuth";
@@ -45,6 +45,11 @@ export const ResetPassword = () => {
   const rules = usePasswordRules(passwordValue);
 
   const onSubmit = handleSubmit((formData) => {
+    if (!location.state?.email || !location.state?.code) {
+      toast.error('Solicite um código de recuperação antes de redefinir a senha.');
+      navigate('/forgot-password');
+      return;
+    }
     mutate({email: location.state?.email || "", code: location.state?.code || "", new_password: formData.password});
   });
 

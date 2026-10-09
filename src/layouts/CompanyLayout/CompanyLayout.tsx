@@ -1,7 +1,7 @@
-'use client'
+import { useAccountNavigation } from "@/hooks/useAccountNavigation";
 
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
 import { CiBellOn } from "react-icons/ci";
@@ -12,6 +12,7 @@ import { menuLinks } from "./menuLinks";
 import { SidebarLink } from "./SidebarLink";
 
 export const CompanyLayout = () => {
+  const { name, initials, logout, openProfile } = useAccountNavigation();
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   const toggleMenu = () => {
@@ -31,21 +32,24 @@ export const CompanyLayout = () => {
         />
 
         <div className="flex items-center gap-3">
-          <button className="p-2 border border-white/10 rounded-full ">
+          <button disabled aria-label="Notificações indisponíveis" title="Notificações ainda não disponíveis" className="p-2 border border-white/10 rounded-full opacity-40">
             <CiBellOn className="text-white w-5 h-5" />
           </button>
 
-          <button className="p-2 border border-white/10 rounded-full ">
+          <button onClick={openProfile} aria-label="Meu perfil" className="p-2 border border-white/10 rounded-full ">
             <CiSettings className="text-white w-5 h-5" />
           </button>
 
-          <button className="p-2 border border-white/10 rounded-full ">
+          <button onClick={logout} aria-label="Sair da conta" className="p-2 border border-white/10 rounded-full ">
             <LuLogOut className="text-[#FF0000]" />
           </button>
         </div>
 
       </header>
 
+      <nav aria-label="Menu da empresa no celular" className="flex gap-3 overflow-x-auto bg-[#0F2441] p-3 md:hidden">
+        {menuLinks.map(link => link.available !== false ? <Link className="text-white" key={link.href} to={link.href}>{link.label}</Link> : <span key={link.href} className="text-white/40" title="Ainda não disponível">{link.label}</span>)}
+      </nav>
       <aside
         className={`
     sticky
@@ -137,14 +141,14 @@ export const CompanyLayout = () => {
         `}
         >
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#EDF8FF]/45 bg-[#0069A8]">
-            IT
+            {initials}
           </div>
 
           {isMenuOpen && (
             <>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-white">
-                  Instituto Tech
+                  {name}
                 </p>
 
                 <span className="text-xs font-bold text-[#9CA3AF]">
@@ -152,14 +156,20 @@ export const CompanyLayout = () => {
                 </span>
               </div>
 
-              <button type="button">
+              <button type="button" onClick={openProfile} aria-label="Meu perfil">
                 <CiSettings className="h-5 w-5 text-white/45" />
               </button>
 
-              <button type="button">
+              <button type="button" onClick={logout} aria-label="Sair da conta">
                 <LuLogOut className="h-5 w-5 text-[#FF0000]" />
               </button>
             </>
+          )}
+          {!isMenuOpen && (
+            <div className="flex flex-col gap-2">
+              <button type="button" onClick={openProfile} aria-label="Meu perfil"><CiSettings className="h-5 w-5 text-white" /></button>
+              <button type="button" onClick={logout} aria-label="Sair da conta"><LuLogOut className="h-5 w-5 text-red-400" /></button>
+            </div>
           )}
         </div>
       </aside>

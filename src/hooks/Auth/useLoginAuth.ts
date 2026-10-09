@@ -12,7 +12,14 @@ export const useLoginAuth = () => {
   const signUpMutation = authServiceInstance 
 
   const { data, isSuccess, isPending, mutate, isError, error } = useMutation<ApiAuthResponse, Error, LoginSchemaType>({
-    mutationFn: (data: LoginSchemaType) => signUpMutation.login(data),
+    mutationFn: async (data: LoginSchemaType) => {
+      const result = await signUpMutation.login(data);
+      const response = result as SucessResponse;
+      if (!response.data?.auth || !response.data.access_token || !response.data.refresh_token) {
+        throw new Error('Resposta de autenticação sem usuário ou tokens');
+      }
+      return result;
+    },
     mutationKey: ['login-auth'],
     onSuccess: (data) => {
       try {
