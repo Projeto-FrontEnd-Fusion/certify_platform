@@ -13,7 +13,7 @@ export function SecondaryButton({ children, isDisabled = false, onClick }: Secon
       disabled={isDisabled}
       onClick={onClick}
       className={`w-full bg-transparent hover:bg-[#F3F4F6] transition-colors duration-300 text-[#6B7280] font-medium text-sm py-2 rounded-md cursor-pointer
-      `}>
+        ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}` }>
       {children}
     </button>
   )

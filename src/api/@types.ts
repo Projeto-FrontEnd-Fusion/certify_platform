@@ -23,6 +23,10 @@ export interface CompanySignUp extends AuthSignUp {
 
 export interface AuthUserReponse {
   _id: string;
+  phone?: string | null;
+  cpf?: string | null;
+  birth_date?: string | null;
+  avatar_url?: string | null;
   fullname?: string;
   razao_social?: string;
   email: string;
@@ -59,8 +63,8 @@ export interface CertificateInDb {
 
 export interface CertificateRequest {
   fullname: string;
-  access_key?: string | undefined;
-  event_id: string | number;
+  access_key: string;
+  event_id: string;
   status: status;
   email: string;
 }

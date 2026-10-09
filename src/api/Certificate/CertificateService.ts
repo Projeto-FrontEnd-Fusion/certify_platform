@@ -1,5 +1,5 @@
 import type { AxiosInstance } from "axios";
-import type { CertificateRequest, CertificateResponse, CertificateListResponse } from "../@types";
+import type { CertificateRequest, CertificateResponse, CertificateListResponse, CertificateInDb } from "../@types";
 import type { CertificateRepository } from "./CertificateRepository";
 
 export class CertificateService implements CertificateRepository {
@@ -9,11 +9,16 @@ export class CertificateService implements CertificateRepository {
     this.httpServiceAcessClient = api;
   }
 
+  private normalizeCertificate(certificate: CertificateInDb & {_id?: string}): CertificateInDb {
+    return {...certificate, id: certificate.id || certificate._id || ''};
+  }
+
   public async createCertificate(userId: string, certificate_data: CertificateRequest
   ): Promise<CertificateResponse> {
     const response = await this.httpServiceAcessClient.post(
       `/certificate/${userId}`,certificate_data
     );
+    response.data.data.certificate = this.normalizeCertificate(response.data.data.certificate);
     return response.data;
   }
 
@@ -21,6 +26,7 @@ export class CertificateService implements CertificateRepository {
     const response = await this.httpServiceAcessClient.get(
       `/certificate/${certificateId}`
     );
+    response.data.data.certificate = this.normalizeCertificate(response.data.data.certificate);
     return response.data;
   }
 
@@ -28,6 +34,7 @@ export class CertificateService implements CertificateRepository {
     const response = await this.httpServiceAcessClient.get(
       `/certificate/users/${userId}`
     );
+    response.data.data.items = response.data.data.items.map((item: CertificateInDb & {_id?: string}) => this.normalizeCertificate(item));
     return response.data;
   }
 

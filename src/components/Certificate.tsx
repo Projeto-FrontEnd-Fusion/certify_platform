@@ -1,3 +1,4 @@
+import { useCertificateStoreData } from '@/stores/useCertificateStore';
 import { LuCalendarCheck2, LuCalendarFold, LuHourglass } from "react-icons/lu";
 import BackgroundImage from "@/assets/BackgroundCertificate.svg";
 import MedalCertificate from "@/assets/MedalCertificate.svg";
@@ -9,7 +10,8 @@ import type { CertificateInDb } from "@/api/@types";
 export const Certificate = () => {
   const { auth } = useAuthStoreData();
 
-  const { data, isLoading, isError } = useCheckAvailableCertificate(auth?._id ?? "");
+  const { certificate: selectedCertificate } = useCertificateStoreData();
+  const { data, isLoading, isError } = useCheckAvailableCertificate(selectedCertificate?.id ?? "");
 
   if (!auth) {
     return <span>Usuário não autenticado</span>;

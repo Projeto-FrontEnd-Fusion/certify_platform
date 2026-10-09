@@ -1,14 +1,17 @@
 import { useRef, useEffect } from "react";
-import { useAuthStoreData } from "@/stores/useAuthStore";
+
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { AccessKeyHandler } from "@/utils/AcessKey";
-import { useCreateCertificate } from "./../hooks/Certificate/useCreateCertificate"
-import type { CertificateRequest } from "@/api/@types";
+import { useMutation } from '@tanstack/react-query';
+import { certificateServiceInstance } from '@/api/implements';
+import { useCertificateStoreData } from '@/stores/useCertificateStore';
+import { getApiErrorMessage } from '@/api/getApiErrorMessage';
+import { toast } from 'react-toastify';
 import { Link, useNavigate } from "react-router-dom";
 
 
 export const AcessKey = () => {
-  const { auth } = useAuthStoreData();
+  const { setcertificate } = useCertificateStoreData();
   
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -23,26 +26,15 @@ export const AcessKey = () => {
   const { handleInputChange, handleKeyDown } =
     new AccessKeyHandler();
 
-  const {mutate, isPending} = useCreateCertificate()
-
-  const handlerSetCertificate = () => {
-
-    const user_id = auth?._id
-
-    const newCertificate: CertificateRequest = {
-  fullname: auth?.fullname as string,
-  access_key: valuesRef.current.join(""),
-  event_id: "1",
-  status: "available",
-  email: auth?.email as string,
-    } 
-
-
-     mutate({userId : user_id as string, certificate_data : newCertificate}, {
-     onSuccess : () => navigation("/download-certificado")
-     })
-  } 
-
+  const {mutate, isPending} = useMutation({
+    mutationFn: () => certificateServiceInstance.validateCertificate(valuesRef.current.join('')),
+    onSuccess: (response) => {
+      setcertificate(response.data.certificate);
+      navigation(`/download-certificado/${encodeURIComponent(response.data.certificate.event_name)}`);
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error, 'Certificado não encontrado')),
+  });
+  const handlerSetCertificate = () => mutate();
 
   return (
     <div className="absolute bg-[#00000099] h-full flex w-full left-0 z-99 top-0 backdrop-blur-xs items-center justify-center px-4 font-inter">

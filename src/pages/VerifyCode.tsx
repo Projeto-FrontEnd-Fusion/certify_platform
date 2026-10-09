@@ -1,3 +1,5 @@
+import { authServiceInstance } from '@/api/implements';
+import { toast } from 'react-toastify';
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BiLoader } from "react-icons/bi";
@@ -8,7 +10,7 @@ import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 
 export const VerifyCode = () => {
-  const [code, setCode] = useState<string[]>(Array(5).fill(""));
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [attempts, setAttempts] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [hasError, setHasError] = useState(false);
@@ -28,11 +30,11 @@ export const VerifyCode = () => {
     if (isSuccess) {
       const timer = setTimeout(() => {
         // Redirecionamento provisório. Deve apontar para a próxima etapa.
-        navigate("/reset-password", { state: { role } });
+        navigate("/reset-password", { state: { role, email: location.state?.email, code: code.join("") } });
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, navigate, role]);
+  }, [isSuccess, navigate, role, code, location.state?.email]);
 
   useEffect(() => {
     if (isError) {
@@ -64,7 +66,7 @@ export const VerifyCode = () => {
     setCode(newCode);
 
     // Auto-advance
-    if (value && index < 4) {
+    if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -77,7 +79,7 @@ export const VerifyCode = () => {
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 5);
+    const pastedData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 6);
     if (!pastedData) return;
 
     if (hasError) {
@@ -92,23 +94,24 @@ export const VerifyCode = () => {
     setCode(newCode);
 
     // Focus the next empty input or the last one
-    const nextIndex = Math.min(pastedData.length, 4);
+    const nextIndex = Math.min(pastedData.length, 5);
     inputRefs.current[nextIndex]?.focus();
   };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isComplete && !maxAttemptsReached) {
-      mutate(code.join(""));
+      mutate({email: location.state?.email || "", code: code.join("")});
     }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (countdown === 0 && !maxAttemptsReached) {
       setCountdown(60);
       setHasError(false);
       reset();
-      // Em um cenário real, chamaria uma API de reenvio de código aqui
+      try { await authServiceInstance.forgotPassword(location.state?.email || ''); toast.success('Código solicitado'); }
+      catch { toast.error('Falha ao reenviar código'); }
     }
   };
  const email =

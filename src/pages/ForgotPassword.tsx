@@ -10,7 +10,7 @@ import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 
 export const ForgotPassword = () => {
-  const { errors, handleSubmit, register, isValid } = useFormValidation(ForgotPasswordSchema);
+  const { errors, handleSubmit, register, isValid, watch } = useFormValidation(ForgotPasswordSchema);
   const { mutate, isPending, isSuccess } = useForgotPasswordAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,22 +19,21 @@ export const ForgotPassword = () => {
   
   const subtitleText = role === "empresa" 
     ? "Insira seu e-mail cadastrado e receba o código para alteração" 
-    : "Insira seu e-mail ou cpf cadastrado e receba o codigo de verificacação para alteração da sua senha";
+    : "Insira seu e-mail cadastrado e receba o codigo de verificacação para alteração da sua senha";
     
-  const placeholderText = role === "empresa" ? "E-mail ou CNPJ" : "E-mail ou CPF";
+  const placeholderText = role === "empresa" ? "E-mail" : "E-mail";
   
   const sideImage = role === "empresa" ? EmpresaPhoto : GirlWithCertificate;
 
   useEffect(() => {
     if (isSuccess) {
       // Redireciona para próxima etapa (inserção de código)
-      // Como não existe ainda, redireciona para um mock /verify-code (que dará 404)
       const timer = setTimeout(() => {
-        navigate("/verify-code");
+        navigate("/verify-code", {state: {email: watch("identifier"), role}});
       }, 1500); // pequeno delay para a pessoa ver o toast
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, navigate, role, watch]);
 
   const onSubmit = handleSubmit((formData) => {
     mutate(formData.identifier);

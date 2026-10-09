@@ -1,23 +1,12 @@
+import { authServiceInstance } from '@/api/implements';
+import { getApiErrorMessage } from '@/api/getApiErrorMessage';
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { TOAST_STYLES } from "@/pages/ToastStyleContainer";
 
-// Mock API call function
-const mockResetPasswordApi = async (password: string): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (password === "error123") {
-        reject(new Error("Erro ao redefinir a senha. Tente novamente."));
-      } else {
-        resolve({ success: true, message: "Senha redefinida com sucesso!" });
-      }
-    }, 1500); // 1.5 seconds delay to show loading state
-  });
-};
-
 export const useResetPasswordAuth = () => {
   const { data, isSuccess, isPending, mutate, isError, error } = useMutation({
-    mutationFn: (password: string) => mockResetPasswordApi(password),
+    mutationFn: (payload: {email: string; code: string; new_password: string}) => authServiceInstance.resetPassword(payload.email, payload.code, payload.new_password),
     mutationKey: ['reset-password-auth'],
     onSuccess: () => {
       toast.success('Senha alterada com sucesso!', {
@@ -27,7 +16,7 @@ export const useResetPasswordAuth = () => {
       });
     },
     onError: (err: Error) => {
-      toast.error(err.message || 'Erro ao redefinir a senha.', {
+      toast.error(getApiErrorMessage(err, 'Erro na solicitação') || 'Erro ao redefinir a senha.', {
         position: "top-center",
         autoClose: 5000,
         ...TOAST_STYLES.error
