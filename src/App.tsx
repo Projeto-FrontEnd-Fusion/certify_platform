@@ -84,9 +84,6 @@ const CertificateValidationPage = lazy(() =>
  * Paginas para testar a integracao com a API
  * ===========================================
  */
-const TestLogin = lazy(() => import("./pages/__test__/Login").then((m) => ({ default: m.TestLogin })));
-const TestCertificate = lazy(() => import("./pages/__test__/Certificate").then((m) => ({ default: m.TestCertificate })));
-const TestEvent = lazy(() => import("./pages/__test__/Event").then((m) => ({ default: m.TestEvent })));
 /**===========================================
  * 
  * ===========================================
@@ -115,7 +112,7 @@ function App() {
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/perfil" element={<ProfilePage />} />
+
         <Route path="/modelo-certificado" element={<CertificateModelPage />} />
         <Route
   path="/validar-certificado/:code"
@@ -131,6 +128,8 @@ function App() {
         />
 
         <Route path="/" element={<AuthProtectedLayout />}>
+          <Route path="perfil" element={<ProfilePage />} />
+          <Route path="meus-certificados" element={<MyCertificates />} />
           <Route element={<AuthLayout />}>
             <Route index element={<Navigate to="/meus-certificados" replace />} />
             <Route path="pagina-de-contato" element={<ContactPage />} />
@@ -142,7 +141,7 @@ function App() {
 
             } />
 
-            <Route path="meus-dados" element={<NotFound />} />
+            <Route path="meus-dados" element={<Navigate to="/perfil" replace />} />
             <Route path="validar-certificados" element={<NotFound />} />
           </Route>
 

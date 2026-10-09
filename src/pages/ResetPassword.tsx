@@ -45,7 +45,7 @@ export const ResetPassword = () => {
   const rules = usePasswordRules(passwordValue);
 
   const onSubmit = handleSubmit((formData) => {
-    mutate(formData.password);
+    mutate({email: location.state?.email || "", code: location.state?.code || "", new_password: formData.password});
   });
 
 return (

@@ -1,4 +1,4 @@
-import BaseModal from "./Basemodal";
+import BaseModal from "./BaseModal";
 
 interface TermsModalProps {
   isOpen: boolean;

@@ -5,6 +5,10 @@ export type status = "pending" | "available" | "expired";
 
 export interface authPayload {
   _id: string;
+  phone?: string | null;
+  cpf?: string | null;
+  birth_date?: string | null;
+  avatar_url?: string | null;
   fullname?: string;
   razao_social?: string;
   role: "user" | "admin" | "empresa";

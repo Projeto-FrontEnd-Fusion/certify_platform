@@ -1,8 +1,12 @@
+import { authServiceInstance } from '@/api/implements';
+import { getApiErrorMessage } from '@/api/getApiErrorMessage';
+import { useAuthStoreData } from '@/stores/useAuthStore';
 import {
   type ChangeEvent,
   type DragEvent,
   type FormEvent,
   useEffect,
+  useCallback,
   useRef,
   useState,
 } from "react";
@@ -49,13 +53,7 @@ type Feedback = {
 };
 
 
-const initialProfile: ProfileData = {
-  fullName: "Ana Silva",
-  birthDate: "01/10/1996",
-  email: "ana.silva@email.com",
-  phone: "(11) 9 9999-9999",
-  cpf: "123.456.789-00",
-};
+const initialProfile: ProfileData = {fullName: '', birthDate: '', email: '', phone: '', cpf: ''};
 
 const initialForm: ProfileFormData = {
   ...initialProfile,
@@ -221,70 +219,22 @@ const getInitials = (name: string): string => {
   }`.toUpperCase();
 };
 
-const getAvatarUrlFromResponse = (
-  data: unknown
-): string | null => {
-  if (!data || typeof data !== "object") {
-    return null;
-  }
-
-  const response = data as Record<
-    string,
-    unknown
-  >;
-
-  const possibleUrl =
-    response.avatarUrl ||
-    response.avatar_url ||
-    response.url ||
-    response.imageUrl ||
-    response.image_url ||
-    response.avatar;
-
-  return typeof possibleUrl === "string"
-    ? possibleUrl
-    : null;
-};
-
-const getApiErrorMessage = async (
-  response: Response,
-  fallback: string
-): Promise<string> => {
-  try {
-    const contentType =
-      response.headers.get("content-type") || "";
-
-    if (
-      contentType.includes("application/json")
-    ) {
-      const data = await response.json();
-
-      return (
-        data?.message ||
-        data?.error ||
-        data?.detail ||
-        fallback
-      );
-    }
-
-    const text = await response.text();
-
-    if (
-      text &&
-      !text
-        .toLowerCase()
-        .includes("<!doctype")
-    ) {
-      return text;
-    }
-
-    return fallback;
-  } catch {
-    return fallback;
-  }
-};
-
 export const Profilepage = () => {
+  const { auth, updateAuth } = useAuthStoreData();
+  const resolveAvatar = (url: string) => new URL(url, import.meta.env.VITE_API_URL).href;
+  useEffect(() => {
+    let active = true;
+    authServiceInstance.getProfile().then((user) => {
+      if (!active) return;
+      const loaded = {fullName: user.fullname || '', email: user.email, phone: user.phone || '', cpf: user.cpf || '', birthDate: user.birth_date || ''};
+      setProfile(loaded); setOriginalData(loaded);
+      setFormData({...loaded, currentPassword: '', newPassword: '', confirmPassword: ''});
+      setAvatarUrl(user.avatar_url ? new URL(user.avatar_url, import.meta.env.VITE_API_URL).href : null);
+      updateAuth(user);
+    }).catch((error) => { if (active) setErrors({form: getApiErrorMessage(error, 'Falha ao carregar perfil')}); });
+    return () => { active = false; };
+  }, [updateAuth]);
+
   const [profile, setProfile] =
     useState<ProfileData>(initialProfile);
 
@@ -336,6 +286,31 @@ export const Profilepage = () => {
   const previousPreviewRef =
     useRef<string | null>(null);
 
+  const closeAvatarModal = useCallback(() => {
+    if (uploadingAvatar) {
+      return;
+    }
+
+    if (previousPreviewRef.current) {
+      URL.revokeObjectURL(
+        previousPreviewRef.current
+      );
+
+      previousPreviewRef.current = null;
+    }
+
+    setSelectedFile(null);
+    setAvatarPreviewUrl(null);
+    setAvatarError("");
+    setIsDragOver(false);
+    setAvatarModalOpen(false);
+
+    setTimeout(() => {
+      editAvatarButtonRef.current?.focus();
+    }, 0);
+  }, [uploadingAvatar]);
+
+
   useEffect(() => {
     return () => {
       if (previousPreviewRef.current) {
@@ -384,6 +359,7 @@ export const Profilepage = () => {
   }, [
     avatarModalOpen,
     uploadingAvatar,
+    closeAvatarModal,
   ]);
 
   const showFeedback = (
@@ -442,8 +418,7 @@ export const Profilepage = () => {
     }
 
     if (
-      !formData.birthDate.trim() ||
-      !isValidBirthDate(formData.birthDate)
+      formData.birthDate && !isValidBirthDate(formData.birthDate)
     ) {
       validationErrors.birthDate =
         "Informe uma data de nascimento válida.";
@@ -457,12 +432,12 @@ export const Profilepage = () => {
         "Informe um e-mail válido.";
     }
 
-    if (!isValidPhone(formData.phone)) {
+    if (formData.phone && !isValidPhone(formData.phone)) {
       validationErrors.phone =
         "Informe um telefone válido.";
     }
 
-    if (!isValidCPF(formData.cpf)) {
+    if (formData.cpf && !isValidCPF(formData.cpf)) {
       validationErrors.cpf =
         "Informe um CPF válido.";
     }
@@ -489,10 +464,15 @@ export const Profilepage = () => {
     setFeedback(null);
     setLoadingProfile(true);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 800)
-    );
-
+    try {
+      if (!auth?._id) throw new Error('Faça login novamente');
+      const user = await authServiceInstance.updateProfile(auth._id, {
+        fullname: formData.fullName.trim(), email: formData.email.trim(),
+        phone: formData.phone.replace(/\D/g, ''),
+        ...(formData.cpf ? {cpf: formData.cpf.replace(/\D/g, '')} : {}),
+        ...(formData.birthDate ? {birth_date: formData.birthDate} : {}),
+      });
+      updateAuth(user);
     const updatedProfile: ProfileData = {
       fullName:
         formData.fullName.trim(),
@@ -520,7 +500,10 @@ export const Profilepage = () => {
       "Informações atualizadas com sucesso!"
     );
 
-    setLoadingProfile(false);
+    } catch (error) {
+      const message = getApiErrorMessage(error, 'Falha ao salvar perfil');
+      setErrors({form: message}); toast.error(message);
+    } finally { setLoadingProfile(false); }
   };
 
   const handleCancel = () => {
@@ -590,10 +573,8 @@ export const Profilepage = () => {
     setFeedback(null);
     setLoadingPassword(true);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 800)
-    );
-
+    try {
+      await authServiceInstance.changePassword(formData.currentPassword, formData.newPassword);
     setFormData((previous) => ({
       ...previous,
       currentPassword: "",
@@ -611,7 +592,10 @@ export const Profilepage = () => {
       "Senha atualizada com sucesso!"
     );
 
-    setLoadingPassword(false);
+    } catch (error) {
+      const message = getApiErrorMessage(error, 'Falha ao alterar senha');
+      setErrors({form: message}); toast.error(message);
+    } finally { setLoadingPassword(false); }
   };
 
   const validateAvatarFile = (
@@ -767,30 +751,6 @@ export const Profilepage = () => {
     setAvatarModalOpen(true);
   };
 
-  const closeAvatarModal = () => {
-    if (uploadingAvatar) {
-      return;
-    }
-
-    if (previousPreviewRef.current) {
-      URL.revokeObjectURL(
-        previousPreviewRef.current
-      );
-
-      previousPreviewRef.current = null;
-    }
-
-    setSelectedFile(null);
-    setAvatarPreviewUrl(null);
-    setAvatarError("");
-    setIsDragOver(false);
-    setAvatarModalOpen(false);
-
-    setTimeout(() => {
-      editAvatarButtonRef.current?.focus();
-    }, 0);
-  };
-
   const handleAvatarUpload = async () => {
     if (
       !selectedFile ||
@@ -810,14 +770,10 @@ export const Profilepage = () => {
     setUploadingAvatar(true);
     setAvatarError("");
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 800)
-    );
-
-    if (avatarPreviewUrl) {
-      setAvatarUrl(avatarPreviewUrl);
-    }
-
+    try {
+      const url = await authServiceInstance.uploadAvatar(selectedFile);
+      setAvatarUrl(resolveAvatar(url));
+      updateAuth({avatar_url: url});
     showFeedback(
       "success",
       "Foto de perfil adicionada com sucesso!",
@@ -828,8 +784,10 @@ export const Profilepage = () => {
       "Foto de perfil adicionada com sucesso!"
     );
 
-    setUploadingAvatar(false);
-    closeAvatarModal();
+      setAvatarModalOpen(false); setSelectedFile(null);
+    } catch (error) {
+      setAvatarError(getApiErrorMessage(error, 'Falha ao salvar foto'));
+    } finally { setUploadingAvatar(false); }
   };
 
   const avatarContent = (
