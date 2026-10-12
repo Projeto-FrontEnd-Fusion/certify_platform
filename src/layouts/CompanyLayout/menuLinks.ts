@@ -16,7 +16,7 @@ export const menuLinks: MenuLink[] = [
     icon: RxDashboard,
     label: "Dashboard",
     href: "/empresa/dashboard",
-    available: false,
+    available: true,
   },
   {
     icon: PiCertificateBold,
