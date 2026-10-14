@@ -8,7 +8,7 @@ import { ResumeItem } from "./ResumeItem";
 const NOT_INFORMED = "Não informado";
 const VALIDITY_NOT_DEFINED = "Não definida";
 
-export function CertificateResume() {
+export function CertificateResume({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const { control } = useFormContext<CertificateFormData>();
   const { saveCurrentFormAsDraft } = useSaveCertificateDraft();
 
@@ -41,6 +41,13 @@ export function CertificateResume() {
         <div className="mt-4 flex justify-end items-center gap-4">
           <button
             type="button"
+            onClick={onBack}
+            className="bg-white text-sm border border-[#0069A84D] rounded-md px-5 py-2.5 cursor-pointer"
+          >
+            Voltar
+          </button>
+          <button
+            type="button"
             onClick={saveCurrentFormAsDraft}
             className="bg-white text-sm border border-[#0069A84D] rounded-md px-5 py-2.5 cursor-pointer"
           >
@@ -48,7 +55,8 @@ export function CertificateResume() {
           </button>
           <button
             type="button"
-            className="text-[#99A1AF] text-sm bg-[#E5E7EB] rounded-md px-5 py-2.5 cursor-pointer"
+            onClick={onNext}
+            className="text-white text-sm bg-[#0069A8] rounded-md px-5 py-2.5 cursor-pointer"
           >
             Continuar
           </button>

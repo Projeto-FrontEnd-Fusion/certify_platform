@@ -106,11 +106,16 @@ export function CertificateStepTwo({ onNext, onBack }: CertificateStepTwoProps) 
               onRemoveParticipant={removeParticipant}
             />
           </div>
+          {(errors.participants?.message || errors.participants?.root?.message) && (
+            <p role="alert" className="mt-3 text-sm text-red-600">
+              {errors.participants?.message || errors.participants?.root?.message}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="w-1/3">
-        <CertificateResume />
+        <CertificateResume onNext={onNext} onBack={onBack} />
       </div>
     </div>
   )
