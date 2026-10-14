@@ -5,7 +5,7 @@ import { RecentActivities } from "@/components/dashboard/RecentActivities";
 import { useAccountNavigation } from "@/hooks/useAccountNavigation";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
-import { CiBellOn } from "react-icons/ci";
+import { NotificationBell } from '@/components/NotificationBell';
 import { FaRegClock } from "react-icons/fa6";
 import { FiEdit, FiUsers } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
@@ -98,9 +98,7 @@ export function DashboardCompany() {
         </div>
 
         <div className="hidden md:flex items-center">
-          <button disabled aria-label="Notificações indisponíveis" title="Notificações ainda não disponíveis" className="opacity-40">
-            <CiBellOn className="text-black/45 w-5 h-5" />
-          </button>
+          <NotificationBell />
 
           <button type="button" onClick={openProfile} aria-label="Abrir meu perfil" className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0069A833] text-[#0069A8] font-bold text-sm border border-[#0069A84D] ml-6 mr-3">
             {initials}

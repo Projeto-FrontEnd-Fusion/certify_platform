@@ -5,9 +5,9 @@ interface NotificationsModalProps {
   open: boolean;
   onClose: () => void;
   notifications: Notification[];
-  setNotifications: React.Dispatch<
-    React.SetStateAction<Notification[]>
-  >;
+  unreadCount: number;
+  onMarkRead: (id: string) => Promise<void>;
+  onMarkAllRead: () => Promise<void>;
   loading?: boolean;
   error?: boolean;
   onRetry?: () => void;
@@ -146,7 +146,9 @@ export default function NotificationsModal({
   open,
   onClose,
   notifications,
-  setNotifications,
+  unreadCount,
+  onMarkRead,
+  onMarkAllRead,
   loading = false,
   error = false,
   onRetry,
@@ -158,16 +160,12 @@ export default function NotificationsModal({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [saveError, setSaveError] = useState(false);
 
-  const unreadCount = notifications.filter(
-    (notification) => !notification.read
-  ).length;
-
   const sortedNotifications = [...notifications]
     .sort((a, b) => {
       const aPriority =
-        a.severity === "critical" && !a.read ? 1 : 0;
+        !a.read ? a.severity === "critical" ? 2 : a.severity === "warning" ? 1 : 0 : 0;
       const bPriority =
-        b.severity === "critical" && !b.read ? 1 : 0;
+        !b.read ? b.severity === "critical" ? 2 : b.severity === "warning" ? 1 : 0 : 0;
 
       if (aPriority !== bPriority) {
         return bPriority - aPriority;
@@ -184,6 +182,7 @@ export default function NotificationsModal({
     if (!open) return;
 
     const modal = modalRef.current;
+    const bell = bellRef.current;
 
     const getFocusable = () =>
       Array.from(
@@ -192,7 +191,7 @@ export default function NotificationsModal({
         ) ?? []
       );
 
-    getFocusable()[0]?.focus();
+    (getFocusable()[0] ?? modal)?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -248,14 +247,9 @@ export default function NotificationsModal({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("pointerdown", handlePointerDown);
+      bell?.focus();
     };
   }, [open, onClose, bellRef]);
-
-  useEffect(() => {
-    if (!open) {
-      bellRef.current?.focus();
-    }
-  }, [open, bellRef]);
 
   const handleMarkAllRead = async () => {
     if (saving || unreadCount === 0) return;
@@ -264,37 +258,30 @@ export default function NotificationsModal({
     setSaveError(false);
 
     try {
-      setNotifications((current) =>
-        current.map((notification) => ({
-          ...notification,
-          read: true,
-        }))
-      );
+      await onMarkAllRead();
+    } catch {
+      setSaveError(true);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleNotificationClick = (notification: Notification) => {
-    if (busyId) return;
+  const handleNotificationClick = async (notification: Notification) => {
+    if (busyId || saving) return;
 
     setBusyId(notification.id);
 
-    if (!notification.read) {
-      setNotifications((current) =>
-        current.map((item) =>
-          item.id === notification.id
-            ? { ...item, read: true }
-            : item
-        )
-      );
-    }
-
-    setBusyId(null);
-
-    if (notification.href) {
-      onClose();
-      onNavigate(notification.href);
+    setSaveError(false);
+    try {
+      if (!notification.read) await onMarkRead(notification.id);
+      if (notification.href?.startsWith('/') && !notification.href.startsWith('//')) {
+        onClose();
+        onNavigate(notification.href);
+      }
+    } catch {
+      setSaveError(true);
+    } finally {
+      setBusyId(null);
     }
   };
 
@@ -306,8 +293,9 @@ export default function NotificationsModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="notifications-modal-title"
+      id="notifications-modal"
       tabIndex={-1}
-      className="absolute right-0 top-full z-50 mt-3 flex max-h-[min(600px,calc(100dvh-5rem))] w-[min(360px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-[#D1D5DB] bg-white shadow-2xl"
+      className="fixed right-4 top-20 md:absolute md:right-0 md:top-full z-50 mt-3 flex max-h-[min(600px,calc(100dvh-7rem))] w-[min(360px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-[#D1D5DB] bg-white shadow-2xl"
     >
       <header className="flex items-center justify-between gap-3 border-b border-[#D1D5DB] px-4 py-4">
         <h2
@@ -321,7 +309,7 @@ export default function NotificationsModal({
           type="button"
           onClick={handleMarkAllRead}
           disabled={
-            unreadCount === 0 || saving || loading || error
+            unreadCount === 0 || saving || !!busyId || loading || error
           }
           className="shrink-0 text-xs font-semibold text-[#0069A8] transition-colors hover:text-[#1A1551] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0069A8]/30 disabled:cursor-not-allowed disabled:text-gray-400"
         >
@@ -394,7 +382,7 @@ export default function NotificationsModal({
             type="button"
             onClick={() => {
               onClose();
-              onNavigate("/notificacoes");
+              onNavigate("/empresa/notificacoes");
             }}
             className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#D1D5DB] bg-white px-4 py-3 text-sm font-bold text-[#0069A8] transition-all hover:border-[#0069A8]/30 hover:bg-[#F0F8FC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0069A8]/30"
           >
