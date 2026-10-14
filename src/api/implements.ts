@@ -12,3 +12,6 @@ export const authServiceInstance = new AuthService(authApiIntance);
 const certificateApiInstance = CertificateApiInstance.getInstance(API_URL);
 export const certificateServiceInstance = new CertificateService(certificateApiInstance);
 export const notificationServiceInstance = new NotificationService(certificateApiInstance);
+
+import { DashboardService } from './Dashboard/DashboardService';
+export const dashboardServiceInstance = new DashboardService(certificateApiInstance);

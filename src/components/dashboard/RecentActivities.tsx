@@ -1,5 +1,6 @@
 import EmptyActivities from '@/assets/EmptyActivities.svg'
 import { FaChevronRight } from 'react-icons/fa6'
+import { Link } from 'react-router-dom';
 import type { IconType } from 'react-icons/lib';
 
 interface RecentActivitiesProps {
@@ -18,7 +19,7 @@ export function RecentActivities({ data }: RecentActivitiesProps) {
     <div className="bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl px-6 py-4">
       <h2 className="text-[#171717] font-normal text-lg">Atividades recentes</h2>
 
-      {!data && (
+      {data.length === 0 && (
         <div className='flex flex-col items-center mt-20'>
           <img src={EmptyActivities} alt='imagem de atividades vazias' />
           <p className="text-[#262626] font-normal text-base">Ainda não há atividades</p>
@@ -56,7 +57,7 @@ export function RecentActivities({ data }: RecentActivitiesProps) {
         )}
       </div>
 
-      <button className='flex items-center gap-3 text-[#0066CC] text-sm mx-auto mt-20 cursor-pointer'>Ver todas as atividades <FaChevronRight /></button>
+      <Link to='/empresa/certificados' className='flex items-center gap-3 text-[#0066CC] text-sm mx-auto mt-20 cursor-pointer'>Ver certificados <FaChevronRight /></Link>
     </div>
   )
 }

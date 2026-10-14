@@ -1,4 +1,3 @@
-import { CustomSelect } from "@/components/certificates/CustomSelect";
 import EmptyEmission from '@/assets/EmptyEmission.svg'
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
@@ -11,26 +10,16 @@ interface EmissionsChartProps {
 
 export function EmissionsChart({ emissions }: EmissionsChartProps) {
 
-  const emissionsTimeOptions = [
-    "Últimos 6 meses",
-    "Últimos 7 meses",
-    "Últimos 30 dias",
-    "Últimos 3 meses",
-  ]
-
   return (
     <div className="bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl px-6 py-4">
       <div className="flex justify-between items-center">
         <h2 className="text-[#171717] font-normal text-lg">Emissões por mês</h2>
 
-        <div className="w-full max-w-[155px]">
-          <CustomSelect
-            options={emissionsTimeOptions}
-          />
-        </div>
+        <span className="text-sm text-gray-500">Últimos 6 meses</span>
+
       </div>
 
-      {emissions ? (
+      {emissions.some(item => item.emissions > 0) ? (
         <BarChart
           style={{ width: '100%', maxHeight: '270px', aspectRatio: 1.618 }}
           responsive

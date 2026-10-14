@@ -3,18 +3,19 @@ import { EmissionsChart } from "@/components/dashboard/charts/EmissionsChart";
 import { FastActions } from "@/components/dashboard/FastActions";
 import { RecentActivities } from "@/components/dashboard/RecentActivities";
 import { useAccountNavigation } from "@/hooks/useAccountNavigation";
-import { useState } from "react";
+import { useQuery } from '@tanstack/react-query';
+import { dashboardServiceInstance } from '@/api/implements';
+import { useAuthStoreData } from '@/stores/useAuthStore';
 import { BiCheck } from "react-icons/bi";
 import { NotificationBell } from '@/components/NotificationBell';
 import { FaRegClock } from "react-icons/fa6";
-import { FiEdit, FiUsers } from "react-icons/fi";
-import { IoWarningOutline } from "react-icons/io5";
+import { FiUsers } from "react-icons/fi";
 import type { IconType } from "react-icons/lib";
 import { LuFileText } from "react-icons/lu";
 
 interface DashboardDataProps {
   name: string;
-  value: number;
+  value: number | undefined;
   icon: IconType;
   iconColor: string;
   iconBackgroundColor: string;
@@ -22,72 +23,56 @@ interface DashboardDataProps {
 
 export function DashboardCompany() {
   const { name, initials, openProfile } = useAccountNavigation();
-  const [isWarning, setIsWarning] = useState(true)
+  const { auth } = useAuthStoreData();
+  const { data, isPending, isError, refetch, isFetching } = useQuery({
+    queryKey: ['company-dashboard', auth?._id],
+    queryFn: () => dashboardServiceInstance.get(),
+    enabled: !!auth?._id,
+    retry: false,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
 
   const dashboardData: DashboardDataProps[] = [
     {
       name: "Certificados emitidos",
-      value: 0,
+      value: data?.issued,
       icon: LuFileText,
       iconColor: "#286DC7",
       iconBackgroundColor: "#EFF6FF",
     },
     {
       name: "Pendentes de envio",
-      value: 0,
+      value: data?.pending_delivery,
       icon: FaRegClock,
       iconColor: "#F59E0B",
       iconBackgroundColor: "#FFFBEB",
     },
     {
-      name: "Rascunhos",
-      value: 0,
-      icon: FiEdit,
-      iconColor: "#F97316",
-      iconBackgroundColor: "#FFF7ED",
-    },
-    {
-      name: "Alunos cadastrados",
-      value: 0,
+      name: "Participantes certificados",
+      value: data?.participants,
       icon: FiUsers,
       iconColor: "#10B981",
       iconBackgroundColor: "#ECFDF5",
     }
   ]
 
-  const emissionsData = [
-    { month: 'Jan', emissions: 4200 },
-    { month: 'Fev', emissions: 5800 },
-    { month: 'Mar', emissions: 7200 },
-    { month: 'Abr', emissions: 6100 },
-    { month: 'Mai', emissions: 8900 },
-    { month: 'Jun', emissions: 7400 },
-  ];
-
+  const emissionsData = (data?.emissions ?? []).map(item => ({
+    ...item,
+    month: new Date(`${item.month}-01T00:00:00Z`).toLocaleDateString('pt-BR', { month: 'short', year: '2-digit', timeZone: 'UTC' }),
+  }));
   const certificateStatusData = [
-    { name: 'Emitido', value: 198, color: '#52e3ac' },
-    { name: 'Enviado', value: 36, color: '#538bf8' },
-    { name: 'Rascunho', value: 14, color: '#ffb375' },
+    { name: 'Enviado', value: data?.sent ?? 0, color: '#538bf8' },
+    { name: 'Emitido sem envio confirmado', value: (data?.issued ?? 0) - (data?.sent ?? 0), color: '#52e3ac' },
   ];
-
-  const recentActivities = [
-    {
-      name: 'Certificado ux/ui',
-      student: 'Pedro Santos',
-      time: '2 min atrás',
-      icon: BiCheck,
-      iconColor: '#22C55E',
-      bgIcon: '#F0FDF4'
-    },
-    {
-      name: 'Certificado ux/ui',
-      student: 'Pedro Santos',
-      time: '2 min atrás',
-      icon: BiCheck,
-      iconColor: '#22C55E',
-      bgIcon: '#F0FDF4'
-    },
-  ]
+  const recentActivities = (data?.recent_activities ?? []).map(item => ({
+    name: item.name,
+    student: item.student,
+    time: new Date(item.issued_at).toLocaleString('pt-BR'),
+    icon: BiCheck,
+    iconColor: '#22C55E',
+    bgIcon: '#F0FDF4',
+  }));
 
   return (
     <div>
@@ -111,27 +96,15 @@ export function DashboardCompany() {
         </div>
       </header>
 
-      {isWarning && (
-        <div className="bg-[#FEF1F0] rounded-lg border border-[#FBCFCB] px-4 py-3 flex flex-col items-end gap-3 md:gap-0 md:flex-row md:justify-between md:items-center my-3">
-          <div className="flex items-center gap-4">
-            <IoWarningOutline className="w-6 h-6 text-[#EB5757]" />
-
-            <div>
-              <p className="text-[#171717] font-semibold text-sm">Instabilidade no envio de certificados</p>
-              <p className="text-[#525252] font-normal text-xs">No momento, o envio por e-mail pode apresentar falhas. Nossa equipe já está atuando.</p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setIsWarning(false)}
-            className="text-[#C10007] font-semibold text-sm bg-[#C100071A] border border-[#C1000780] rounded-md px-3 py-2 cursor-pointer">
-            Atualizar status
-          </button>
+      {isPending && <p role="status" className="my-6">Carregando dashboard...</p>}
+      {isError && (
+        <div role="alert" className="my-6">
+          <p>Não foi possível carregar o dashboard.</p>
+          <button type="button" disabled={isFetching} onClick={() => void refetch()}>Tentar novamente</button>
         </div>
       )}
-
-      <main className={`${!isWarning && "mt-9"}`}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {data && !isError && <main className="mt-9">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {dashboardData.map((data, index) => (
             <div key={index} className="bg-[#FAFAFA] rounded-xl shadow px-4 py-6 flex flex-col md:flex-row items-center gap-3">
               <div
@@ -143,7 +116,7 @@ export function DashboardCompany() {
               </div>
               <div className="text-center md:text-start">
                 <p className="text-[#525252] font-normal text-sm">{data.name}</p>
-                <p className="text-[#171717] font-normal text-2xl">{data.value}</p>
+                <p className="text-[#171717] font-normal text-2xl">{data.value ?? "—"}</p>
               </div>
             </div>))}
         </div>
@@ -157,7 +130,7 @@ export function DashboardCompany() {
 
           <FastActions />
         </div>
-      </main>
+      </main>}
     </div>
   )
 }
