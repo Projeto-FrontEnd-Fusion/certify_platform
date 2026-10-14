@@ -10,6 +10,7 @@ import { ProtecteCertificateRouter } from "./components/ProtectedCertificate";
 import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout";
 import { CertificateCompany } from "./pages/CertificateCompany";
 import { CertificationCreate } from "./pages/CertificationCreate";
+import { DashboardCompany } from "./pages/DashboardCompany";
 
 
 const Login = lazy(() =>
@@ -103,13 +104,13 @@ function App() {
 
         <Route path="/modelo-certificado" element={<Navigate to="/empresa/modelos" replace />} />
         <Route
-  path="/validar-certificado/:code"
-  element={<CertificateValidationPage />}
-/>
-      <Route
-        path="/verificar/:code"
-        element={<CertificateValidationPage />}
-      />
+          path="/validar-certificado/:code"
+          element={<CertificateValidationPage />}
+        />
+        <Route
+          path="/verificar/:code"
+          element={<CertificateValidationPage />}
+        />
         <Route
           path="/certificados/visualizar/:id?"
           element={<CertificateDetails />}
@@ -133,18 +134,20 @@ function App() {
             <Route path="validar-certificados" element={<NotFound />} />
           </Route>
 
-          <Route path="/empresa" element={<CompanyLayout />}>
-            <Route index element={<Navigate to="certificados" replace />} />
-            <Route path="dashboard" element={<NotFound />} />
 
-            <Route path="/empresa/certificados" element={<CertificateCompany />} />
-            <Route path="/empresa/certificados/criar" element={<Navigate to="/empresa/certificados" replace />} />
-            <Route path="/empresa/certificados/criar/:id" element={<CertificationCreate />} />
+        </Route>
 
-            <Route path="alunos" element={<NotFound />} />
-            <Route path="modelos" element={<CertificateModelPage />} />
-            <Route path="relatorios" element={<NotFound />} />
-          </Route>
+        <Route path="/empresa" element={<CompanyLayout />}>
+          <Route index element={<Navigate to="certificados" replace />} />
+          <Route path="dashboard" element={<DashboardCompany />} />
+
+          <Route path="/empresa/certificados" element={<CertificateCompany />} />
+          <Route path="/empresa/certificados/criar" element={<Navigate to="/empresa/certificados" replace />} />
+          <Route path="/empresa/certificados/criar/:id" element={<CertificationCreate />} />
+
+          <Route path="alunos" element={<NotFound />} />
+          <Route path="modelos" element={<CertificateModelPage />} />
+          <Route path="relatorios" element={<NotFound />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
