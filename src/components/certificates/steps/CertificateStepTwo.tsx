@@ -1,13 +1,15 @@
 
 import { useRef, useState } from "react";
+
 import { FiUpload, FiUser } from "react-icons/fi";
 import { FaRegFileAlt, FaRegTrashAlt } from "react-icons/fa";
 import { GoDownload, GoUpload } from "react-icons/go";
 import { IoMdClose } from "react-icons/io";
-import * as XLSX from "xlsx";
+
 import { useCertificateParticipants } from "@/hooks/Certificate/useCertificateParticipants";
 
 import UploadCloud from "@/assets/upload-cloud.svg";
+
 import { AddParticipantForm } from "../AddParticipantForm";
 import { CertificateParticipantsTable } from "../CertificateParticipantsTable";
 import { CertificateResume } from "../CertificateResume";
@@ -35,9 +37,70 @@ const INPUT_MODE_STYLE = {
 const normalizeHeader = (value: unknown) =>
   String(value ?? "")
     .trim()
+    .replace(/^\uFEFF/, "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
+
+/**
+ * Lê arquivos CSV com campos entre aspas.
+ * Aceita vírgula ou ponto e vírgula como separador.
+ */
+const parseCsv = (content: string, delimiter: string): string[][] => {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+
+    if (char === '"') {
+      if (insideQuotes && content[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === delimiter && !insideQuotes) {
+      row.push(cell);
+      cell = "";
+    } else if (
+      (char === "\n" || char === "\r") &&
+      !insideQuotes
+    ) {
+      if (char === "\r" && content[i + 1] === "\n") {
+        i++;
+      }
+
+      row.push(cell);
+
+      if (row.some((value) => value.trim() !== "")) {
+        rows.push(row);
+      }
+
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+
+  // Adiciona a última linha, mesmo que o arquivo não termine com quebra de linha.
+  row.push(cell);
+
+  if (row.some((value) => value.trim() !== "")) {
+    rows.push(row);
+  }
+
+  if (insideQuotes) {
+    throw new Error(
+      "O arquivo CSV contém um campo com aspas não fechadas."
+    );
+  }
+
+  return rows;
+};
 
 export function CertificateStepTwo() {
   const [inputMode, setInputMode] =
@@ -72,39 +135,51 @@ export function CertificateStepTwo() {
 
     if (!file) return;
 
-    const extension = file.name.split(".").pop()?.toLowerCase();
-
-    if (!["csv", "xlsx"].includes(extension ?? "")) {
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+      setSpreadsheetFile(null);
+      setSpreadsheetParticipants([]);
       setSpreadsheetError(
-        "Formato inválido. Selecione um arquivo CSV ou XLSX."
+        "Formato inválido. Selecione um arquivo CSV."
       );
       return;
     }
 
     try {
-      const buffer = await file.arrayBuffer();
+      const content = await file.text();
 
-      const workbook = XLSX.read(buffer, {
-        type: "array",
-        raw: false,
-      });
-
-      const firstSheetName = workbook.SheetNames[0];
-      const firstSheet = workbook.Sheets[firstSheetName];
-
-      if (!firstSheet) {
-        throw new Error("Não foi possível encontrar uma planilha no arquivo.");
+      if (!content.trim()) {
+        throw new Error("O arquivo CSV está vazio.");
       }
 
-      const rows: unknown[][] = XLSX.utils.sheet_to_json(firstSheet, {
-        header: 1,
-        defval: "",
-        raw: false,
-      });
+      // Detecta os dois formatos mais comuns de CSV.
+      const commaRows = parseCsv(content, ",");
+      const semicolonRows = parseCsv(content, ";");
+
+      const hasRequiredHeaders = (rows: string[][]) => {
+        if (rows.length === 0) return false;
+
+        const headers = rows[0].map(normalizeHeader);
+
+        return ["nome", "email", "cpf"].every((header) =>
+          headers.includes(header)
+        );
+      };
+
+      const rows = hasRequiredHeaders(commaRows)
+        ? commaRows
+        : hasRequiredHeaders(semicolonRows)
+          ? semicolonRows
+          : null;
+
+      if (!rows) {
+        throw new Error(
+          "A primeira linha precisa conter as colunas nome, email e cpf."
+        );
+      }
 
       if (rows.length < 2) {
         throw new Error(
-          "A planilha precisa conter os cabeçalhos e pelo menos um participante."
+          "O arquivo precisa conter os cabeçalhos e pelo menos um participante."
         );
       }
 
@@ -113,12 +188,6 @@ export function CertificateStepTwo() {
       const nomeIndex = headers.indexOf("nome");
       const emailIndex = headers.indexOf("email");
       const cpfIndex = headers.indexOf("cpf");
-
-      if ([nomeIndex, emailIndex, cpfIndex].includes(-1)) {
-        throw new Error(
-          "A primeira linha precisa conter as colunas nome, email e cpf."
-        );
-      }
 
       const parsedParticipants: SpreadsheetParticipant[] = rows
         .slice(1)
@@ -134,7 +203,9 @@ export function CertificateStepTwo() {
         }));
 
       if (parsedParticipants.length === 0) {
-        throw new Error("Nenhum participante foi encontrado na planilha.");
+        throw new Error(
+          "Nenhum participante foi encontrado no arquivo."
+        );
       }
 
       setSpreadsheetFile(file);
@@ -146,7 +217,7 @@ export function CertificateStepTwo() {
       setSpreadsheetError(
         error instanceof Error
           ? error.message
-          : "Não foi possível ler a planilha."
+          : "Não foi possível ler o arquivo CSV."
       );
     }
   };
@@ -162,20 +233,27 @@ export function CertificateStepTwo() {
   };
 
   const handleDownloadTemplate = () => {
-    const worksheet = XLSX.utils.aoa_to_sheet([
-      ["nome", "email", "cpf"],
-      ["Maria Silva", "maria@email.com", "01234567890"],
-    ]);
+    const csvContent = [
+      "nome,email,cpf",
+      "Maria Silva,maria@email.com,01234567890",
+    ].join("\r\n");
 
-    const workbook = XLSX.utils.book_new();
+    // BOM para facilitar a abertura de caracteres UTF-8 no Excel.
+    const blob = new Blob(["\uFEFF", csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
 
-    XLSX.utils.book_append_sheet(
-      workbook,
-      worksheet,
-      "Participantes"
-    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
 
-    XLSX.writeFile(workbook, "modelo_participantes.xlsx");
+    link.href = url;
+    link.download = "modelo_participantes.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -197,8 +275,8 @@ export function CertificateStepTwo() {
                 type="button"
                 aria-pressed={inputMode === mode}
                 className={`flex h-full flex-1 cursor-pointer items-center justify-center gap-2 text-xs ${inputMode === mode
-                  ? INPUT_MODE_STYLE.active
-                  : INPUT_MODE_STYLE.inactive
+                    ? INPUT_MODE_STYLE.active
+                    : INPUT_MODE_STYLE.inactive
                   }`}
                 onClick={() => setInputMode(mode)}
               >
@@ -220,7 +298,7 @@ export function CertificateStepTwo() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".csv,.xlsx"
+                accept=".csv,text/csv"
                 className="hidden"
                 onChange={(event) => {
                   const file = event.currentTarget.files?.[0];
@@ -234,7 +312,7 @@ export function CertificateStepTwo() {
               <div
                 role="button"
                 tabIndex={0}
-                aria-label="Selecionar ou arrastar uma planilha"
+                aria-label="Selecionar ou arrastar um arquivo CSV"
                 onClick={() => fileInputRef.current?.click()}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -259,8 +337,8 @@ export function CertificateStepTwo() {
                   );
                 }}
                 className={`mt-5 flex cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed py-12 transition-colors ${isDragging
-                  ? "border-[#0069A8] bg-[#E0F2FE]"
-                  : "border-[#0069A84D] bg-[#F0F9FFA6]"
+                    ? "border-[#0069A8] bg-[#E0F2FE]"
+                    : "border-[#0069A84D] bg-[#F0F9FFA6]"
                   }`}
               >
                 <img
@@ -270,7 +348,7 @@ export function CertificateStepTwo() {
                 />
 
                 <p className="text-base font-bold text-[#262626]">
-                  Arraste e solte a planilha aqui
+                  Arraste e solte o arquivo CSV aqui
                 </p>
 
                 <p className="text-xs font-normal text-[#737373]">
@@ -282,7 +360,7 @@ export function CertificateStepTwo() {
                 </p>
 
                 <p className="text-xs font-medium text-[#A1A1A1]">
-                  Formatos suportados: .CSV, .XLSX
+                  Formato suportado: .CSV
                 </p>
               </div>
 
@@ -301,7 +379,7 @@ export function CertificateStepTwo() {
                 className="mx-auto mt-5 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-[#0069A8]"
               >
                 <GoDownload />
-                Baixar modelo de planilha
+                Baixar modelo CSV
               </button>
 
               {spreadsheetFile && (
@@ -326,7 +404,7 @@ export function CertificateStepTwo() {
 
                   <button
                     type="button"
-                    aria-label="Remover planilha"
+                    aria-label="Remover arquivo CSV"
                     onClick={handleRemoveSpreadsheet}
                     className="ml-3 cursor-pointer"
                   >
@@ -341,7 +419,7 @@ export function CertificateStepTwo() {
                 className="mx-auto mt-4 flex cursor-pointer items-center gap-2 rounded-md bg-[#0069A8] px-3 py-2.5 text-xs font-semibold text-white"
               >
                 <GoUpload />
-                Importar arquivo
+                Importar arquivo CSV
               </button>
             </>
           )}
