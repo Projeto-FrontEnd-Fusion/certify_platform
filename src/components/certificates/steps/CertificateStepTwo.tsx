@@ -13,11 +13,6 @@ import { CertificateParticipantsTable } from "../CertificateParticipantsTable";
 import { CertificateResume } from "../CertificateResume";
 import { CertificateSheetTutorial } from "../CertficateSheetTutorial";
 
-type CertificateStepTwoProps = {
-  onNext: () => void;
-  onBack: () => void;
-};
-
 type ParticipantInputMode = "manual" | "upload";
 
 type SpreadsheetParticipant = {
@@ -44,10 +39,7 @@ const normalizeHeader = (value: unknown) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
-export function CertificateStepTwo({
-  onNext,
-  onBack,
-}: CertificateStepTwoProps) {
+export function CertificateStepTwo() {
   const [inputMode, setInputMode] =
     useState<ParticipantInputMode>("manual");
 
@@ -235,7 +227,6 @@ export function CertificateStepTwo({
 
                   void handleSpreadsheet(file);
 
-                  // Permite selecionar novamente o mesmo arquivo.
                   event.currentTarget.value = "";
                 }}
               />
