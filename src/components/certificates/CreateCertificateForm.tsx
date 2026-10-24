@@ -25,8 +25,6 @@ const stepFields: Record<CertificateStep, FieldPath<CertificateFormData>[]> = {
     "activityType",
     "description",
     "activityName",
-    "startDate",
-    "endDate",
     "workload",
 
     "modalityEnabled",
