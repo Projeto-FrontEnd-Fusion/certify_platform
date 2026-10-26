@@ -25,8 +25,6 @@ const stepFields: Record<CertificateStep, FieldPath<CertificateFormData>[]> = {
     "activityType",
     "description",
     "activityName",
-    "startDate",
-    "endDate",
     "workload",
 
     "modalityEnabled",
@@ -57,7 +55,7 @@ const emptyValues = {
 
 export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
   const navigate = useNavigate();
-  const {auth} = useAuthStoreData();
+  const { auth } = useAuthStoreData();
   const [isPending, setIsPending] = useState(false);
   const [certificateIds, setCertificateIds] = useState<string[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -78,7 +76,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
       setMessage(`${result.sent} e-mails aceitos pelo servidor; ${result.failed} falhas; ${result.pending} pendentes.`);
     } catch (error) {
       setMessage(getApiErrorMessage(error, 'Não foi possível enviar os links. Você pode tentar novamente ou enviar mais tarde.'));
-    } finally {setIsSending(false); setShowSending(false);}
+    } finally { setIsSending(false); setShowSending(false); }
   };
   const [step, setStep] = useState<CertificateStep>(draft.step);
 
@@ -108,20 +106,20 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
 
   const submitForm = form.handleSubmit(async (data) => {
     if (isPending) return;
-    if (!auth?._id) {setMessage('Entre na sua conta para emitir certificados.'); return;}
+    if (!auth?._id) { setMessage('Entre na sua conta para emitir certificados.'); return; }
     setIsPending(true);
     setMessage('');
     try {
       const key = `certificate-event:${draft.id}`;
-      const {participants, ...eventFields} = data;
+      const { participants, ...eventFields } = data;
       const profile = await authServiceInstance.getProfile();
       const institution = profile.razao_social || profile.fullname;
       if (!institution) throw new Error('O cadastro da empresa não tem nome para emitir o certificado.');
-      const fingerprint = JSON.stringify({issuerId: auth._id, institution, ...eventFields});
-      let cached: {id: string; fingerprint: string} | null = null;
-      try {cached = JSON.parse(localStorage.getItem(key) || 'null');} catch { /* Recria cache inválido. */ }
+      const fingerprint = JSON.stringify({ issuerId: auth._id, institution, ...eventFields });
+      let cached: { id: string; fingerprint: string } | null = null;
+      try { cached = JSON.parse(localStorage.getItem(key) || 'null'); } catch { /* Recria cache inválido. */ }
       const eventId = cached?.fingerprint === fingerprint ? cached.id : await certificateServiceInstance.createEvent(data, institution);
-      localStorage.setItem(key, JSON.stringify({id: eventId, fingerprint}));
+      localStorage.setItem(key, JSON.stringify({ id: eventId, fingerprint }));
       const summary = await certificateServiceInstance.issueBatch(eventId, participants);
       const certificates: string[] = [];
       let page = 1;
@@ -140,7 +138,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
       setShowSuccess(true);
     } catch (error) {
       setMessage(getApiErrorMessage(error, 'Não foi possível emitir os certificados. O rascunho foi preservado.'));
-    } finally {setIsPending(false);}
+    } finally { setIsPending(false); }
   });
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -166,7 +164,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
             onChangeTemplate={() => setIsTemplateModalOpen(true)}
           />
         )}
-        {step === 2 && <CertificateStepTwo onNext={goNext} onBack={goBack} />}
+        {step === 2 && <CertificateStepTwo />}
         {step === 3 && <CertificateStepThree onBack={goBack} isPending={isPending} />}
       </form>
 

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import { authServiceInstance } from '@/api/implements';
 import { useAuthStoreData } from '@/stores/useAuthStore';
-import { certificateDate, type PublicCertificate } from '@/lib/certificate-display';
+import { type PublicCertificate } from '@/lib/certificate-display';
 import type { CertificateFormData } from '@/schemas/CertificateSchema';
 import type { DeepPartial } from 'react-hook-form';
 import type { CertificateVariant } from './types';
@@ -71,17 +71,18 @@ interface CertificateTemplateProps {
 
 export function CertificateTemplate({ variant = 'classico', data, certificate }: CertificateTemplateProps) {
   const { frame, decoration } = VARIANTS[variant]
-  const {auth, accessToken} = useAuthStoreData();
-  const profile = useQuery({queryKey: ['account-profile', auth?._id],
+  const { auth, accessToken } = useAuthStoreData();
+  const profile = useQuery({
+    queryKey: ['account-profile', auth?._id],
     enabled: !!accessToken && !!auth?._id && !certificate,
-    queryFn: () => authServiceInstance.getProfile(), staleTime: 60_000, retry: false});
+    queryFn: () => authServiceInstance.getProfile(), staleTime: 60_000, retry: false
+  });
   const institution = certificate?.institution_name || profile.data?.razao_social || profile.data?.fullname;
   const logo = certificate?.design?.logo?.dataUrl || data?.logo?.dataUrl;
   const signature = certificate?.design?.signature?.dataUrl || data?.signature?.dataUrl;
   const participant = certificate?.participant_name || data?.participants?.[0]?.name;
   const activity = certificate?.event_name || data?.activityName;
   const workload = certificate?.workload || data?.workload;
-  const endDate = certificate?.event_end || (data?.endDate ? `${data.endDate}T12:00:00` : undefined);
 
   return (
     <div
@@ -101,7 +102,7 @@ export function CertificateTemplate({ variant = 'classico', data, certificate }:
       <p className="font-normal text-[6px]">{data?.activityType}{data?.modalityEnabled && data.modality ? ` · ${data.modality}` : ''}</p>
       <p className="font-bold text-[8px] text-[#0069A8]">{activity || 'Atividade a definir'}</p>
       <p className="font-normal text-[6px]">
-        Carga horária: <b>{workload ? `${workload} horas` : 'A definir'}</b> · Término: <b>{certificateDate(endDate)}</b>
+        Carga horária: <b>{workload ? `${workload} horas` : 'A definir'}</b>
       </p>
 
       <div className="flex justify-between items-end w-full">
