@@ -1,8 +1,15 @@
+
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+
 import type { ParticipantFormData } from "@/schemas/CertificateSchema";
 import { formatCPF } from "@/utils/formatCpf";
+import { useCertificateActions } from "@/hooks/Certificate/useCertificateActions";
+import { ActionsModal } from "./ActionsModal";
 
-export type ParticipantRow = ParticipantFormData & { id: string };
+export type ParticipantRow = ParticipantFormData & {
+  id: string;
+};
 
 type CertificateParticipantsTableProps = {
   participants: ParticipantRow[];
@@ -13,9 +20,17 @@ type CertificateParticipantsTableProps = {
   onRemoveParticipant: (id: string) => void;
 };
 
-const COLUMN_HEADERS = ["Nome do aluno", "E-mail", "CPF", "Status", "Ação"];
+const COLUMN_HEADERS = [
+  "Nome do aluno",
+  "E-mail",
+  "CPF",
+  "Status",
+  "Ação",
+];
+
 const HEADER_CELL_CLASS_NAME = "text-[#404040] font-bold text-xs p-2";
-const CHECKBOX_CLASS_NAME = "h-3.5 w-3.5 cursor-pointer accent-[#0069A8]";
+const CHECKBOX_CLASS_NAME =
+  "h-3.5 w-3.5 cursor-pointer accent-[#0069A8]";
 
 export function CertificateParticipantsTable({
   participants,
@@ -25,6 +40,43 @@ export function CertificateParticipantsTable({
   onToggleAllSelection,
 }: CertificateParticipantsTableProps) {
   const total = participants.length;
+
+  const {
+    copyCertificateLink,
+    sendCertificateLink,
+    resendCertificateLink,
+    loadingAction,
+    error,
+    successMessage,
+    clearFeedback,
+  } = useCertificateActions();
+
+  const [selectedParticipant, setSelectedParticipant] =
+    useState<ParticipantRow | null>(null);
+
+  const isActionModalOpen = selectedParticipant !== null;
+
+  const handleOpenActionModal = (participant: ParticipantRow) => {
+    clearFeedback();
+    setSelectedParticipant(participant);
+  };
+
+  const handleCloseActionModal = () => {
+    setSelectedParticipant(null);
+    clearFeedback();
+  };
+
+  const handleCopyLink = () => {
+    copyCertificateLink();
+  };
+
+  const handleSend = async () => {
+    await sendCertificateLink();
+  };
+
+  const handleResend = async () => {
+    await resendCertificateLink();
+  };
 
   return (
     <div className="w-full overflow-x-auto">
@@ -41,8 +93,13 @@ export function CertificateParticipantsTable({
                 onChange={onToggleAllSelection}
               />
             </th>
+
             {COLUMN_HEADERS.map((header) => (
-              <th key={header} scope="col" className={HEADER_CELL_CLASS_NAME}>
+              <th
+                key={header}
+                scope="col"
+                className={HEADER_CELL_CLASS_NAME}
+              >
                 {header}
               </th>
             ))}
@@ -52,7 +109,10 @@ export function CertificateParticipantsTable({
         <tbody>
           {total === 0 && (
             <tr>
-              <td colSpan={COLUMN_HEADERS.length + 1} className="p-6 text-center text-xs text-[#A1A1A1]">
+              <td
+                colSpan={COLUMN_HEADERS.length + 1}
+                className="p-6 text-center text-xs text-[#A1A1A1]"
+              >
                 Nenhum participante adicionado ainda.
               </td>
             </tr>
@@ -69,19 +129,31 @@ export function CertificateParticipantsTable({
                   onChange={() => onToggleSelection(participant.id)}
                 />
               </td>
-              <td className="font-semibold text-[#262626] text-xs p-2">{participant.name}</td>
-              <td className="font-normal text-[#737373] text-xs p-2">{participant.email}</td>
-              <td className="font-normal text-[#737373] text-xs p-2">{formatCPF(participant.cpf)}</td>
+
+              <td className="font-semibold text-[#262626] text-xs p-2">
+                {participant.name}
+              </td>
+
+              <td className="font-normal text-[#737373] text-xs p-2">
+                {participant.email}
+              </td>
+
+              <td className="font-normal text-[#737373] text-xs p-2">
+                {formatCPF(participant.cpf)}
+              </td>
+
               <td className="p-2">
                 <span className="font-medium text-[#059669] text-xs bg-[#ECFDF5] border border-[#A7F3D0] rounded-sm px-2 py-0.5 inline-block">
                   Pronto
                 </span>
               </td>
+
               <td className="p-2">
                 <button
                   type="button"
-                  className="flex items-center justify-center text-[#A1A1A1] hover:text-[#DC2626]"
-                  onClick={() => console.log('Clicar em ação')}
+                  aria-label={`Ações para ${participant.name}`}
+                  className="flex items-center justify-center text-[#A1A1A1] hover:text-black cursor-pointer"
+                  onClick={() => handleOpenActionModal(participant)}
                 >
                   <BsThreeDotsVertical />
                 </button>
@@ -94,9 +166,23 @@ export function CertificateParticipantsTable({
       {total > 0 && (
         <div className="mt-9 pt-2 w-full border-t border-[#F1F5F9]">
           <p className="text-xs text-[#A1A1A1] font-normal">
-            Mostrando 1 a {total} de {total} {total === 1 ? "participante" : "participantes"}
+            Mostrando 1 a {total} de {total}{" "}
+            {total === 1 ? "participante" : "participantes"}
           </p>
         </div>
+      )}
+
+      {isActionModalOpen && (
+        <ActionsModal
+          isOpen={isActionModalOpen}
+          onClose={handleCloseActionModal}
+          onCopyLink={handleCopyLink}
+          onSend={handleSend}
+          onResend={handleResend}
+          loadingAction={loadingAction}
+          error={error}
+          successMessage={successMessage}
+        />
       )}
     </div>
   );
