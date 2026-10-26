@@ -14,10 +14,9 @@ type VerifyCodeModalProps = {
   onClose: () => void;
 };
 
-const VerifyCodeModal = ({
-  isOpen,
+const VerifyCodeModalContent = ({
   onClose,
-}: VerifyCodeModalProps) => {
+}: Omit<VerifyCodeModalProps, 'isOpen'>) => {
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,13 +27,6 @@ const VerifyCodeModal = ({
   const [isPasting, setIsPasting] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    setValue("");
-    setError("");
-
     const timer = window.setTimeout(() => {
       inputRef.current?.focus();
     }, 50);
@@ -42,13 +34,9 @@ const VerifyCodeModal = ({
     return () => {
       window.clearTimeout(timer);
     };
-  }, [isOpen]);
+  }, []);
 
  useEffect(() => {
-  if (!isOpen) {
-    return;
-  }
-
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       onClose();
@@ -60,7 +48,7 @@ const VerifyCodeModal = ({
   return () => {
     document.removeEventListener("keydown", handleKeyDown);
   };
-}, [isOpen, onClose]);
+}, [onClose]);
 
 
   const normalizeInput = (input: string) => {
@@ -166,10 +154,6 @@ const VerifyCodeModal = ({
       onClose();
     }
   };
-
-  if (!isOpen) {
-    return null;
-  }
 
   return (
     <div
@@ -371,5 +355,8 @@ const VerifyCodeModal = ({
     </div>
   );
 };
+
+const VerifyCodeModal = ({ isOpen, onClose }: VerifyCodeModalProps) =>
+  isOpen ? <VerifyCodeModalContent onClose={onClose} /> : null;
 
 export default VerifyCodeModal;

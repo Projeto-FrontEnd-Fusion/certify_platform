@@ -16,7 +16,7 @@ export const VerifyCode = () => {
   const [hasError, setHasError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const { mutate, isPending, isSuccess, isError, reset } = useVerifyCodeAuth();
+  const { mutate, isPending, isSuccess, reset } = useVerifyCodeAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,13 +34,6 @@ export const VerifyCode = () => {
       return () => clearTimeout(timer);
     }
   }, [isSuccess, navigate, role, code, location.state?.email]);
-
-  useEffect(() => {
-    if (isError) {
-      setHasError(true);
-      setAttempts((prev) => prev + 1);
-    }
-  }, [isError]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -100,7 +93,12 @@ export const VerifyCode = () => {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isComplete && !maxAttemptsReached) {
-      mutate({email: location.state?.email || "", code: code.join("")});
+      mutate({email: location.state?.email || "", code: code.join("")}, {
+        onError: () => {
+          setHasError(true);
+          setAttempts((prev) => prev + 1);
+        },
+      });
     }
   };
 
