@@ -2,6 +2,8 @@
 
 O workflow `.github/workflows/ci.yml` valida PRs e a `main`: `npm ci`, ESLint sem avisos, auditoria de vulnerabilidades altas/críticas, TypeScript/build e testes Playwright em Chromium. Os testes de navegador interceptam a API e validam contratos do perfil, upload, sessão e seleção/download de certificado PDF; não substituem a coleção HTTP do backend contra MongoDB.
 
+Com `eslint-plugin-react-hooks 7.x`, o preset usado é `reactHooks.configs.flat['recommended-latest']`. O caminho sem `flat` expõe uma configuração legada com `plugins` em lista, rejeitada pelo ESLint 10. A troca preserva o preset de regras escolhido. O ambiente local ainda possui o plugin 5.2.0; a validação da configuração com o plugin 7.x e ESLint 10 deve ocorrer após instalar o lockfile atualizado.
+
 A auditoria roda em um job separado e salva o JSON em `frontend-dependency-audit`, inclusive quando encontra vulnerabilidades. Assim, uma falha na auditoria não impede a execução dos testes de navegador. O check `Frontend CI passed` exige tanto a validação quanto a auditoria; a separação não libera deploy com falha de segurança. Os relatórios de navegador só são enviados quando existem.
 
 Após integrar a `main` da organização no commit `62d583b`, TypeScript foi fixado em `5.9.3`: `typescript-eslint 8.72.0` exige TypeScript `<6.1.0`, enquanto a atualização anterior trouxe `7.0.2` e bloqueou `npm ci` com `ERESOLVE`. Os lockfiles npm e pnpm usam a mesma versão, preservando as demais dependências. Os arquivos nativos opcionais exclusivos do TypeScript 7 foram removidos dos locks. O npm regenerou seu lockfile e passou em `npm ci --dry-run --offline --ignore-scripts`; nove restrições de peer dependencies de TypeScript foram verificadas.
