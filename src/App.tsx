@@ -11,6 +11,7 @@ import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout";
 import { CertificateCompany } from "./pages/CertificateCompany";
 import { CertificationCreate } from "./pages/CertificationCreate";
 import { DashboardCompany } from "./pages/DashboardCompany";
+import { CompanyNotifications } from './pages/CompanyNotifications';
 
 
 const Login = lazy(() =>
@@ -140,6 +141,7 @@ function App() {
         <Route path="/empresa" element={<CompanyLayout />}>
           <Route index element={<Navigate to="certificados" replace />} />
           <Route path="dashboard" element={<DashboardCompany />} />
+          <Route path="notificacoes" element={<CompanyNotifications />} />
 
           <Route path="/empresa/certificados" element={<CertificateCompany />} />
           <Route path="/empresa/certificados/criar" element={<Navigate to="/empresa/certificados" replace />} />

@@ -16,7 +16,7 @@ async function companySession(page: Page, draft = false) {
       updatedAt: new Date().toISOString(), data: {variant: 'classico', activityType: 'Curso', description: 'Conclusão de curso',
         activityName: 'Curso Real', workload: '20', startDate: '2026-10-01', endDate: '2026-10-02',
         modalityEnabled: false, validityEnabled: false, syllabusEnabled: false,
-        participants: [{name: 'Participante Real', email: 'student@example.com'}]}}}));
+        participants: [{name: 'Participante Real', email: 'student@example.com', cpf: '52998224725'}]}}}));
   }, {draft});
   await page.route('**/api/v1/auth/me', route => route.fulfill({json: {success: true,
     data: {auth: {_id: 'company-id', fullname: 'Empresa Real', razao_social: 'Empresa Real',
@@ -33,10 +33,30 @@ test('company menus show backend identity and logout clears the session even on 
   await page.goto('/empresa');
   await expect(page).toHaveURL(/\/empresa\/certificados$/);
   await expect(page.getByText('Empresa Atualizada').first()).toBeVisible();
-  // await expect(page.getByRole('link', {name: 'Dashboard', exact: true})).toHaveCount(0);
+  await expect(page.getByRole('link', {name: 'Dashboard', exact: true}).first()).toBeVisible();
+  await expect(page.getByRole('link', {name: 'Dashboard', exact: true}).first()).toHaveAttribute('href', '/empresa/dashboard');
   await page.getByRole('button', {name: 'Sair da conta', exact: true}).last().click();
   await expect(page).toHaveURL(/\/login$/);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('auth-storage')!).state.accessToken)).toBeNull();
+});
+
+test('participant step validates the list and supports back and continue', async ({page}) => {
+  await companySession(page, true);
+  await page.addInitScript(() => {
+    const drafts = JSON.parse(localStorage.getItem('certificate-drafts')!);
+    drafts['draft-id'].step = 2;
+    localStorage.setItem('certificate-drafts', JSON.stringify(drafts));
+  });
+  await page.goto('/empresa/certificados/criar/draft-id');
+  await page.getByRole('button', {name: 'Continuar', exact: true}).click();
+  await expect(page.getByRole('button', {name: 'Confirmar', exact: true})).toBeVisible();
+  await page.getByRole('button', {name: 'Voltar', exact: true}).click();
+  await page.getByRole('checkbox', {name: 'Selecionar todos os participantes', exact: true}).check();
+  await page.getByRole('button', {name: 'Remover selecionados', exact: true}).click();
+  await page.getByRole('button', {name: 'Continuar', exact: true}).click();
+  await expect(page.getByRole('alert')).toContainText('Adicione ao menos um participante');
+  await page.getByRole('button', {name: 'Voltar', exact: true}).click();
+  await expect(page.locator('input[name="startDate"]')).toBeVisible();
 });
 
 test('models menu creates a draft with the selected existing template', async ({page}) => {

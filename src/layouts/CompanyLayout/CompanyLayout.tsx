@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
-import { CiBellOn } from "react-icons/ci";
+import { NotificationBell } from '@/components/NotificationBell';
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 import { LogoCertify } from "@/components/LogoCertify";
 import { Logo } from "@/components/Logo";
@@ -32,9 +32,7 @@ export const CompanyLayout = () => {
         />
 
         <div className="flex items-center gap-3">
-          <button disabled aria-label="Notificações indisponíveis" title="Notificações ainda não disponíveis" className="p-2 border border-white/10 rounded-full opacity-40">
-            <CiBellOn className="text-white w-5 h-5" />
-          </button>
+          <NotificationBell dark />
 
           <button onClick={openProfile} aria-label="Meu perfil" className="p-2 border border-white/10 rounded-full ">
             <CiSettings className="text-white w-5 h-5" />

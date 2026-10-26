@@ -22,6 +22,8 @@ export const stepOneSchema = z.object({
   activityName: z.string().min(3, "Informe o nome da atividade"),
   workload: z.string().min(1, "Informe a carga horária"),
   modalityEnabled: z.boolean(),
+  startDate: z.string().min(1, 'Informe a data de início'),
+  endDate: z.string().min(1, 'Informe a data de término'),
   modality: z.string().optional(),
   validityEnabled: z.boolean(),
   validity: z.string().optional(),
@@ -52,6 +54,9 @@ export const certificateFormSchema = z
     ...stepTwoSchema.shape,
   })
   .superRefine((data, ctx) => {
+    if (data.endDate < data.startDate) {
+      ctx.addIssue({code: 'custom', path: ['endDate'], message: 'A data de término deve ser igual ou posterior ao início'});
+    }
     if (data.modalityEnabled && !data.modality) {
       ctx.addIssue({ code: "custom", path: ["modality"], message: "Selecione a modalidade" });
     }
