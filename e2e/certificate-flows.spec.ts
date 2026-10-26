@@ -87,7 +87,7 @@ test('student profile returns to certificates and exposes working logout', async
   await expect(page).toHaveURL(/\/meus-certificados$/);
   await page.getByRole('button', {name: 'Meu perfil', exact: true}).click();
   await expect(page).toHaveURL(/\/perfil$/);
-  await page.getByRole('button', {name: 'Sair', exact: true}).click();
+  await page.getByRole('button', {name: 'Sair da conta', exact: true}).click();
   await expect(page).toHaveURL(/\/login$/);
 });
 
@@ -120,7 +120,8 @@ test('issuance creates a real event and defers student links until Send now', as
   await companySession(page, true);
   let sent = 0;
   await page.route('**/api/v1/events', async route => {
-    expect(route.request().postDataJSON()).toMatchObject({name: 'Curso Real', workload: 20, institution: 'Empresa Real'});
+    expect(route.request().postDataJSON()).toMatchObject({name: 'Curso Real', workload: 20, institution: 'Empresa Real',
+      start_date: '2026-10-01T00:00:00Z', end_date: '2026-10-02T00:00:00Z'});
     await route.fulfill({status: 201, json: {success: true, data: {event: {_id: 'event-id'}}}});
   });
   await page.route('**/api/v1/certificate/batch', async route => {
@@ -137,11 +138,11 @@ test('issuance creates a real event and defers student links until Send now', as
   });
   await page.goto('/empresa/certificados/criar/draft-id');
   await page.getByRole('button', {name: 'Confirmar', exact: true}).click();
-  // await expect(page.getByRole('heading', {name: '1 certificados foram gerados com sucesso'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: '1 certificados foram gerados com sucesso'})).toBeVisible();
   expect(sent).toBe(0);
-  // await page.getByRole('button', {name: 'Enviar links agora'}).click();
-  // await expect(page.getByRole('status').last()).toContainText('1 e-mails aceitos pelo servidor');
-  // expect(sent).toBe(1);
+  await page.getByRole('button', {name: 'Enviar links agora'}).click();
+  await expect(page.getByRole('status').last()).toContainText('1 e-mails aceitos pelo servidor');
+  expect(sent).toBe(1);
 });
 
 test('company list loads issued certificates and opens the correct ID', async ({page}) => {
