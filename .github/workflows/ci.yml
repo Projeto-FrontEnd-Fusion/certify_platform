@@ -33,8 +33,6 @@ jobs:
         run: npm ci
       - name: Lint without warnings
         run: npm run lint -- --max-warnings 0
-      - name: Audit dependency vulnerabilities
-        run: npm audit --audit-level high
       - name: Typecheck and production build
         run: npm run build
       - name: Install Chromium
@@ -42,7 +40,7 @@ jobs:
       - name: Test critical user flows
         run: npm run test:e2e
       - name: Upload browser reports
-        if: always()
+        if: always() && (hashFiles('playwright-report/**') != '' || hashFiles('test-results/**') != '')
         uses: actions/upload-artifact@v7
         with:
           name: frontend-browser-tests
@@ -57,14 +55,40 @@ jobs:
           path: dist/
           retention-days: 7
 
+  security:
+    name: Dependency vulnerability audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Audit locked dependencies
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          npm audit --audit-level high --json | tee artifacts/dependency-audit.json
+      - name: Upload dependency audit
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-dependency-audit
+          path: artifacts/
+          retention-days: 7
+
   ci:
     name: Frontend CI passed
     if: always()
-    needs: [validate]
+    needs: [validate, security]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
       - name: Require all gates
         env:
           VALIDATE_RESULT: ${{ needs.validate.result }}
-        run: test "$VALIDATE_RESULT" = success
+          SECURITY_RESULT: ${{ needs.security.result }}
+        run: test "$VALIDATE_RESULT" = success && test "$SECURITY_RESULT" = success
