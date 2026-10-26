@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '@/api/getApiErrorMessage';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from "react-router-dom";
 
+const ACCESS_KEY_POSITIONS = [0, 1, 2, 3, 4] as const;
 
 export const AcessKey = () => {
   const { setcertificate } = useCertificateStoreData();
@@ -45,7 +46,7 @@ export const AcessKey = () => {
         {/* <span className="px-2 border">{JSON.stringify(auth)}</span>
         <span className="border-red-400 border-2">{JSON.stringify(certificate)}</span> */}
         <div className="space-x-2 mx-auto flex max-[370px]:flex-wrap   max-[370px]:justify-center max-[370px]:space-y-2 ">
-          {valuesRef.current.map((_, index) => (
+          {ACCESS_KEY_POSITIONS.map((index) => (
             <input
               name={`accessKey-${index}`}
               aria-label={`Digite o ${index + 1}º dígito da chave`}
@@ -54,7 +55,7 @@ export const AcessKey = () => {
               ref={(elementIndex) => {
                 inputRefs.current[index] = elementIndex;
               }}
-              defaultValue={valuesRef.current[index]}
+              defaultValue=""
               onChange={(e) =>
                 handleInputChange(index, e.target.value, inputRefs, valuesRef)
               }

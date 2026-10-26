@@ -33,7 +33,7 @@ export const CertificateCompany = () => {
     queryFn: async () => {
       const items = [];
       let page = 1;
-      let pages = 1;
+      let pages: number;
       do {
         const result = await certificateServiceInstance.listByIssuer(auth!._id, page);
         items.push(...result.data.items);

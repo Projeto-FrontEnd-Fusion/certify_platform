@@ -226,20 +226,6 @@ export const Profilepage = () => {
   const { goHome, logout, isCompany } = useAccountNavigation();
   const { auth, updateAuth } = useAuthStoreData();
   const resolveAvatar = (url: string) => new URL(url, import.meta.env.VITE_API_URL).href;
-  useEffect(() => {
-    let active = true;
-    authServiceInstance.getProfile().then((user) => {
-      if (!active) return;
-      const loaded = {fullName: user.fullname || user.razao_social || '', email: user.email, phone: user.phone || '', cpf: user.cpf || '', birthDate: user.birth_date || ''};
-      setProfile(loaded); setOriginalData(loaded);
-      setFormData({...loaded, currentPassword: '', newPassword: '', confirmPassword: ''});
-      setAvatarUrl(user.avatar_url ? new URL(user.avatar_url, import.meta.env.VITE_API_URL).href : null);
-      updateAuth(user);
-      queryClient.setQueryData(['account-profile', user._id], user);
-    }).catch((error) => { if (active) setErrors({form: getApiErrorMessage(error, 'Falha ao carregar perfil')}); });
-    return () => { active = false; };
-  }, [updateAuth, queryClient]);
-
   const [profile, setProfile] =
     useState<ProfileData>(initialProfile);
 
@@ -290,6 +276,20 @@ export const Profilepage = () => {
 
   const previousPreviewRef =
     useRef<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    authServiceInstance.getProfile().then((user) => {
+      if (!active) return;
+      const loaded = {fullName: user.fullname || user.razao_social || '', email: user.email, phone: user.phone || '', cpf: user.cpf || '', birthDate: user.birth_date || ''};
+      setProfile(loaded); setOriginalData(loaded);
+      setFormData({...loaded, currentPassword: '', newPassword: '', confirmPassword: ''});
+      setAvatarUrl(user.avatar_url ? new URL(user.avatar_url, import.meta.env.VITE_API_URL).href : null);
+      updateAuth(user);
+      queryClient.setQueryData(['account-profile', user._id], user);
+    }).catch((error) => { if (active) setErrors({form: getApiErrorMessage(error, 'Falha ao carregar perfil')}); });
+    return () => { active = false; };
+  }, [updateAuth, queryClient]);
 
   const closeAvatarModal = useCallback(() => {
     if (uploadingAvatar) {
