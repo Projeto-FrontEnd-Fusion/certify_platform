@@ -1,5 +1,7 @@
 
 import { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import type { CertificateFormData } from "@/schemas/CertificateSchema";
 
 import { FiUpload, FiUser } from "react-icons/fi";
 import { FaRegFileAlt, FaRegTrashAlt } from "react-icons/fa";
@@ -16,6 +18,11 @@ import { CertificateResume } from "../CertificateResume";
 import { CertificateSheetTutorial } from "../CertficateSheetTutorial";
 
 type ParticipantInputMode = "manual" | "upload";
+
+type CertificateStepTwoProps = {
+  onNext: () => void;
+  onBack: () => void;
+};
 
 type SpreadsheetParticipant = {
   nome: string;
@@ -102,7 +109,8 @@ const parseCsv = (content: string, delimiter: string): string[][] => {
   return rows;
 };
 
-export function CertificateStepTwo() {
+export function CertificateStepTwo({ onNext, onBack }: CertificateStepTwoProps) {
+  const { formState: { errors } } = useFormContext<CertificateFormData>();
   const [inputMode, setInputMode] =
     useState<ParticipantInputMode>("manual");
 
@@ -460,15 +468,16 @@ export function CertificateStepTwo() {
               />
             </div>
           </div>
-          {(errors.participants?.message || errors.participants?.root?.message) && (
-            <p role="alert" className="mt-3 text-sm text-red-600">
-              {errors.participants?.message || errors.participants?.root?.message}
-            </p>
-          )}
-        </div>
+        )}
+        {(errors.participants?.message || errors.participants?.root?.message) && (
+          <p role="alert" className="mt-3 text-sm text-red-600">
+            {errors.participants?.message || errors.participants?.root?.message}
+          </p>
+        )}
       </div>
 
       <div className="w-1/3">
+        {inputMode === "upload" && <CertificateSheetTutorial />}
         <CertificateResume onNext={onNext} onBack={onBack} />
       </div>
     </div>

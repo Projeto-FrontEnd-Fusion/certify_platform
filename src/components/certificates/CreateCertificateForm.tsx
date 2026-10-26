@@ -25,6 +25,8 @@ const stepFields: Record<CertificateStep, FieldPath<CertificateFormData>[]> = {
     "activityType",
     "description",
     "activityName",
+    "startDate",
+    "endDate",
     "workload",
 
     "modalityEnabled",
@@ -164,7 +166,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
             onChangeTemplate={() => setIsTemplateModalOpen(true)}
           />
         )}
-        {step === 2 && <CertificateStepTwo />}
+        {step === 2 && <CertificateStepTwo onNext={goNext} onBack={goBack} />}
         {step === 3 && <CertificateStepThree onBack={goBack} isPending={isPending} />}
       </form>
 

@@ -226,6 +226,13 @@ export function CertificateStepOne({ onNext, onChangeTemplate }: CertificateStep
           />
         </Field>
 
+        <Field label="Data de início" error={errors.startDate?.message}>
+          <input type="date" {...register('startDate')} className="rounded-lg border p-3" />
+        </Field>
+        <Field label="Data de término" error={errors.endDate?.message}>
+          <input type="date" {...register('endDate')} className="rounded-lg border p-3" />
+        </Field>
+
         <Field label="Carga horária" error={errors.workload?.message}>
           <input
             {...register("workload")}

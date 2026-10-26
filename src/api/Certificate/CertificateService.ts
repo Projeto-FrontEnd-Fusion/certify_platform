@@ -66,7 +66,7 @@ export class CertificateService implements CertificateRepository {
   public async createEvent(data: CertificateFormData, institution: string): Promise<string> {
     const response = await this.httpServiceAcessClient.post('/events', {
       name: data.activityName, institution, workload: Number(data.workload), description: data.description,
-      // start_date: `${data.startDate}T00:00:00Z`, end_date: `${data.endDate}T00:00:00Z`,
+      start_date: `${data.startDate}T00:00:00Z`, end_date: `${data.endDate}T00:00:00Z`,
       design: {variant: data.variant, logo: data.logo, signature: data.signature,
         modality: data.modalityEnabled ? data.modality : undefined, syllabus: data.syllabusEnabled ? data.syllabus : undefined,
         validity: data.validityEnabled ? data.validity : 'Sem validade'},
