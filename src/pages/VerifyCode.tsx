@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { BiLoader } from "react-icons/bi";
 import { ToastContainer } from "react-toastify";
 import { useVerifyCodeAuth } from "@/hooks/Auth/useVerifyCodeAuth";
-import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
+import GirlWithCertificate from "@/assets/GirlWithCertificateBlue.jpg";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 

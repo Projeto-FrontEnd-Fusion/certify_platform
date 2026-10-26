@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useFormValidation } from "@/hooks/useForm";
 import { ResetPasswordSchema } from "@/schemas/ResetPassword";
 import { useResetPasswordAuth } from "@/hooks/Auth/useResetPasswordAuth";
-import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
+import GirlWithCertificate from "@/assets/GirlWithCertificateBlue.jpg";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 import { IoClose } from "react-icons/io5";

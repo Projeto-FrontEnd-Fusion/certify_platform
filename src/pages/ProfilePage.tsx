@@ -527,38 +527,53 @@ export const Profilepage = () => {
     setFeedback(null);
   };
 
-  const validatePassword = (): ProfileErrors => {
-    const validationErrors: ProfileErrors =
-      {};
+ 
+const validatePassword = (): ProfileErrors => {
+  const validationErrors: ProfileErrors = {};
+  const password = formData.newPassword;
 
-    if (!formData.currentPassword) {
-      validationErrors.currentPassword =
-        "A senha atual é obrigatória.";
-    }
+  if (!formData.currentPassword) {
+    validationErrors.currentPassword =
+      "A senha atual é obrigatória.";
+  }
 
-    if (!formData.newPassword) {
-      validationErrors.newPassword =
-        "A nova senha é obrigatória.";
-    } else if (
-      formData.newPassword.length < 8
-    ) {
-      validationErrors.newPassword =
-        "A nova senha deve possuir no mínimo 8 caracteres.";
-    }
+  if (!password) {
+    validationErrors.newPassword =
+      "A nova senha é obrigatória.";
+  } else if (password.length < 8) {
+    validationErrors.newPassword =
+      "A senha deve ter no mínimo 8 caracteres.";
+  } else if (!/[A-Z]/.test(password)) {
+    validationErrors.newPassword =
+      "Inclua pelo menos uma letra maiúscula.";
+  } else if (!/[a-z]/.test(password)) {
+    validationErrors.newPassword =
+      "Inclua pelo menos uma letra minúscula.";
+  } else if (!/[0-9]/.test(password)) {
+    validationErrors.newPassword =
+      "Inclua pelo menos um número.";
+  } else if (!/[^A-Za-z0-9]/.test(password)) {
+    validationErrors.newPassword =
+      "Inclua pelo menos um caractere especial.";
+  } else if (
+    password === formData.currentPassword
+  ) {
+    validationErrors.newPassword =
+      "A nova senha deve ser diferente da senha atual.";
+  }
 
-    if (!formData.confirmPassword) {
-      validationErrors.confirmPassword =
-        "Confirme a nova senha.";
-    } else if (
-      formData.newPassword !==
-      formData.confirmPassword
-    ) {
-      validationErrors.confirmPassword =
-        "As senhas não coincidem.";
-    }
+  if (!formData.confirmPassword) {
+    validationErrors.confirmPassword =
+      "Confirme a nova senha.";
+  } else if (
+    password !== formData.confirmPassword
+  ) {
+    validationErrors.confirmPassword =
+      "As senhas não coincidem.";
+  }
 
-    return validationErrors;
-  };
+  return validationErrors;
+};
 
   const handlePasswordSubmit = async (
     event: FormEvent<HTMLFormElement>
@@ -868,138 +883,149 @@ export const Profilepage = () => {
       />
 
       <div className="flex min-h-screen w-full">
-        <aside className="fixed left-0 top-0 z-40 flex h-screen w-[260px] flex-col bg-[#1A1551]">
-          <div className="flex h-20 shrink-0 items-center border-b border-white/10 px-6">
-            <a
-              href="/"
-              aria-label="Ir para a página inicial da Certify"
-              className="flex items-center"
-            >
-              <img
-                src={Logo}
-                alt="Certify Logo"
-                className="h-12 w-auto object-contain"
-              />
-            </a>
-          </div>
+       
+<aside className="fixed left-0 top-0 z-40 flex h-screen w-[260px] flex-col bg-[#1A1551]">
+  <div className="flex h-20 shrink-0 items-center border-b border-white/10 px-6">
+    <a
+      href="/"
+      aria-label="Ir para a página inicial da Certify"
+      className="flex items-center"
+    >
+      <img
+        src={Logo}
+        alt="Certify Logo"
+        className="h-12 w-auto object-contain"
+      />
+    </a>
+  </div>
 
-          <nav className="flex-1 overflow-y-auto p-4">
-            <div className="space-y-2">
-              <button
-  type="button"
-  onClick={goHome}
-  className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/5"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    className="h-5 w-5 shrink-0"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M6 4h12v16H6z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M9 8h6M9 12h6M9 16h4"
-    />
-  </svg>
+  <nav className="flex-1 overflow-y-auto p-4">
+    <div className="space-y-2">
+      <button
+        type="button"
+        onClick={goHome}
+        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-5 w-5 shrink-0"
+          aria-hidden="true"
+        >
+          <path d="M6 4h12v16H6z" />
+          <path d="M9 8h6M9 12h6M9 16h4" />
+        </svg>
+        <span>Certificados</span>
+      </button>
 
-  <span>Certificados</span>
-</button>
-              <button
-                type="button"
-                aria-current="page"
-                className="flex w-full items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="h-5 w-5 shrink-0"
-                >
-                  <circle
-                    cx="12"
-                    cy="8"
-                    r="3"
-                  />
-                  <path d="M5 21a7 7 0 0114 0" />
-                </svg>
+      <button
+        type="button"
+        onClick={() => {
+          document.getElementById("profile-settings")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }}
+        aria-current="page"
+        className="flex w-full items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/30"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-5 w-5 shrink-0"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="8" r="3" />
+          <path d="M5 21a7 7 0 0114 0" />
+        </svg>
+        <span>Meu perfil</span>
+      </button>
+    </div>
+  </nav>
 
-                <span>Meu perfil</span>
-              </button>
-            </div>
-          </nav>
+  <div className="shrink-0 border-t border-white/10 p-4">
+    <div className="flex items-center gap-3 rounded-xl bg-white/5 p-3">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-[#0069A8]">
+        {getInitials(profile.fullName)}
+      </div>
 
-          <div className="shrink-0 border-t border-white/10 p-4">
-            <div className="flex items-center gap-3 rounded-xl bg-white/5 p-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-[#0069A8]">
-                {getInitials(profile.fullName)}
-              </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-bold text-white">
+          {profile.fullName}
+        </p>
+        <p className="truncate text-xs text-white/50">
+          {isCompany ? "Empresa" : "Aluno"}
+        </p>
+      </div>
 
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-white">
-                  {profile.fullName}
-                </p>
+      <div className="flex shrink-0 items-center gap-1">
+        <button
+          type="button"
+          onClick={() => {
+            const settings = document.getElementById("profile-settings");
 
-                <p className="truncate text-xs text-white/50">
-                  {isCompany ? "Empresa" : "Aluno"}
-                </p>
-              </div>
+            if (settings) {
+              settings.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+              settings.focus({ preventScroll: true });
+            }
+          }}
+          aria-label="Ir para as configurações do perfil"
+          title="Configurações do perfil"
+          className="group flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition-all duration-200 hover:bg-white/10 hover:text-white active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5 transition-transform duration-300 group-hover:rotate-45"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.56V20h-2.54v-.1a1.7 1.7 0 00-1.03-1.56 1.7 1.7 0 00-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 008.1 15a1.7 1.7 0 00-1.56-1.03H6v-2.54h.1A1.7 1.7 0 007.66 10a1.7 1.7 0 00-.34-1.88l-.06-.06 1.8-1.8.06.06A1.7 1.7 0 0011 6a1.7 1.7 0 001.03-1.56V4h2.54v.1A1.7 1.7 0 0015.6 5.66a1.7 1.7 0 001.88-.34l.06-.06 1.8 1.8-.06.06A1.7 1.7 0 0018.94 9c0 .7.42 1.33 1.03 1.56H20v2.54h-.1A1.7 1.7 0 0019.4 15z" />
+          </svg>
+        </button>
 
-              <div className="flex shrink-0 items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => document.getElementById("profile-settings")?.scrollIntoView({ behavior: "smooth" })}
-                  aria-label="Configurações"
-                  title="Configurações"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="h-5 w-5"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="3"
-                    />
-                    <path d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.56V20h-2.54v-.1a1.7 1.7 0 00-1.03-1.56 1.7 1.7 0 00-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 008.1 15a1.7 1.7 0 00-1.56-1.03H6v-2.54h.1A1.7 1.7 0 007.66 10a1.7 1.7 0 00-.34-1.88l-.06-.06 1.8-1.8.06.06A1.7 1.7 0 0011 6a1.7 1.7 0 001.03-1.56V4h2.54v.1A1.7 1.7 0 0015.6 5.66a1.7 1.7 0 001.88-.34l.06-.06 1.8 1.8-.06.06A1.7 1.7 0 0018.94 9c0 .7.42 1.33 1.03 1.56H20v2.54h-.1A1.7 1.7 0 0019.4 15z" />
-                  </svg>
-                </button>
+        <button
+          type="button"
+          onClick={logout}
+          aria-label="Sair da conta"
+          title="Sair da conta"
+          className="group flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400/50"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+            <path d="M21 19V5a2 2 0 00-2-2h-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>
 
-                <button
-                  type="button"
-                  onClick={logout}
-                  aria-label="Sair"
-                  title="Sair"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400/50"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="h-5 w-5"
-                  >
-                    <path d="M10 17l5-5-5-5" />
-                    <path d="M15 12H3" />
-                    <path d="M21 19V5a2 2 0 00-2-2h-6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </aside>
 
         <main id="profile-settings" className="ml-[260px] min-h-screen flex-1 bg-[#F4F5F9] px-6 py-8 lg:px-10">
           <div className="mx-auto w-full max-w-[1100px]">
@@ -1302,148 +1328,185 @@ export const Profilepage = () => {
               </div>
             </form>
 
-            <form
-              onSubmit={handlePasswordSubmit}
-              noValidate
-              className="mt-6 rounded-2xl border border-[#E1E4EA] bg-white p-5 sm:p-7 md:p-10"
-            >
-              <div className="mb-8">
-                <h2 className="text-xl font-bold sm:text-2xl">
-                  Segurança
-                </h2>
+         
+<form
+  onSubmit={handlePasswordSubmit}
+  noValidate
+  className="mt-6 rounded-2xl border border-[#E1E4EA] bg-white p-5 sm:p-7 md:p-10"
+>
+  <div className="mb-8">
+    <h2 className="text-xl font-bold sm:text-2xl">
+      Segurança
+    </h2>
 
-                <p className="mt-2 text-sm text-gray-500">
-                  Altere sua senha de acesso.
-                </p>
-              </div>
+    <p className="mt-2 text-sm text-gray-500">
+      Altere sua senha de acesso.
+    </p>
+  </div>
 
-              <div className="space-y-5">
-                <div>
-                  <label
-                    htmlFor="currentPassword"
-                    className="mb-2 block text-sm font-semibold"
-                  >
-                    Senha atual
-                  </label>
+  <div className="space-y-5">
+    <div>
+      <label
+        htmlFor="currentPassword"
+        className="mb-2 block text-sm font-semibold"
+      >
+        Senha atual
+      </label>
 
-                  <input
-                    id="currentPassword"
-                    name="currentPassword"
-                    type="password"
-                    value={
-                      formData.currentPassword
-                    }
-                    onChange={handleProfileChange}
-                    autoComplete="current-password"
-                    disabled={loadingPassword}
-                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
-                      errors.currentPassword
-                        ? "border-red-500"
-                        : "border-[#D1D5DB]"
-                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                  />
+      <input
+        id="currentPassword"
+        name="currentPassword"
+        type="password"
+        value={formData.currentPassword}
+        onChange={handleProfileChange}
+        autoComplete="current-password"
+        disabled={loadingPassword}
+        aria-invalid={Boolean(errors.currentPassword)}
+        aria-describedby={
+          errors.currentPassword
+            ? "currentPassword-error"
+            : undefined
+        }
+        className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+          errors.currentPassword
+            ? "border-red-500"
+            : "border-[#D1D5DB]"
+        } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+      />
 
-                  {errors.currentPassword && (
-                    <p
-                      role="alert"
-                      className="mt-2 text-sm text-red-600"
-                    >
-                      {errors.currentPassword}
-                    </p>
-                  )}
-                </div>
+      {errors.currentPassword && (
+        <p
+          id="currentPassword-error"
+          role="alert"
+          className="mt-2 text-sm text-red-600"
+        >
+          {errors.currentPassword}
+        </p>
+      )}
+    </div>
 
-                <div>
-                  <label
-                    htmlFor="newPassword"
-                    className="mb-2 block text-sm font-semibold"
-                  >
-                    Nova senha
-                  </label>
+    <div>
+      <label
+        htmlFor="newPassword"
+        className="mb-2 block text-sm font-semibold"
+      >
+        Nova senha
+      </label>
 
-                  <input
-                    id="newPassword"
-                    name="newPassword"
-                    type="password"
-                    placeholder="Digite a nova senha"
-                    value={formData.newPassword}
-                    onChange={handleProfileChange}
-                    autoComplete="new-password"
-                    disabled={loadingPassword}
-                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
-                      errors.newPassword
-                        ? "border-red-500"
-                        : "border-[#D1D5DB]"
-                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                  />
+      <input
+        id="newPassword"
+        name="newPassword"
+        type="password"
+        placeholder="Digite a nova senha"
+        value={formData.newPassword}
+        onChange={handleProfileChange}
+        autoComplete="new-password"
+        disabled={loadingPassword}
+        aria-invalid={Boolean(errors.newPassword)}
+        aria-describedby={
+          errors.newPassword
+            ? "newPassword-error newPassword-rules"
+            : "newPassword-rules"
+        }
+        className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+          errors.newPassword
+            ? "border-red-500"
+            : "border-[#D1D5DB]"
+        } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+      />
 
-                  <p className="mt-2 text-xs text-gray-500">
-                    Mínimo de 8 caracteres.
-                  </p>
+      <div
+        id="newPassword-rules"
+        className="mt-2 space-y-1 text-xs text-gray-500"
+      >
+        <p>A senha deve conter:</p>
+        <ul className="list-inside list-disc space-y-1">
+          <li>No mínimo 8 caracteres</li>
+          <li>Uma letra maiúscula e uma minúscula</li>
+          <li>Pelo menos um número</li>
+          <li>Pelo menos um caractere especial</li>
+        </ul>
+      </div>
 
-                  {errors.newPassword && (
-                    <p
-                      role="alert"
-                      className="mt-2 text-sm text-red-600"
-                    >
-                      {errors.newPassword}
-                    </p>
-                  )}
-                </div>
+      {errors.newPassword && (
+        <p
+          id="newPassword-error"
+          role="alert"
+          className="mt-2 text-sm text-red-600"
+        >
+          {errors.newPassword}
+        </p>
+      )}
+    </div>
 
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="mb-2 block text-sm font-semibold"
-                  >
-                    Confirmar nova senha
-                  </label>
+    <div>
+      <label
+        htmlFor="confirmPassword"
+        className="mb-2 block text-sm font-semibold"
+      >
+        Confirmar nova senha
+      </label>
 
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="Repita a nova senha"
-                    value={
-                      formData.confirmPassword
-                    }
-                    onChange={handleProfileChange}
-                    autoComplete="new-password"
-                    disabled={loadingPassword}
-                    className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
-                      errors.confirmPassword
-                        ? "border-red-500"
-                        : "border-[#D1D5DB]"
-                    } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
-                  />
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        placeholder="Repita a nova senha"
+        value={formData.confirmPassword}
+        onChange={handleProfileChange}
+        autoComplete="new-password"
+        disabled={loadingPassword}
+        aria-invalid={Boolean(errors.confirmPassword)}
+        aria-describedby={
+          errors.confirmPassword
+            ? "confirmPassword-error"
+            : undefined
+        }
+        className={`h-12 w-full rounded-xl border bg-white px-4 outline-none ${
+          errors.confirmPassword
+            ? "border-red-500"
+            : "border-[#D1D5DB]"
+        } focus:border-[#0069A8] focus:ring-2 focus:ring-[#0069A8]/20`}
+      />
 
-                  {errors.confirmPassword && (
-                    <p
-                      role="alert"
-                      className="mt-2 text-sm text-red-600"
-                    >
-                      {errors.confirmPassword}
-                    </p>
-                  )}
-                </div>
-              </div>
+      {errors.confirmPassword && (
+        <p
+          id="confirmPassword-error"
+          role="alert"
+          className="mt-2 text-sm text-red-600"
+        >
+          {errors.confirmPassword}
+        </p>
+      )}
+    </div>
+  </div>
 
-              <button
-                type="submit"
-                disabled={loadingPassword}
-                aria-busy={loadingPassword}
-                className="mt-8 w-full rounded-xl bg-[#0069A8] px-6 py-3.5 font-bold text-white hover:bg-[#005582] disabled:cursor-not-allowed disabled:bg-[#0069A8]/50 sm:w-auto sm:min-w-[220px]"
-              >
-                {loadingPassword ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Atualizando...
-                  </span>
-                ) : (
-                  "Atualizar senha"
-                )}
-              </button>
-            </form>
+  {errors.form && (
+    <p
+      role="alert"
+      className="mt-4 text-sm text-red-600"
+    >
+      {errors.form}
+    </p>
+  )}
+
+  <button
+    type="submit"
+    disabled={loadingPassword}
+    aria-busy={loadingPassword}
+    className="mt-8 w-full rounded-xl bg-[#0069A8] px-6 py-3.5 font-bold text-white hover:bg-[#005582] disabled:cursor-not-allowed disabled:bg-[#0069A8]/50 sm:w-auto sm:min-w-[220px]"
+  >
+    {loadingPassword ? (
+      <span className="flex items-center justify-center gap-2">
+        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        Atualizando...
+      </span>
+    ) : (
+      "Atualizar senha"
+    )}
+  </button>
+</form>
+
           </div>
         </main>
       </div>

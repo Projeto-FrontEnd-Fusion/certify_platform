@@ -1,4 +1,4 @@
-import GirlWithCertificateImg from '@/assets/GirlWithCertificate.webp'
+import GirlWithCertificateImg from '@/assets/GirlWithCertificateBlue.jpg'
 import SignUpCompanyImg from '@/assets/SignUpCompanyImg.jpg'
 import LogoCertify from '@/assets/Logo.svg'
 import { CompanyForm } from '@/components/CompanyForm';

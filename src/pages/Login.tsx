@@ -8,7 +8,7 @@ import { useFormValidation } from "@/hooks/useForm";
 import { LoginSchema, type LoginSchemaType } from "@/schemas/Login";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { TOAST_STYLES } from "./ToastStyleContainer";
-import GirlWithCertificate from "@/assets/GirlWithCertificate.webp";
+import GirlWithCertificate from "@/assets/GirlWithCertificateBlue.jpg";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 
