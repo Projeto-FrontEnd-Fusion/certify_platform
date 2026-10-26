@@ -16,7 +16,9 @@ Lint sem avisos e build de produção aprovados no checkout integrado. As ferram
 
 Playwright no checkout integrado: 25 testes Chromium aprovados em 21,6 segundos, usando o build com `VITE_API_URL=http://127.0.0.1:8000/api/v1`, dois workers, reporter de terminal e preview iniciado separadamente. As verificações de emissão e envio de links estão ativas. A geração de artifacts HTML e o encerramento do servidor no Linux ainda precisam ser validados no GitHub.
 
-O Rollup usa a distribuição oficial `@rollup/wasm-node`, por alias e override, para executar o mesmo build em Windows e Linux sem depender de um módulo nativo bloqueado pela política de Controle de Aplicativo deste computador. O lockfile fixa a versão instalada; Dependabot mantém as atualizações.
+O Vite 8 usa Rolldown/Oxc. A configuração nativa fica em `build.rolldownOptions.output`: `minify.compress.dropConsole/dropDebugger` substitui `esbuild.drop`, e `codeSplitting.groups` substitui o antigo objeto `manualChunks`. O visualizador mantém a adaptação de tipo `PluginOption` recomendada por seu projeto. Referências: [migração do Vite 8](https://vite.dev/guide/migration.html), [codeSplitting](https://rolldown.rs/reference/OutputOptions.codeSplitting), [visualizador com Vite/TypeScript](https://github.com/btd/rollup-plugin-visualizer#vite--typescript-viteconfigts).
+
+O alias/override `rollup` para `@rollup/wasm-node` permanece para dependências que ainda usam Rollup; ele não substitui o Rolldown do Vite 8. O ambiente local ainda tem Vite 7.3.7, por isso o build nativo do Vite 8 precisa ser validado no CI ou depois de `npm ci` com acesso ao registro. Uma aprovação com Vite 7 não valida essa configuração nova.
 
 Relatórios de testes, traces de falhas e o build validado ficam nos artifacts do GitHub Actions. Dependabot propõe atualizações semanais de npm e Actions. Configure proteção de `main` exigindo o check `Frontend CI passed`.
 
