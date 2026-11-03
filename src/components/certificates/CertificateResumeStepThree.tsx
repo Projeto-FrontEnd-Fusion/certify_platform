@@ -1,6 +1,5 @@
 import { useFormContext, useWatch } from "react-hook-form";
 import type { CertificateFormData } from "@/schemas/CertificateSchema";
-import { useSaveCertificateDraft } from "@/hooks/Certificate/useSaveCertificateDraft";
 import { variantLabels } from "./constants";
 import { CertificateTemplate } from "./CertificateTemplate";
 import { ResumeItem } from "./ResumeItem";
@@ -13,7 +12,7 @@ export function CertificateResumeStepThree() {
 
 
   const variant = useWatch({ control, name: "variant" });
-  const { activityName, activityType, workload, validityEnabled, validity, participants } =
+  const { activityName, activityType, workload, validityEnabled, validity } =
     useWatch({ control });
 
   const validityLabel = validityEnabled
