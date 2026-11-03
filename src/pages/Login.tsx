@@ -8,7 +8,7 @@ import { useFormValidation } from "@/hooks/useForm";
 import { LoginSchema, type LoginSchemaType } from "@/schemas/Login";
 import { useAuthStoreData } from "@/stores/useAuthStore";
 import { TOAST_STYLES } from "./ToastStyleContainer";
-import GirlWithCertificate from "@/assets/GirlWithCertificateBlue.jpg";
+import GirlWithCertificateBlue from "@/assets/GirlWithCertificateBlue.jpg";
 import EmpresaPhoto from "@/assets/EmpresaPhoto.png";
 import Logo from "@/assets/Logo.svg";
 
@@ -291,7 +291,7 @@ return (
 
     <div className="relative hidden min-h-screen w-1/2 overflow-hidden md:block">
       <img
-        src={role === "empresa" ? EmpresaPhoto : GirlWithCertificate}
+        src={role === "empresa" ? EmpresaPhoto : GirlWithCertificateBlue}
         alt={
           role === "empresa"
             ? "Imagem promocional para empresa"
