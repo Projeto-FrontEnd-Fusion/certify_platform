@@ -143,6 +143,26 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
     } finally { setIsPending(false); }
   });
 
+  async function goToStep(target: CertificateStep) {
+    if (target === step) return;
+
+    if (target < step) {
+      setStep(target);
+      return;
+    }
+
+    for (let current = step; current < target; current++) {
+      const isValid = await form.trigger(stepFields[current as CertificateStep]);
+
+      if (!isValid) {
+        setStep(current as CertificateStep);
+        return;
+      }
+    }
+
+    setStep(target);
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -158,7 +178,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
     <FormProvider {...form}>
       {message && <p role="status" className="p-4">{message}</p>}
       <form onSubmit={handleSubmit}>
-        <CertificateStepper current={step} />
+        <CertificateStepper current={step} onStepChange={goToStep} disabled={isPending} />
 
         {step === 1 && (
           <CertificateStepOne
@@ -167,7 +187,7 @@ export function CreateCertificateForm({ draft }: CreateCertificateFormProps) {
           />
         )}
         {step === 2 && <CertificateStepTwo onNext={goNext} onBack={goBack} />}
-        {step === 3 && <CertificateStepThree onBack={goBack} isPending={isPending} />}
+        {step === 3 && <CertificateStepThree onBack={goBack} />}
       </form>
 
       <SuccessCertificateModal isOpen={showSuccess} certificatesCount={certificateIds.length}
